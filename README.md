@@ -1,6 +1,6 @@
 # PinkkiCore
 
-面向 Minecraft Java 版的多版本 mod，MIT 许可证。目前只输出加载成功日志，没有方块、物品、指令或其他游戏内容。
+面向 Minecraft Java 版的多版本 mod，MIT 许可证。1.20.1 已实装基础材料[瓜巴](wiki/items.md#guaba)及其无序配方（0.1.0 开发中，尚未发布）；次要目标尚未适配。
 
 | 优先级 | Minecraft | 加载器 | Java | 构建工具 |
 | --- | --- | --- | --- | --- |
@@ -26,6 +26,10 @@ Minecraft、加载器、Gradle 和构建插件版本固定在仓库配置中。�
 
 后续建模可使用项目 skill [`$design-minecraft-model`](.agents/skills/design-minecraft-model/SKILL.md)，从参考设计、模型与动作制作，到可旋转 3D 审阅和资产校验。用法见 [模型设计流程](docs/development-workflow.md#模型设计与审阅)。
 
+## 瓜巴材料兼容试作
+
+1.20.1 已为 Silent Gear（寂静装备）、Tinkers' Construct（匠魂）和 Tetra 添加可选的瓜巴材料数据；不要求安装三个模组，不内嵌它们或其前置。属性是兼容性占位，暂无瓜巴专属特性。详见[调研、参数与验证范围](docs/guaba-material-compatibility.md)及[玩家操作说明](wiki/compatibility.md)。自研游戏内手册尚未实现。
+
 ## 从零开始：本机运行
 
 本机是 Apple Silicon macOS。已安装的系统 Java 无需切换；脚本为每个目标选择 JDK。通用脚本需要 Bash、curl、tar；产物校验需要 Python 3.11+。
@@ -46,10 +50,10 @@ Minecraft、加载器、Gradle 和构建插件版本固定在仓库配置中。�
 客户端启动后：打开 **Mods**，搜索 **PinkkiCore**，确认版本为 `0.1.0`。新建一个测试世界，进入、退出并关闭游戏。日志 `versions/1.20.1/run/client/logs/latest.log` 应包含：
 
 ```text
-[pinkkicore] Empty mod loaded successfully.
+[pinkkicore] Mod loaded successfully.
 ```
 
-空 mod 不会在背包中出现任何新物品。开发客户端采用开发身份，验证正版启动器和真实多人认证属于打包后测试。
+1.20.1 的瓜巴位于创造模式“原材料”分类，也可用 1 西瓜片和 1 原版泥巴在背包或工作台中无序合成。不可食用，堆叠上限 64；悬停说明为“一切瓜巴的起源”。游戏内手册尚未实现，当前说明见玩家 Wiki。开发客户端采用开发身份，验证正版启动器和真实多人认证属于打包后测试。
 
 只有需要适配其他版本、且由用户手动测试客户端时，才替换版本号：
 

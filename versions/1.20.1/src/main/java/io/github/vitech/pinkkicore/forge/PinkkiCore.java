@@ -2,17 +2,20 @@ package io.github.vitech.pinkkicore.forge;
 
 import com.mojang.logging.LogUtils;
 import io.github.vitech.pinkkicore.core.ModInfo;
+import io.github.vitech.pinkkicore.forge.item.ModItems;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import software.bernie.geckolib.GeckoLib;
 
-/** Version-specific Forge entry point. No gameplay content is registered. */
+/** Version-specific Forge entry point. Registers the 1.20.1 gameplay content. */
 @Mod(ModInfo.ID)
 public final class PinkkiCore {
     public PinkkiCore() {
         GeckoLib.initialize();
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onCommonSetup);
+        var bus = FMLJavaModLoadingContext.get().getModEventBus();
+        ModItems.register(bus);
+        bus.addListener(this::onCommonSetup);
     }
 
     private void onCommonSetup(final FMLCommonSetupEvent event) {

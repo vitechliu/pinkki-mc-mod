@@ -16,6 +16,7 @@ export default defineConfig({
         { text: '项目与版本', link: '/guide' },
         { text: '道具与方块', link: '/items' },
         { text: '合成与加工', link: '/recipes' },
+        { text: '模组兼容', link: '/compatibility' },
         { text: '世界结构', link: '/structures' },
         { text: '多方块', link: '/multiblocks' },
         { text: '生物与 Boss', link: '/bosses' },

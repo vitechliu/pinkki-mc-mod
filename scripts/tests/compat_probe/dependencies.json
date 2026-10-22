@@ -1,0 +1,77 @@
+[
+  {
+    "project": "silent-gear",
+    "version": "3.6.7",
+    "file": "silent-gear-1.20.1-3.6.7.jar",
+    "dependencies": [
+      {
+        "version_id": null,
+        "project_id": "BQhuHQo4",
+        "file_name": null,
+        "dependency_type": "required"
+      }
+    ],
+    "sha512": "b1d3d30e20aa95672425de2d503c686157108e7541e70ca9742f228887c3092aa1a5099aa64c9f15f737a7b5c317a974db6a42d25a424af2a1a9b831b3fefeeb",
+    "url": "https://cdn.modrinth.com/data/73mSSnCf/versions/2Chvw4VA/silent-gear-1.20.1-3.6.7.jar"
+  },
+  {
+    "project": "silent-lib",
+    "version": "8.0.0",
+    "file": "silent-lib-1.20.1-8.0.0.jar",
+    "dependencies": [],
+    "sha512": "6a24bf4a7be495041b6305815e7ffeb8badc4ca3ef8ecb2050a31c85045504df5d7803676138d73a152aa2858821a74bc9b2a09b0ca5dfa9a22288722cd701e7",
+    "url": "https://cdn.modrinth.com/data/BQhuHQo4/versions/WGt4877n/silent-lib-1.20.1-8.0.0.jar"
+  },
+  {
+    "project": "tinkers-construct",
+    "version": "3.11.2.166",
+    "file": "TConstruct-1.20.1-3.11.2.166.jar",
+    "dependencies": [
+      {
+        "version_id": null,
+        "project_id": "Cg6Uc79H",
+        "file_name": null,
+        "dependency_type": "required"
+      },
+      {
+        "version_id": null,
+        "project_id": "u6dRKJwZ",
+        "file_name": null,
+        "dependency_type": "optional"
+      }
+    ],
+    "sha512": "69da7399162b4de18b3eedf701f6013727ec4ae14b1b746265513bea6c4e88ad64ccb1187d3abca2387aafd37a91c21c56ce9b6fa7b0c26df17dfc1ac8d6a916",
+    "url": "https://cdn.modrinth.com/data/rxIIYO6c/versions/kJ9LD194/TConstruct-1.20.1-3.11.2.166.jar"
+  },
+  {
+    "project": "mantle",
+    "version": "1.11.104",
+    "file": "Mantle-1.20.1-1.11.104.jar",
+    "dependencies": [],
+    "sha512": "4b05eb01769d3cc299dbfc94c2d4f8d76192e839b53bf83109dd5e72d0dae67f188ffcdefb4683b073fc78fc19e86d84e04023f6ad7542e628817fabacf6db78",
+    "url": "https://cdn.modrinth.com/data/Cg6Uc79H/versions/SOJzuYxC/Mantle-1.20.1-1.11.104.jar"
+  },
+  {
+    "project": "tetra",
+    "version": "6.17.0",
+    "file": "tetra-1.20.1-6.17.0.jar",
+    "dependencies": [
+      {
+        "version_id": null,
+        "project_id": "HWHl8Evb",
+        "file_name": null,
+        "dependency_type": "required"
+      }
+    ],
+    "sha512": "7396891f0c7446ab93c714a15a404211e26756b7d316c198f2f3ce2cf89bdee0bec789a64bd647cf5cd6c21ba5be09dc67193d0a90a311ee53e55c7ea4dcf558",
+    "url": "https://cdn.modrinth.com/data/YP9DjOvN/versions/voxpV4mH/tetra-1.20.1-6.17.0.jar"
+  },
+  {
+    "project": "mutil",
+    "version": "6.3.0",
+    "file": "mutil-1.20.1-6.3.0.jar",
+    "dependencies": [],
+    "sha512": "c66851d7a1b8ae8faed39fb2974e126433db3ca107ead21edae99788cd335700073812920648bcc2b0d30ef1712697ded050c2e0c314484c6f420d5150a0bdeb",
+    "url": "https://cdn.modrinth.com/data/HWHl8Evb/versions/ls59E7KT/mutil-1.20.1-6.3.0.jar"
+  }
+]

@@ -53,7 +53,7 @@ def main():
                 print(line, end="", flush=True)
                 log.write(line)
                 log.flush()
-                loaded |= "[pinkkicore] Empty mod loaded successfully." in line
+                loaded |= "[pinkkicore] Mod loaded successfully." in line
                 ready |= 'Done (' in line and 'For help, type' in line
                 stopped |= 'Stopping server' in line
                 if loaded and ready and process.stdin and not stop_sent:

@@ -7,6 +7,6 @@ public final class ModInfo {
     private ModInfo() {}
 
     public static String startupMessage() {
-        return "[pinkkicore] Empty mod loaded successfully.";
+        return "[pinkkicore] Mod loaded successfully.";
     }
 }

@@ -1,0 +1,11 @@
+{
+  "item.pinkkicore.guaba": "Guaba",
+  "tooltip.pinkkicore.guaba": "The origin of all Guaba",
+  "material.pinkkicore.guaba": "Guaba",
+  "material.pinkkicore.guaba.flavor": "The origin of all Guaba",
+  "material.pinkkicore.guaba.encyclopedia": "Compatibility prototype: placeholder stats, no unique traits.",
+  "tetra.material.pinkkicore_guaba": "Guaba",
+  "tetra.variant_category.pinkkicore_guaba.label": "Guaba (prototype)",
+  "tetra.material.feature.pinkkicore_guaba_placeholder": "Placeholder material",
+  "tetra.material.feature.pinkkicore_guaba_placeholder.tooltip": "Compatibility placeholder stats; no unique effects."
+}
