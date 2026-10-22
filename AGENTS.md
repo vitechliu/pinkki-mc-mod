@@ -80,3 +80,7 @@ python3 scripts/smoke-server.py 1.20.1
 用户使用 HMCL 3.16.3，本地手动兼容性测试参考 `docs/hmcl-testing.md`。项目专用游戏目录位于 `.local/hmcl/.minecraft`，采用各实例独立，保留 `clean` 与 `compat` 两类实例。`scripts/hmcl-test.py` 只用于准备目录、同步发行 JAR 和归档日志，不启动游戏；分析时优先读取用户指定的 `.local/hmcl/reports/` 报告。未经用户要求，不改动其原有 HMCL 游戏目录，也不改变本文件的默认禁止实机测试规则。
 
 行为、目录或命令变更时同步相关文档。`docs/verification.md` 是初始化时的历史验证记录，后续变更不能自动沿用其通过结论。工作总结说明改动、实际执行的验证，以及仍未验证的范围。
+
+## 玩家 Wiki 同步
+
+玩家 Wiki 源文件位于 `wiki/`，使用 VitePress，由 GitHub Pages 托管。任何面向玩家的道具、方块、配方、结构、多方块、生物、Boss 或其他玩法新增、修改、移除，都必须在同一次提交中同步对应 Wiki 条目和玩家更新记录。条目标明适用 Minecraft 版本与 mod 版本；区分设计中、已实现和已发布，不将模型设计稿或未验证内容写成可用玩法。同步要求不替代 `docs/changes/` 的开发与适配记录。构建命令为 `npm ci`、`npm run wiki:build`；维护流程见 `docs/wiki.md`。

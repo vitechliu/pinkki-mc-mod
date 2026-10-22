@@ -55,3 +55,7 @@ git push origin v0.1.0
 当前自动分发使用 GitHub Releases。以后接入 Modrinth / CurseForge 时，为每个文件分别标注 MC 版本及 loader，Token 存放于 Actions Secrets，并沿用显式目标选择和适配完成检查。
 
 官方参考：[可复用工作流](https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows)、[触发工作流](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow)。
+
+## 玩家 Wiki 发布
+
+玩家 Wiki 由独立的 `.github/workflows/wiki.yml` 构建并发布到 GitHub Pages：`main` 上相关文件的 push 自动部署，PR 仅构建。它不依赖 mod 标签、不触发 Release，也不操作游戏实例。配置与维护见 [Wiki 维护说明](wiki.md)。

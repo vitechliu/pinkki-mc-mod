@@ -1,0 +1,14 @@
+{
+  "name": "pinkkicore-wiki",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "wiki:dev": "vitepress dev wiki --host 127.0.0.1",
+    "wiki:build": "vitepress build wiki",
+    "wiki:preview": "vite preview --outDir wiki/.vitepress/dist --base /pinkki-mc-mod/ --host 127.0.0.1"
+  },
+  "devDependencies": {
+    "vitepress": "1.6.4",
+    "vite": "5.4.21"
+  }
+}

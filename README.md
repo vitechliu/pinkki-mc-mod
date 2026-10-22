@@ -12,6 +12,10 @@ Minecraft、加载器、Gradle 和构建插件版本固定在仓库配置中。�
 
 **日常只开发、构建、无头测试和准备部署 1.20.1。** 其他版本允许暂时落后，需要时调用项目 skill `$port-minecraft-version` 补齐指定目标。每次功能变更记入 `docs/changes/`；[开发与适配流程](docs/development-workflow.md) 说明如何记录和补漏。代理默认不启动客户端，下文客户端步骤供用户手动操作。
 
+## 玩家 Wiki
+
+[在线 Wiki](https://vitechliu.github.io/pinkki-mc-mod/)（首次 Pages 部署成功后可访问），源文件位于 `wiki/`。道具、合成、结构、多方块和 Boss 等玩法变更必须与 Wiki 同步提交。开发资料继续保留在 `docs/`；本地预览和发布方式见 [Wiki 维护说明](docs/wiki.md)。
+
 ## GeckoLib 前置与整合包兼容
 
 1.20.1 Forge 已接入 GeckoLib：使用 **4.4.9 作为编译 API 基线**，运行时允许 **`[4.4.9,5)`**。客户端与服务端都需要安装匹配 **1.20.1 Forge** 的 GeckoLib；整合包已有满足范围的版本时保留原版本，不额外放入第二份，也不因本项目开发而默认升级它。独立新实例可选 4.8.4，具体整合包仍需验证。

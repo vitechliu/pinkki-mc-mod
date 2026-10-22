@@ -34,3 +34,8 @@ replay_pid*.log
 .agents/*
 !.agents/skills/
 !.agents/skills/**
+
+# 玩家 Wiki 的本地依赖与生成文件。
+node_modules/
+wiki/.vitepress/cache/
+wiki/.vitepress/dist/
