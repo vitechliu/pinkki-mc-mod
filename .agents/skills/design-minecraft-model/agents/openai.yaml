@@ -1,0 +1,4 @@
+interface:
+  display_name: "Minecraft 模型设计与审阅"
+  short_description: "从参考图制作可编辑模型、贴图与动作，并完成可旋转三维审阅和兼容校验"
+  default_prompt: "使用 $design-minecraft-model 根据参考设计生物、角色或方块，交付可编辑工程和可旋转的三维动作审阅。"

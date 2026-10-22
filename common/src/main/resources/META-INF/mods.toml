@@ -16,6 +16,8 @@ versionRange="${forge_range}"
 ordering="NONE"
 side="BOTH"
 
+${geckolib_dependency}
+
 [[dependencies.${mod_id}]]
 modId="minecraft"
 mandatory=true

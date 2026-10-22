@@ -1,0 +1,19 @@
+{
+  "bones": 20,
+  "cubes": 75,
+  "animations": [
+    "animation.bingwa.idle",
+    "animation.bingwa.walk",
+    "animation.bingwa.jump",
+    "animation.bingwa.swim",
+    "animation.bingwa.float",
+    "animation.bingwa.croak",
+    "animation.bingwa.tongue"
+  ],
+  "atlas_size": [
+    256,
+    256
+  ],
+  "used_atlas_rows": 105,
+  "texture_sha256": "0497f0e0a0a189b38e63ecf570a9b67263ce7d1b4741aa93e5560c00b1e1acb9"
+}

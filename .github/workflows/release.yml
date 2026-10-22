@@ -1,14 +1,25 @@
-name: Release all Minecraft versions
+name: Release Minecraft targets
 
 on:
   push:
     tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: '已存在的版本标签，例如 v0.1.0'
+        required: true
+        type: string
+      targets:
+        description: '发布目标，逗号分隔；次要目标必须完成适配检查点'
+        required: true
+        default: '1.20.1'
+        type: string
 
 permissions:
   contents: read
 
 concurrency:
-  group: release-${{ github.ref }}
+  group: release-${{ inputs.tag || github.ref_name }}
   cancel-in-progress: false
 
 jobs:
@@ -16,9 +27,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.tag && format('refs/tags/{0}', inputs.tag) || github.ref }}
       - name: Check tag matches mod.properties
         env:
-          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
         run: |
           python3 - <<'PY'
           import os
@@ -26,9 +39,16 @@ jobs:
           props = dict(line.split('=', 1) for line in Path('mod.properties').read_text().splitlines() if '=' in line)
           assert os.environ['RELEASE_TAG'] == 'v' + props['mod_version'], 'Tag must match mod_version'
           PY
+      - name: Check selected target readiness
+        env:
+          REQUESTED_TARGETS: ${{ inputs.targets || '1.20.1' }}
+        run: python3 scripts/targets.py status --targets "$REQUESTED_TARGETS" --check
   build:
     needs: validate
     uses: ./.github/workflows/build.yml
+    with:
+      targets: ${{ inputs.targets || '1.20.1' }}
+      ref: ${{ inputs.tag && format('refs/tags/{0}', inputs.tag) || github.ref }}
   release:
     needs: build
     runs-on: ubuntu-latest
@@ -36,21 +56,25 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.tag && format('refs/tags/{0}', inputs.tag) || github.ref }}
       - uses: actions/download-artifact@v8
         with:
           pattern: pinkkicore-*
           merge-multiple: true
           path: dist
       - name: Verify release assets
+        env:
+          EXPECTED_TARGETS: ${{ needs.build.outputs.target_count }}
         run: |
-          test "$(find dist -name '*.jar' | wc -l)" -eq 3
-          test "$(find dist -name '*.sha256' | wc -l)" -eq 3
+          test "$(find dist -name '*.jar' | wc -l)" -eq "$EXPECTED_TARGETS"
+          test "$(find dist -name '*.sha256' | wc -l)" -eq "$EXPECTED_TARGETS"
           cd dist
           sha256sum --check *.sha256
       - name: Publish GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
         run: |
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             gh release upload "$RELEASE_TAG" dist/* --clobber

@@ -24,29 +24,29 @@ Gradle 开发环境随后会对原始游戏做映射、补丁和开发运行配�
 
 ## 项目专用 HMCL 目录
 
-已准备游戏根目录：
+项目专用游戏根目录（将 `<项目根目录>` 替换为本机仓库的绝对路径）：
 
 ```text
-/Users/vitech/after615/minecraft/pmod2/.local/hmcl/.minecraft
+<项目根目录>/.local/hmcl/.minecraft
 ```
 
 在 HMCL 中新增并选中这个游戏目录，保留原来其他游戏目录。然后按 [HMCL 官方版本隔离说明](https://docs.hmcl.net/launcher/set-item-details.html)，把项目实例设置为“各实例独立”。它会让 mods、配置、存档和游戏日志分别位于对应版本目录中。
 
-macOS 文件选择框默认隐藏 `.local`。可以按 `Command+Shift+G`，粘贴上面的完整路径定位，无需修改隐藏文件显示偏好。
+macOS 文件选择框默认隐藏 `.local`。可以按 `Command+Shift+G`，粘贴替换后的完整路径定位，无需修改隐藏文件显示偏好。
 
 建议创建以下两个主版本实例，名称按这里填写，便于辅助脚本定位：
 
 | 实例名称 | 用途 | 安装内容 |
 | --- | --- | --- |
-| `PinkkiCore-1.20.1-clean` | 确认 PinkkiCore 自身功能 | Minecraft 1.20.1 + Forge 47.4.28 + PinkkiCore |
+| `PinkkiCore-1.20.1-clean` | 确认 PinkkiCore 自身功能 | Minecraft 1.20.1 + Forge 47.4.28 + GeckoLib 4.x（至少 4.4.9）+ PinkkiCore |
 | `PinkkiCore-1.20.1-compat` | 与日常 mod 一起测试 | 同上，再加其他 mod 及所需前置 |
 
 通过 HMCL 的新实例安装流程安装 Minecraft 1.20.1，并选择 Forge 47.4.28；也可以从已有实例复制/导入后调整实例名称和隔离设置。若当前安装界面没有相应入口，先保留目录规划，把 HMCL 版本和界面提示提供出来再确定安装路径。
 
-游戏 Java 自定义为以下可执行文件，而不是系统默认 JDK 26：
+游戏 Java 自定义为项目 JDK 17 的可执行文件（以下为 macOS 路径）：
 
 ```text
-/Users/vitech/after615/minecraft/pmod2/.local/jdk-17/Contents/Home/bin/java
+<项目根目录>/.local/jdk-17/Contents/Home/bin/java
 ```
 
 创建后，在 HMCL 中使用“打开游戏文件夹”确认实际目录，例如：
@@ -78,6 +78,8 @@ macOS 文件选择框默认隐藏 `.local`。可以按 `Command+Shift+G`，粘�
 
 第三方 mod 放进 `compat` 实例的 `mods/`，也可以通过 HMCL 的模组管理添加。确认每个 mod 同时支持 **Minecraft 1.20.1 与 Forge**，并安装所需前置；不混用 NeoForge 或 Fabric 文件。详见 [HMCL 官方模组安装文档](https://docs.hmcl.net/launcher/auto-installing.html)。
 
+1.20.1 的 clean 与 compat 实例都需要 GeckoLib。新建独立实例可使用 [GeckoLib 4.8.4 Forge 1.20.1](https://modrinth.com/mod/geckolib/version/aC5KMoNg)；导入整合包时先保留原有满足 `[4.4.9,5)` 的版本，同一实例只留一份。Forge 运行下限为 47.1.0，不能只因构建 SDK 为 47.4.28 就升级整合包。具体包仍按 [兼容策略](geckolib-compatibility.md) 核对。
+
 日常更新流程如下。先手动退出测试游戏，再从项目根目录执行：
 
 ```bash
@@ -92,7 +94,7 @@ python3 scripts/hmcl-test.py sync 1.20.1 compat
 python3 scripts/hmcl-test.py sync 1.20.1 clean
 ```
 
-脚本会先备份旧 PinkkiCore，避免同时留下两个版本；保留第三方 mod、配置和存档。它不安装 Minecraft/Forge，不检查游戏是否仍在运行，也不会启动 HMCL 或游戏；操作前必须自行退出游戏，并确认启用了版本隔离。
+脚本会先备份旧 PinkkiCore，避免同时留下两个版本；保留第三方 mod、配置和存档。它不安装 Minecraft/Forge/GeckoLib，不检查游戏是否仍在运行，也不会启动 HMCL 或游戏；操作前必须自行退出游戏，并确认启用了版本隔离。
 
 然后手动从 HMCL 启动所选实例。发行 JAR 替换后需要重启游戏，不能像 IDEA 的 Debug 方法体 HotSwap 那样直接生效。资源包/数据包重载仍取决于具体修改内容。
 

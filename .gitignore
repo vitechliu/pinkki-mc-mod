@@ -20,3 +20,17 @@
 dist/
 __pycache__/
 *.pyc
+# 编辑器临时文件与独立 Java 校验产物。
+*.swp
+*.swo
+*~
+*.class
+# JVM 崩溃诊断可能包含本机路径和进程信息。
+hs_err_pid*.log
+replay_pid*.log
+*.hprof
+# 项目级 skill 应随仓库分发；其余 .agents 本机文件仍忽略。
+!.agents/
+.agents/*
+!.agents/skills/
+!.agents/skills/**

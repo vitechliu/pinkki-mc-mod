@@ -52,11 +52,21 @@ repositories {
 }
 
 def forgeMajor = forge_version.tokenize('.')[0] as int
+def forgeMinimum = project.findProperty('forge_min_version') ?: forge_version
+def geckoDependency = project.hasProperty('geckolib_version_range') ? """
+[[dependencies.${mod_id}]]
+modId="geckolib"
+mandatory=true
+versionRange="${geckolib_version_range}"
+ordering="NONE"
+side="BOTH"
+""" : ''
 def replacements = metadata.collectEntries { key, value -> [(key.toString()): value] } + [
     minecraft_version: minecraft_version,
     pack_format: pack_format,
     loader_range: "[${forgeMajor},${forgeMajor + 1})",
-    forge_range: "[${forge_version},${forgeMajor + 1})"
+    forge_range: "[${forgeMinimum},${forgeMajor + 1})",
+    geckolib_dependency: geckoDependency
 ]
 tasks.named('processResources', ProcessResources).configure {
     inputs.properties replacements

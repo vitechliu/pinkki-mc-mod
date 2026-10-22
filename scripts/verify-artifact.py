@@ -13,10 +13,18 @@ ROOT = Path(__file__).resolve().parent.parent
 TARGETS = {"1.20.1": ("forge", 61), "1.19.1": ("forge", 61), "1.21.1": ("neoforge", 65)}
 
 
+def read_properties(path):
+    return dict(
+        line.split("=", 1)
+        for line in path.read_text().splitlines()
+        if "=" in line and not line.startswith("#")
+    )
+
+
 def main():
     mc = sys.argv[1]
     loader, major = TARGETS[mc]
-    props = dict(line.split("=", 1) for line in (ROOT / "mod.properties").read_text().splitlines() if "=" in line and not line.startswith("#"))
+    props = read_properties(ROOT / "mod.properties")
     name = f"{props['mod_id']}-{loader}-{mc}-{props['mod_version']}.jar"
     jar = ROOT / "versions" / mc / "build/libs" / name
     with zipfile.ZipFile(jar) as archive:
@@ -31,6 +39,16 @@ def main():
         deps = {item["modId"]: item for item in metadata["dependencies"][props["mod_id"]]}
         assert deps["minecraft"]["versionRange"] == f"[{mc}]"
         assert loader in deps
+        if mc == "1.20.1":
+            target_props = read_properties(ROOT / "versions" / mc / "gradle.properties")
+            assert deps["geckolib"]["mandatory"] is True
+            assert deps["geckolib"]["side"] == "BOTH"
+            assert deps["geckolib"]["versionRange"] == target_props["geckolib_version_range"]
+            assert deps["forge"]["versionRange"] == f"[{target_props['forge_min_version']},48)"
+            assert not any(
+                path.startswith(("software/bernie/", "com/eliotlash/", "META-INF/jarjar/"))
+                for path in archive.namelist()
+            ), "Animation dependencies must remain external"
         assert "LICENSE" in archive.namelist()
         if loader == "neoforge":
             assert "META-INF/mods.toml" not in archive.namelist(), "Forge metadata leaked into NeoForge JAR"

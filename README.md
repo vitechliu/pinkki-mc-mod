@@ -10,6 +10,18 @@
 
 Minecraft、加载器、Gradle 和构建插件版本固定在仓库配置中。升级这些版本时需重新构建、启动测试。**1.19.1 与 1.19.2 是不同目标，不可混装 JAR。**
 
+**日常只开发、构建、无头测试和准备部署 1.20.1。** 其他版本允许暂时落后，需要时调用项目 skill `$port-minecraft-version` 补齐指定目标。每次功能变更记入 `docs/changes/`；[开发与适配流程](docs/development-workflow.md) 说明如何记录和补漏。代理默认不启动客户端，下文客户端步骤供用户手动操作。
+
+## GeckoLib 前置与整合包兼容
+
+1.20.1 Forge 已接入 GeckoLib：使用 **4.4.9 作为编译 API 基线**，运行时允许 **`[4.4.9,5)`**。客户端与服务端都需要安装匹配 **1.20.1 Forge** 的 GeckoLib；整合包已有满足范围的版本时保留原版本，不额外放入第二份，也不因本项目开发而默认升级它。独立新实例可选 4.8.4，具体整合包仍需验证。
+
+表中 Forge 47.4.28 是固定构建 SDK，运行最低版本单独配置为 47.1.0。GeckoLib 的新功能不能绕过编译基线直接使用；修改任一最低版本都应说明原因并重新验证。详见 [依赖选型、验证范围与整合包核对流程](docs/geckolib-compatibility.md)。次要目标尚未接入本次依赖；ATM10 为 1.21.1，需后续按需适配 NeoForge 目标。
+
+模型设计流程的首个样例是 [饼蛙造型与动作审阅](designs/bingwa/README.md)，包含可编辑 Blockbench 工程及七段动作。它目前是未打入 mod 的设计稿。
+
+后续建模可使用项目 skill [`$design-minecraft-model`](.agents/skills/design-minecraft-model/SKILL.md)，从参考设计、模型与动作制作，到可旋转 3D 审阅和资产校验。用法见 [模型设计流程](docs/development-workflow.md#模型设计与审阅)。
+
 ## 从零开始：本机运行
 
 本机是 Apple Silicon macOS。已安装的系统 Java 无需切换；脚本为每个目标选择 JDK。通用脚本需要 Bash、curl、tar；产物校验需要 Python 3.11+。
@@ -35,14 +47,14 @@ Minecraft、加载器、Gradle 和构建插件版本固定在仓库配置中。�
 
 空 mod 不会在背包中出现任何新物品。开发客户端采用开发身份，验证正版启动器和真实多人认证属于打包后测试。
 
-测试其他目标只需替换版本号：
+只有需要适配其他版本、且由用户手动测试客户端时，才替换版本号：
 
 ```bash
 ./scripts/mod.sh 1.21.1 runClient
 ./scripts/mod.sh 1.19.1 runClient
 ```
 
-构建全部目标，并收集发行 JAR 与 SHA256 到 `dist/`：
+明确要求全部目标时，才构建并收集发行 JAR 与 SHA256 到 `dist/`：
 
 ```bash
 ./scripts/build-all.sh
@@ -103,8 +115,10 @@ python3 scripts/smoke-server.py 1.20.1
 
 1. 使用启动器创建独立游戏实例，安装表中对应 Minecraft 和 Forge/NeoForge 版本；各实例独立游戏目录。
 2. 从对应 `build/libs/` 或 GitHub Release 选一个匹配目标的 JAR，放进该实例 `mods/`，同一 mod 只保留一个版本。
+   1.20.1 Forge 还需 GeckoLib 4.4.9 或以上的 4.x；已有兼容前置时直接复用，不能混装 Forge、NeoForge、Fabric 文件。
 3. 启动，在 Mods 列表及日志中确认加载，进入测试世界；退出后再启动一次确认存档正常。
 4. 独立服务端使用相同加载器安装流程，把同目标 JAR 放进服务端 `mods/`。生产部署前先在测试服验证，备份存档，停服替换，保留旧 JAR 以便回滚。
+   1.20.1 服务端也需安装匹配的 GeckoLib，建议与客户端使用同一版本。
 
 `runClient` 验证开发环境；发行 JAR 的实际安装测试是另一项检查。构建通过不代表任意整合包、其他 mod 或生产环境均兼容。
 

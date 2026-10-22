@@ -1,34 +1,65 @@
-name: Build all Minecraft versions
+name: Build Minecraft targets
 
 on:
   push:
     branches: ['**']
   pull_request:
   workflow_dispatch:
+    inputs:
+      targets:
+        description: '构建目标，逗号分隔；all 仅在明确需要时使用'
+        required: true
+        default: '1.20.1'
+        type: string
   workflow_call:
+    inputs:
+      targets:
+        required: false
+        default: '1.20.1'
+        type: string
+      ref:
+        required: false
+        default: ''
+        type: string
+    outputs:
+      target_count:
+        value: ${{ jobs.plan.outputs.count }}
 
 permissions:
   contents: read
 
 jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.targets.outputs.matrix }}
+      count: ${{ steps.targets.outputs.count }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+      - name: Check target selection and porting gates
+        run: python3 -m unittest discover -s scripts/tests -v
+      - name: Select requested targets
+        id: targets
+        env:
+          REQUESTED_TARGETS: ${{ inputs.targets || '1.20.1' }}
+        run: |
+          matrix=$(python3 scripts/targets.py matrix --targets "$REQUESTED_TARGETS")
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+          count=$(python3 -c 'import json,sys; print(len(json.loads(sys.argv[1])["include"]))' "$matrix")
+          echo "count=$count" >> "$GITHUB_OUTPUT"
   build:
+    needs: plan
     runs-on: ubuntu-latest
     timeout-minutes: 45
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - minecraft: '1.20.1'
-            java: '17'
-            loader: forge
-          - minecraft: '1.21.1'
-            java: '21'
-            loader: neoforge
-          - minecraft: '1.19.1'
-            java: '17'
-            loader: forge
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.sha }}
       - uses: actions/setup-java@v5
         with:
           distribution: temurin

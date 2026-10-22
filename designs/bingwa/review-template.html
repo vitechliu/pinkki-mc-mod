@@ -1,0 +1,144 @@
+<div id="bingwa-model-review">
+  <div class="viz-controls">
+    <label class="form-label">动作
+      <select class="form-select" id="bingwa-motion">
+        <option value="static">造型（静态）</option><option value="idle">待机呼吸</option>
+        <option value="walk">陆地行走</option><option value="jump">蓄力跳跃</option>
+        <option value="swim">游泳划水</option><option value="float">水中待机</option><option value="croak">鼓喉鸣叫</option>
+        <option value="tongue">吐舌捕食</option>
+      </select>
+    </label>
+    <button type="button" class="btn" id="bingwa-play">播放</button>
+    <label class="form-check"><input type="checkbox" class="form-check-input" id="bingwa-baby" checked><span class="form-check-label">头顶小蛙</span></label>
+    <label class="form-check"><input type="checkbox" class="form-check-input" id="bingwa-orange" checked><span class="form-check-label">橘子</span></label>
+    <label class="form-check"><input type="checkbox" class="form-check-input" id="bingwa-rig"><span class="form-check-label">骨骼</span></label>
+  </div>
+  <div id="bingwa-stage"><canvas id="bingwa-canvas" aria-label="饼蛙三维模型；拖动旋转、滚轮缩放，可切换动作和配件" role="img"></canvas><div id="bingwa-error" role="alert" hidden></div></div>
+  <div class="viz-row">
+    <button type="button" class="btn" data-view="three">斜前方</button>
+    <button type="button" class="btn" data-view="front">正面</button>
+    <button type="button" class="btn" data-view="side">侧面</button>
+    <button type="button" class="btn" data-view="back">背面</button>
+    <span class="text-small text-muted">拖动旋转 · 滚轮缩放</span>
+  </div>
+  <label class="form-label" for="bingwa-time">动作时间 <span class="tabular-nums" id="bingwa-time-label">0.00 / 0.00 秒</span></label>
+  <input class="form-range" type="range" id="bingwa-time" min="0" max="0" step="0.01" value="0" disabled>
+  <div id="bingwa-status" class="text-small text-muted" aria-live="polite">造型初稿 · 原版青蛙动作方向 · 尚未接入游戏</div>
+</div>
+<style>
+  #bingwa-model-review { color:var(--foreground); display:grid; gap:12px; }
+  #bingwa-stage { position:relative; width:100%; }
+  #bingwa-canvas { display:block; width:100%; height:440px; max-height:68vw; min-height:320px; touch-action:none; cursor:grab; }
+  #bingwa-canvas:active { cursor:grabbing; }
+  #bingwa-error { padding:16px; color:var(--destructive); }
+</style>
+<script id="bingwa-payload" type="application/json">__BINGWA_DATA__</script>
+<script>
+(() => {
+  const root = document.getElementById('bingwa-model-review');
+  const $ = id => root.querySelector('#bingwa-' + id);
+  const data = JSON.parse(document.getElementById('bingwa-payload').textContent);
+  const canvas = $('canvas');
+  const gl = canvas.getContext('webgl', {antialias:true, alpha:true, preserveDrawingBuffer:true});
+  const error = message => { $('error').hidden=false; $('error').textContent=message; };
+  if (!gl) { error('浏览器未提供 WebGL，请在 Blockbench 中打开源模型审阅。'); return; }
+  const vertexSource = `attribute vec3 aPosition; attribute vec3 aNormal; attribute vec2 aUV;
+    uniform mat4 uMVP; varying vec2 vUV; varying float vLight;
+    void main(){gl_Position=uMVP*vec4(aPosition,1.0);vUV=aUV;
+      vLight=0.72+0.28*max(0.0,dot(normalize(aNormal),normalize(vec3(-0.4,0.85,-0.65))));}`;
+  const fragmentSource = `precision mediump float; uniform sampler2D uTexture; uniform float uMode;
+    uniform vec4 uColor; varying vec2 vUV; varying float vLight;
+    void main(){if(uMode>1.5){float a=pow(max(0.0,1.0-length(vUV)),2.0)*uColor.a;gl_FragColor=vec4(uColor.rgb,a);}
+      else if(uMode>0.5){gl_FragColor=uColor;}else{vec4 c=texture2D(uTexture,vUV);if(c.a<0.1)discard;gl_FragColor=vec4(c.rgb*vLight,c.a);}}`;
+  function shader(type, source){const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));return s;}
+  const program=gl.createProgram();
+  try {gl.attachShader(program,shader(gl.VERTEX_SHADER,vertexSource));gl.attachShader(program,shader(gl.FRAGMENT_SHADER,fragmentSource));gl.linkProgram(program);
+    if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(program));}
+  catch(e){error(e.message);return;}
+  gl.useProgram(program);
+  const loc={};['aPosition','aNormal','aUV'].forEach(n=>loc[n]=gl.getAttribLocation(program,n));
+  ['uMVP','uMode','uColor','uTexture'].forEach(n=>loc[n]=gl.getUniformLocation(program,n));
+  const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);
+  for(const [name,size,offset] of [['aPosition',3,0],['aNormal',3,12],['aUV',2,24]]){gl.enableVertexAttribArray(loc[name]);gl.vertexAttribPointer(loc[name],size,gl.FLOAT,false,32,offset);}
+  const texture=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,texture);
+  gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,1,1,0,gl.RGBA,gl.UNSIGNED_BYTE,new Uint8Array([230,228,194,255]));
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+  const image=new Image();image.onload=()=>{gl.bindTexture(gl.TEXTURE_2D,texture);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,image);root.dataset.textureReady='true';};
+  image.onerror=()=>error('贴图载入失败。');image.src=data.texture;
+  gl.uniform1i(loc.uTexture,0);gl.enable(gl.DEPTH_TEST);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
+  const identity=()=>[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1];
+  const multiply=(a,b)=>{const c=Array(16).fill(0);for(let col=0;col<4;col++)for(let row=0;row<4;row++)for(let k=0;k<4;k++)c[col*4+row]+=a[k*4+row]*b[col*4+k];return c;};
+  const translate=v=>{const m=identity();m[12]=v[0];m[13]=v[1];m[14]=v[2];return m;};
+  const scale=v=>[v[0],0,0,0,0,v[1],0,0,0,0,v[2],0,0,0,0,1];
+  function rotation(v){const [x,y,z]=v.map(n=>n*Math.PI/180),cx=Math.cos(x),sx=Math.sin(x),cy=Math.cos(y),sy=Math.sin(y),cz=Math.cos(z),sz=Math.sin(z);
+    return multiply([cz,sz,0,0,-sz,cz,0,0,0,0,1,0,0,0,0,1],multiply([cy,0,-sy,0,0,1,0,0,sy,0,cy,0,0,0,0,1],[1,0,0,0,0,cx,sx,0,0,-sx,cx,0,0,0,0,1]));}
+  const point=(m,p)=>[m[0]*p[0]+m[4]*p[1]+m[8]*p[2]+m[12],m[1]*p[0]+m[5]*p[1]+m[9]*p[2]+m[13],m[2]*p[0]+m[6]*p[1]+m[10]*p[2]+m[14]];
+  const sub=(a,b)=>a.map((n,i)=>n-b[i]);
+  const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+  const normal=a=>{let l=Math.hypot(...a)||1;return a.map(n=>n/l);};
+  const dot=(a,b)=>a.reduce((s,n,i)=>s+n*b[i],0);
+  function view(eye,target){const z=normal(sub(eye,target)),x=normal(cross([0,1,0],z)),y=cross(z,x);return [x[0],y[0],z[0],0,x[1],y[1],z[1],0,x[2],y[2],z[2],0,-dot(x,eye),-dot(y,eye),-dot(z,eye),1];}
+  function perspective(aspect){const f=1/Math.tan(42*Math.PI/360),near=.1,far=200;return [f/aspect,0,0,0,0,f,0,0,0,0,(far+near)/(near-far),-1,0,0,2*far*near/(near-far),0];}
+  function pivotTransform(p,r,s=[1,1,1],t=[0,0,0]){return multiply(translate(p.map((n,i)=>n+t[i])),multiply(rotation(r),multiply(scale(s),translate(p.map(n=>-n)))));}
+  const bones=data.geometry.bones,tw=data.geometry.description.texture_width,th=data.geometry.description.texture_height;
+  let state={motion:'static',baby:true,orange:true,rig:false,yaw:-.62,pitch:.32,distance:48,time:0};
+  let playing=false,last=0,drag=null;
+  function sample(channel,time,base){if(!channel)return base;const entries=Object.entries(channel).map(([t,v])=>[+t,v]).sort((a,b)=>a[0]-b[0]);
+    if(time<=entries[0][0])return entries[0][1];for(let i=1;i<entries.length;i++){const [t,b]=entries[i],[p,a]=entries[i-1];if(time<=t){const f=(time-p)/(t-p);return a.map((n,j)=>n+(b[j]-n)*f);}}return entries[entries.length-1][1];}
+  const selectedAnimation=()=>data.animations['animation.bingwa.'+state.motion];
+  function matrices(){const result={},visibility={};const animation=selectedAnimation();
+    let hop=(state.motion==='swim'||state.motion==='float')?3:0;if(state.motion==='jump'&&state.time>.26&&state.time<.93){const t=(state.time-.26)/.67;hop=6.5*Math.sin(Math.PI*t);}
+    const world=translate([0,hop,0]);
+    for(const bone of bones){const a=animation?.bones[bone.name]||{};const r=sample(a.rotation,state.time,[0,0,0]).map((n,i)=>n+(bone.rotation?.[i]||0));
+      result[bone.name]=multiply(result[bone.parent]||world,pivotTransform(bone.pivot,r,sample(a.scale,state.time,[1,1,1]),sample(a.position,state.time,[0,0,0])));
+      visibility[bone.name]=(visibility[bone.parent]??true)&&!(bone.name==='baby'&&!state.baby)&&!(bone.name==='orange'&&!state.orange);}
+    return [result,visibility,hop];}
+  function draw(vertices,mode,color,primitive=gl.TRIANGLES){gl.uniform1f(loc.uMode,mode);gl.uniform4fv(loc.uColor,color);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(vertices),gl.DYNAMIC_DRAW);gl.drawArrays(primitive,0,vertices.length/8);}
+  function rgba(css,alpha){const swatch=document.createElement('span');swatch.style.color=css;root.appendChild(swatch);const value=getComputedStyle(swatch).color;swatch.remove();
+    const c=document.createElement('canvas');c.width=c.height=1;const ctx=c.getContext('2d');ctx.fillStyle=value;ctx.fillRect(0,0,1,1);const p=ctx.getImageData(0,0,1,1).data;return [p[0]/255,p[1]/255,p[2]/255,alpha];}
+  let groundColor,lineColor,rigColor,shadowColor;
+  function refreshColors(){groundColor=rgba('var(--foreground)',.055);lineColor=rgba('var(--border)',.5);rigColor=rgba('var(--foreground)',.65);shadowColor=rgba('var(--foreground)',.24);}
+  refreshColors();new MutationObserver(refreshColors).observe(document.documentElement,{attributes:true,attributeFilter:['class','style','data-theme']});
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',refreshColors);
+  function render(){const ratio=Math.min(window.devicePixelRatio||1,2),w=canvas.clientWidth,h=canvas.clientHeight;
+    if(canvas.width!==Math.round(w*ratio)||canvas.height!==Math.round(h*ratio)){canvas.width=Math.round(w*ratio);canvas.height=Math.round(h*ratio);}gl.viewport(0,0,canvas.width,canvas.height);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+    const eye=[Math.sin(state.yaw)*Math.cos(state.pitch)*state.distance,10.5+Math.sin(state.pitch)*state.distance,-Math.cos(state.yaw)*Math.cos(state.pitch)*state.distance];
+    gl.uniformMatrix4fv(loc.uMVP,false,new Float32Array(multiply(perspective(w/h),view(eye,[0,10.5,0]))));
+    const ground=[];for(const p of [[-20,0,-15],[20,0,-15],[20,0,15],[-20,0,-15],[20,0,15],[-20,0,15]])ground.push(...p,0,1,0,0,0);draw(ground,1,groundColor);
+    const grid=[];for(let i=-16;i<=16;i+=4){for(const p of [[i,.015,-12],[i,.015,12],[-16,.015,i],[16,.015,i]])grid.push(...p,0,1,0,0,0);}draw(grid,1,lineColor,gl.LINES);
+    const [mats,visible,hop]=matrices(),shadow=[];const sp=[[-16,.03,-10],[16,.03,-10],[16,.03,11],[-16,.03,-10],[16,.03,11],[-16,.03,11]],su=[[-1,-1],[1,-1],[1,1],[-1,-1],[1,1],[-1,1]];
+    for(let i=0;i<6;i++)shadow.push(...sp[i],0,1,0,...su[i]);draw(shadow,2,[shadowColor[0],shadowColor[1],shadowColor[2],.24-hop*.016]);
+    const vertices=[];
+    for(const bone of bones){if(!visible[bone.name])continue;for(const cube of bone.cubes||[]){const [x0,y0,z0]=cube.origin,[x1,y1,z1]=cube.origin.map((n,i)=>n+cube.size[i]);
+      const faces={north:[[x1,y0,z0],[x0,y0,z0],[x0,y1,z0],[x1,y1,z0]],south:[[x0,y0,z1],[x1,y0,z1],[x1,y1,z1],[x0,y1,z1]],east:[[x1,y0,z1],[x1,y0,z0],[x1,y1,z0],[x1,y1,z1]],west:[[x0,y0,z0],[x0,y0,z1],[x0,y1,z1],[x0,y1,z0]],up:[[x0,y1,z1],[x1,y1,z1],[x1,y1,z0],[x0,y1,z0]],down:[[x0,y0,z0],[x1,y0,z0],[x1,y0,z1],[x0,y0,z1]]};
+      const m=cube.rotation?multiply(mats[bone.name],pivotTransform(cube.pivot,cube.rotation)):mats[bone.name];
+      for(const [face,points] of Object.entries(faces)){const world=points.map(p=>point(m,p)),n=normal(cross(sub(world[1],world[0]),sub(world[2],world[0]))),uv=cube.uv[face];
+        const u=(uv.uv[0]+.25)/tw,v=(uv.uv[1]+.25)/th,U=(uv.uv[0]+uv.uv_size[0]-.25)/tw,V=(uv.uv[1]+uv.uv_size[1]-.25)/th,coords=[[u,V],[U,V],[U,v],[u,v]];
+        for(const i of [0,1,2,0,2,3])vertices.push(...world[i],...n,...coords[i]);}}}
+    draw(vertices,0,[1,1,1,1]);
+    if(state.rig){const lines=[];for(const bone of bones){if(!bone.parent||!visible[bone.name])continue;const parent=bones.find(b=>b.name===bone.parent);for(const p of [point(mats[bone.name],bone.pivot),point(mats[parent.name],parent.pivot)])lines.push(...p,0,1,0,0,0);}gl.disable(gl.DEPTH_TEST);draw(lines,1,rigColor,gl.LINES);gl.enable(gl.DEPTH_TEST);}
+    root.dataset.rendered='true';root.dataset.motion=state.motion;root.dataset.time=state.time.toFixed(3);
+  }
+  function updateControls(){const a=selectedAnimation(),length=a?.animation_length||0;$('motion').value=state.motion;$('baby').checked=state.baby;$('orange').checked=state.orange;$('rig').checked=state.rig;
+    const status=state.motion==='jump'?'跳跃轨迹为预览示意 · 游戏位移后续由实体物理驱动':'造型初稿 · 原版青蛙动作方向 · 尚未接入游戏';
+    if($('status').textContent!==status)$('status').textContent=status;
+    $('orange').disabled=!state.baby;
+    $('time').max=length;$('time').disabled=!a;$('time').value=state.time;$('time-label').textContent=state.time.toFixed(2)+' / '+length.toFixed(2)+' 秒';$('play').textContent=playing?'暂停':'播放';$('play').setAttribute('aria-pressed',String(playing));}
+  function remember(){if(window.openai?.setWidgetState)window.openai.setWidgetState({modelContent:{model:'bingwa-v1',motion:state.motion,baby:state.baby,orange:state.orange},privateContent:{...state}}).catch(()=>{});}
+  function restore(saved){const s=saved?.privateContent||saved?.modelContent;if(!s)return;for(const key of ['baby','orange','rig'])if(typeof s[key]==='boolean')state[key]=s[key];if(s.motion==='static'||data.animations['animation.bingwa.'+s.motion])state.motion=s.motion;
+    for(const key of ['yaw','pitch','distance','time'])if(Number.isFinite(s[key]))state[key]=s[key];state.pitch=Math.max(-.5,Math.min(1.3,state.pitch));state.distance=Math.max(28,Math.min(90,state.distance));state.time=Math.max(0,Math.min(selectedAnimation()?.animation_length||0,state.time));updateControls();}
+  restore(window.openai?.widgetState);window.addEventListener('openai:set_globals',e=>{restore(e.detail?.globals?.widgetState);refreshColors();});
+  $('motion').addEventListener('change',e=>{state.motion=e.target.value;state.time=0;playing=false;updateControls();remember();});
+  $('play').addEventListener('click',()=>{if(state.motion==='static')state.motion='idle';const a=selectedAnimation();if(state.time>=a.animation_length)state.time=0;playing=!playing;updateControls();remember();});
+  for(const key of ['baby','orange','rig'])$(key).addEventListener('change',e=>{state[key]=e.target.checked;updateControls();remember();});
+  $('time').addEventListener('input',e=>{state.time=+e.target.value;playing=false;updateControls();});$('time').addEventListener('change',remember);
+  root.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>{state.yaw={three:-.62,front:0,side:Math.PI/2,back:Math.PI}[button.dataset.view];state.pitch=button.dataset.view==='three'?.32:.18;state.distance=48;remember();}));
+  canvas.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY,yaw:state.yaw,pitch:state.pitch};canvas.setPointerCapture(e.pointerId);});
+  canvas.addEventListener('pointermove',e=>{if(drag){state.yaw=drag.yaw+(e.clientX-drag.x)*.008;state.pitch=Math.max(-.5,Math.min(1.3,drag.pitch+(e.clientY-drag.y)*.006));}});
+  canvas.addEventListener('pointerup',()=>{drag=null;remember();});canvas.addEventListener('pointercancel',()=>{drag=null;});
+  canvas.addEventListener('wheel',e=>{e.preventDefault();state.distance=Math.max(28,Math.min(90,state.distance*Math.exp(e.deltaY*.001)));remember();},{passive:false});
+  updateControls();
+  function frame(now){const dt=Math.min(.05,(now-last)/1000||0);last=now;if(playing){const a=selectedAnimation();state.time+=dt;if(state.time>a.animation_length){if(a.loop)state.time%=a.animation_length;else{state.time=a.animation_length;playing=false;}}updateControls();}render();requestAnimationFrame(frame);}requestAnimationFrame(frame);
+})();
+</script>
