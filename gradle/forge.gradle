@@ -1,0 +1,78 @@
+// Each version is an independent Gradle build; shared sources are compiled into each JAR.
+def metadata = new Properties()
+file('../../mod.properties').withInputStream { metadata.load(it) }
+metadata.each { key, value -> ext.set(key.toString(), value) }
+version = mod_version
+group = mod_group
+def artifactName = "${mod_id}-forge-${minecraft_version}"
+if (minecraft_version == '1.19.1') {
+    archivesBaseName = artifactName
+} else {
+    base { archivesName = artifactName }
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
+sourceSets.main.java.srcDir '../../common/src/main/java'
+sourceSets.main.resources.srcDir '../../common/src/main/resources'
+
+minecraft {
+    mappings channel: 'official', version: minecraft_version
+    if (minecraft_version != '1.19.1') {
+        copyIdeResources = true
+    }
+    runs {
+        configureEach {
+            workingDirectory project.file("run/${name}")
+            // FG5 otherwise calls System.exit(0) inside the Gradle daemon after the game exits.
+            if (minecraft_version == '1.19.1') { forceExit false }
+            property 'forge.logging.console.level', 'info'
+            mods {
+                "${mod_id}" { source sourceSets.main }
+            }
+        }
+        client {}
+        server { args '--nogui' }
+    }
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+}
+
+// Historical Minecraft libraries may be JAR-only (without a Maven POM).
+// Declare the Mojang repository explicitly for the legacy ForgeGradle downloader.
+repositories {
+    maven {
+        name = 'MojangLibrariesExplicit'
+        url = 'https://libraries.minecraft.net/'
+        content { includeGroup 'com.mojang' }
+        metadataSources { mavenPom(); artifact() }
+    }
+    mavenCentral()
+}
+
+def forgeMajor = forge_version.tokenize('.')[0] as int
+def replacements = metadata.collectEntries { key, value -> [(key.toString()): value] } + [
+    minecraft_version: minecraft_version,
+    pack_format: pack_format,
+    loader_range: "[${forgeMajor},${forgeMajor + 1})",
+    forge_range: "[${forge_version},${forgeMajor + 1})"
+]
+tasks.named('processResources', ProcessResources).configure {
+    inputs.properties replacements
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) { expand replacements }
+}
+tasks.named('jar', Jar).configure {
+    from('../../LICENSE')
+    manifest.attributes('Implementation-Title': mod_name, 'Implementation-Version': mod_version)
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+    finalizedBy 'reobfJar'
+}
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+tasks.withType(JavaExec).configureEach {
+    standardInput = System.in
+    if (System.getProperty('os.name').toLowerCase().contains('mac') && name == 'runClient') {
+        jvmArgs '-XstartOnFirstThread'
+    }
+}

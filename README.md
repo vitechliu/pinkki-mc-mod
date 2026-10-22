@@ -1,0 +1,123 @@
+# PinkkiCore
+
+面向 Minecraft Java 版的多版本 mod，MIT 许可证。目前只输出加载成功日志，没有方块、物品、指令或其他游戏内容。
+
+| 优先级 | Minecraft | 加载器 | Java | 构建工具 |
+| --- | --- | --- | --- | --- |
+| 主要 | 1.20.1 | Forge 47.4.28 | JDK 17 | Gradle 8.8 / ForgeGradle 6.0.54 |
+| 次要 | 1.21.1 | NeoForge 21.1.264 | JDK 21 | Gradle 9.2.1 / ModDevGradle 2.0.148 |
+| 次要 | 1.19.1 | Forge 42.0.9 | JDK 17 | Gradle 7.5 / ForgeGradle 5.1.77 |
+
+Minecraft、加载器、Gradle 和构建插件版本固定在仓库配置中。升级这些版本时需重新构建、启动测试。**1.19.1 与 1.19.2 是不同目标，不可混装 JAR。**
+
+## 从零开始：本机运行
+
+本机是 Apple Silicon macOS。已安装的系统 Java 无需切换；脚本为每个目标选择 JDK。通用脚本需要 Bash、curl、tar；产物校验需要 Python 3.11+。
+
+在项目根目录执行：
+
+```bash
+# 新电脑首次使用：下载缺少的 JDK，放进 .local/，不改系统默认 Java
+./scripts/setup-java.sh
+
+# 主版本编译打包（第一次会下载 Minecraft、Forge 和 Gradle，耗时较长）
+./scripts/mod.sh 1.20.1 build
+
+# 直接启动开发客户端，无需把 JAR 手动复制到启动器
+./scripts/mod.sh 1.20.1 runClient
+```
+
+客户端启动后：打开 **Mods**，搜索 **PinkkiCore**，确认版本为 `0.1.0`。新建一个测试世界，进入、退出并关闭游戏。日志 `versions/1.20.1/run/client/logs/latest.log` 应包含：
+
+```text
+[pinkkicore] Empty mod loaded successfully.
+```
+
+空 mod 不会在背包中出现任何新物品。开发客户端采用开发身份，验证正版启动器和真实多人认证属于打包后测试。
+
+测试其他目标只需替换版本号：
+
+```bash
+./scripts/mod.sh 1.21.1 runClient
+./scripts/mod.sh 1.19.1 runClient
+```
+
+构建全部目标，并收集发行 JAR 与 SHA256 到 `dist/`：
+
+```bash
+./scripts/build-all.sh
+```
+
+单版本产物位于 `versions/<版本>/build/libs/`，例如：
+
+```text
+pinkkicore-forge-1.20.1-0.1.0.jar
+pinkkicore-neoforge-1.21.1-0.1.0.jar
+pinkkicore-forge-1.19.1-0.1.0.jar
+```
+
+## IDEA 开发与调试
+
+1. 安装 IntelliJ IDEA 的免费 Java 开发功能。打开 **`versions/1.20.1`**，作为 Gradle 项目导入；初次开发先专注主版本。不要把根目录当成一个 Gradle 多模块工程，它有三套独立 Wrapper。
+2. 在 Settings → Build, Execution, Deployment → Build Tools → Gradle 中使用 **Gradle Wrapper**，Gradle JVM 选择 **JDK 17**；Project Structure 中的 Project SDK 也选 17。本机项目 JDK 路径为 `.local/jdk-17/Contents/Home`，相对于仓库根目录。IDEA 若未显示 `.local`，可直接粘贴完整路径。
+3. 在根目录执行 `./scripts/mod.sh 1.20.1 genIntellijRuns`，然后在 IDEA 刷新 Gradle。选择生成的客户端配置，以 **Debug** 启动。
+4. `common/src/main/java` 已纳入 source set，IDEA 应识别为共享源码根目录，不需要手工复制。
+5. 1.19.1 同样使用 JDK 17 和 `genIntellijRuns`；1.21.1 使用 JDK 21，ModDevGradle 在 Gradle 同步时生成运行配置，不使用 Forge 的 `genIntellijRuns` 命令。
+
+建议每个版本开独立 IDEA 窗口。IDEA 里的 Gradle User Home 可以指定仓库的 `.local/gradle`，复用命令行已下载的依赖；否则 IDEA 会使用自己的默认缓存并再次下载。不要把这些本机绝对路径提交到 Git。
+
+### 热更新能做到什么
+
+| 修改类型 | 操作 | 限制 |
+| --- | --- | --- |
+| 纹理、语言、模型等客户端资源 | 编译/复制资源后，游戏中按 `F3+T`（Mac 可能要配合 Fn） | 文件必须先到运行中的资源目录 |
+| 配方、战利品表等数据包资源 | 编译/复制资源后，世界中输入 `/reload` | 需要权限，取决于对应数据是否支持重载 |
+| 已加载 Java 类的方法体 | Debug 启动后，重新编译，IDEA 执行 Reload Changed Classes | 标准 HotSwap；下一次调用方法才执行新逻辑 |
+| 新增字段/方法、改类结构、注册物品、Mixin、构造和初始化逻辑 | 重启开发客户端/服务端 | HotSwap 不会重放 mod 初始化和注册流程 |
+
+HotSwap 设置位于 Settings → Build, Execution, Deployment → Debugger → HotSwap。若 IDEA 提示不能替换类，重启即可。命令行 `runClient` 的普通运行模式不会自动启用 HotSwap。资源修改后可执行 `./scripts/mod.sh 1.20.1 processResources`；使用 IDEA 原生运行配置时，还需确认修改进入该配置实际使用的输出目录（IDEA Build Project）。当前唯一日志在初始化时执行，即便替换了方法体，也要再次调用它才会看到变化；最容易验证的方式是断点和 Debug 的 Evaluate Expression。
+
+不要在运行中替换 `mods/` 下的 JAR；加载器不支持完整 mod 卸载重载。当前未安装额外的 HotSwap Agent 或修改 JVM。
+
+## 测试独立服务端
+
+```bash
+./scripts/mod.sh 1.20.1 runServer
+```
+
+首次运行通常因 EULA 未接受而退出。阅读 [Minecraft EULA](https://www.minecraft.net/eula)，同意后将 `versions/1.20.1/run/server/eula.txt` 中的 `eula=false` 改为 `eula=true`，再次运行。看到 `Done (...)!` 后说明服务器已就绪。在控制台输入 `stop` 正常关闭。
+
+每个版本的服务端目录彼此隔离，也与客户端目录隔离。一次只启动一个使用默认端口 25565 的服务端；多个同时启动需要分别配置端口。本地客户端连接 `localhost`；正版客户端联机还需匹配服务端加载器、版本与认证要求。
+
+已同意 EULA 后，也可以执行自动冒烟检查（需 Python 3.11+）：
+
+```bash
+python3 scripts/smoke-server.py 1.20.1
+```
+
+脚本要求观察到 mod 加载日志和服务器 `Done`，随后发送 `stop` 并检查正常退出。它跳过独立服务端不需要的客户端资源下载；第一次仍可能准备游戏代码与依赖，默认超时 600 秒，可用 `--timeout 1200` 延长。仅在没有同目标测试服运行时执行。本次初始化的测试服务端已绑定 `127.0.0.1`，供本机使用；1.20.1、1.21.1、1.19.1 的本机测试端口分别为 25565、25566、25567。
+
+后续代码涉及服务端时必须重复测试这一步，防止通用代码误引用 `net.minecraft.client.*`，导致单机正常而独立服务端崩溃。当前没有 GameTest 内容，未配置会因“无测试”失败的空 `runGameTestServer`。
+
+## 打包后安装
+
+1. 使用启动器创建独立游戏实例，安装表中对应 Minecraft 和 Forge/NeoForge 版本；各实例独立游戏目录。
+2. 从对应 `build/libs/` 或 GitHub Release 选一个匹配目标的 JAR，放进该实例 `mods/`，同一 mod 只保留一个版本。
+3. 启动，在 Mods 列表及日志中确认加载，进入测试世界；退出后再启动一次确认存档正常。
+4. 独立服务端使用相同加载器安装流程，把同目标 JAR 放进服务端 `mods/`。生产部署前先在测试服验证，备份存档，停服替换，保留旧 JAR 以便回滚。
+
+`runClient` 验证开发环境；发行 JAR 的实际安装测试是另一项检查。构建通过不代表任意整合包、其他 mod 或生产环境均兼容。
+
+## Git 与自动发布
+
+使用 HMCL 安装其他 mod、测试发行 JAR 并在项目内保留日志，参见 [HMCL 本地测试流程](docs/hmcl-testing.md)。
+
+详见 [GitHub 发布说明](docs/release.md)、[代码结构与版本策略](docs/architecture.md) 和 [本次验证记录](docs/verification.md)。
+
+## 参考资料
+
+- [Forge 1.20.1 开发入门](https://docs.minecraftforge.net/en/1.20.1/gettingstarted/)
+- [Forge 1.19.1 官方下载](https://files.minecraftforge.net/net/minecraftforge/forge/index_1.19.1.html)
+- [NeoForge 1.21.1 官方 MDK](https://github.com/NeoForgeMDKs/MDK-1.21.1-ModDevGradle)
+- [NeoForge ModDevGradle 文档](https://docs.neoforged.net/toolchain/docs/plugins/mdg/)
+- [IDEA HotSwap 文档](https://www.jetbrains.com/help/idea/altering-the-program-s-execution-flow.html)

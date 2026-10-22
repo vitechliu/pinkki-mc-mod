@@ -1,0 +1,59 @@
+name: Release all Minecraft versions
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Check tag matches mod.properties
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          props = dict(line.split('=', 1) for line in Path('mod.properties').read_text().splitlines() if '=' in line)
+          assert os.environ['RELEASE_TAG'] == 'v' + props['mod_version'], 'Tag must match mod_version'
+          PY
+  build:
+    needs: validate
+    uses: ./.github/workflows/build.yml
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: pinkkicore-*
+          merge-multiple: true
+          path: dist
+      - name: Verify release assets
+        run: |
+          test "$(find dist -name '*.jar' | wc -l)" -eq 3
+          test "$(find dist -name '*.sha256' | wc -l)" -eq 3
+          cd dist
+          sha256sum --check *.sha256
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" dist/* --clobber
+          else
+            gh release create "$RELEASE_TAG" dist/* --verify-tag --generate-notes --title "PinkkiCore $RELEASE_TAG"
+          fi
