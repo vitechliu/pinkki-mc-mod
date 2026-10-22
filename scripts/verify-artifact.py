@@ -73,6 +73,24 @@ def main():
             assert texture == (ROOT / "wiki/public/images/guaba.png").read_bytes(), "Wiki icon differs from mod"
             for item_class in ("GuabaItem", "ModItems"):
                 assert f"io/github/vitech/pinkkicore/forge/item/{item_class}.class" in archive.namelist()
+            for source, resource in [
+                ("bingwa.geo.json", "geo/bingwa.geo.json"),
+                ("bingwa.animation.json", "animations/bingwa.animation.json"),
+                ("textures/bingwa.png", "textures/entity/bingwa.png"),
+            ]:
+                assert archive.read(f"assets/pinkkicore/{resource}") == (ROOT / "designs/bingwa" / source).read_bytes(), "Bingwa source/export mismatch"
+            animations = json.loads(archive.read("assets/pinkkicore/animations/bingwa.animation.json"))["animations"]
+            assert set(animations) == {f"animation.bingwa.{name}" for name in ("idle", "walk", "jump", "swim", "float", "croak", "tongue")}
+            egg = json.loads(archive.read("assets/pinkkicore/models/item/bingwa_spawn_egg.json"))
+            assert egg == {"parent": "minecraft:item/template_spawn_egg"}
+            loot = json.loads(archive.read("data/pinkkicore/loot_tables/entities/bingwa.json"))
+            assert loot == {"type": "minecraft:entity", "pools": []}
+            for language, entity_name, egg_name in [("zh_cn", "饼蛙", "饼蛙刷怪蛋"), ("en_us", "Bingwa", "Bingwa Spawn Egg")]:
+                strings = json.loads(archive.read(f"assets/pinkkicore/lang/{language}.json"))
+                assert strings["entity.pinkkicore.bingwa"] == entity_name
+                assert strings["item.pinkkicore.bingwa_spawn_egg"] == egg_name
+            for path in ("entity/BingwaEntity", "entity/ModEntities", "client/BingwaModel", "client/BingwaRenderer", "client/ClientEvents"):
+                assert f"io/github/vitech/pinkkicore/forge/{path}.class" in archive.namelist()
             silent = json.loads(archive.read("data/pinkkicore/silentgear_materials/guaba.json"))
             assert silent["crafting_items"]["main"] == {"item": "pinkkicore:guaba"}
             assert silent["traits"] == {"main": [], "rod": []}

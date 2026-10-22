@@ -28,9 +28,19 @@ npm run wiki:preview
 
 新增条目时同步 `wiki/.vitepress/config.mts` 的导航或从分类页添加入口。图片随文档提交并使用相对链接。开发与适配记录仍按 `docs/changes/` 流程维护。
 
+## 玩家内容与配方图
+
+面向玩家的正文只写获取、用途、操作与必要限制，不堆砌内部 ID、实现细节、测试记录、重复消耗说明、配方书解锁机制或泛化免责声明。技术信息放在 `docs/`，版本状态用简短标记。
+
+合成页使用 `wiki/.vitepress/theme/components/CraftingRecipe.vue` 展示真实图标、合成格、产物和数量，材料名称可通过图标悬停和图下说明查看。当前组件仅用于普通物品的无序合成；有序合成、标签轮换或加工设备需要按实际配方类型扩展，不能套用无序图。
+
+`wiki/recipes.md` 直接导入 1.20.1 游戏配方 JSON；修改材料或产物时同步图标映射即可，不另写一份材料数量。瓜巴图标复用 mod 资源，原版西瓜片取自 Minecraft 1.20.1 客户端资源，泥巴图标由该版本原版方块贴图作等距投影生成（非游戏截图）。这些 Minecraft 素材属于 Mojang，不纳入项目 MIT 许可。新增配方仍需核对图标、布局、数量及链接。
+
+本次仅改善 Wiki 配方展示及写作规则，不改变游戏配方，也无需更新游戏内手册或制造游戏功能适配待办；游戏内手册尚未实现。
+
 ## GitHub Pages
 
-仓库 Settings → Pages → Source 选择 **GitHub Actions**，用户已完成该设置。`.github/workflows/wiki.yml` 在 `main` 上的 Wiki 源码、依赖或自身配置变更时构建并部署；PR 仅构建，不发布。也可在 `main` 上手动运行 **Build and deploy Wiki**。
+仓库 Settings → Pages → Source 选择 **GitHub Actions**，用户已完成该设置。`.github/workflows/wiki.yml` 在 `main` 上的 Wiki 源码、主版本配方数据、依赖或自身配置变更时构建并部署；PR 仅构建，不发布。也可在 `main` 上手动运行 **Build and deploy Wiki**。
 
 默认网址为 <https://vitechliu.github.io/pinkki-mc-mod/>；配置中的 `base` 与仓库路径一致。更换仓库名或自定义域名时同步调整。工作流使用仓库自带 Token，无需新增个人 Token。
 

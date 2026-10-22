@@ -16,4 +16,12 @@
 
 游戏内手册系统尚未实现，本条目目前仅供 Wiki 阅读，不代表已同步可用的游戏内阅读入口。
 
+## 饼蛙刷怪蛋 {#bingwa-spawn-egg}
+
+- 状态：已实现，尚未发布；适用 **1.20.1 / Forge · PinkkiCore 0.1.0 开发中**。
+- 注册 ID：`pinkkicore:bingwa_spawn_egg`；奶油色底、橘色斑点。
+- 创造模式位于“刷怪蛋”分类，也可使用 `/give @s pinkkicore:bingwa_spawn_egg` 获取。
+- 对方块使用召唤一只[饼蛙](./bosses.md#bingwa)；当前无合成配方和生存模式常规获取方式。
+- 游戏内手册尚未实现，条目待后续接入。
+
 [返回玩家指南](./guide.md)

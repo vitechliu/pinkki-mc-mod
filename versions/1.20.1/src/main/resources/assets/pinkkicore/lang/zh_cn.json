@@ -7,5 +7,7 @@
   "tetra.material.pinkkicore_guaba": "瓜巴",
   "tetra.variant_category.pinkkicore_guaba.label": "瓜巴（试作）",
   "tetra.material.feature.pinkkicore_guaba_placeholder": "占位材料",
-  "tetra.material.feature.pinkkicore_guaba_placeholder.tooltip": "属性为兼容性占位值，尚无专属特效。"
+  "tetra.material.feature.pinkkicore_guaba_placeholder.tooltip": "属性为兼容性占位值，尚无专属特效。",
+  "entity.pinkkicore.bingwa": "饼蛙",
+  "item.pinkkicore.bingwa_spawn_egg": "饼蛙刷怪蛋"
 }

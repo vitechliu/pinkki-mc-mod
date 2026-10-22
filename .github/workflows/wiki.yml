@@ -5,12 +5,14 @@ on:
     branches: [main]
     paths:
       - 'wiki/**'
+      - 'versions/1.20.1/src/main/resources/data/pinkkicore/recipes/**'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/wiki.yml'
   pull_request:
     paths:
       - 'wiki/**'
+      - 'versions/1.20.1/src/main/resources/data/pinkkicore/recipes/**'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/wiki.yml'

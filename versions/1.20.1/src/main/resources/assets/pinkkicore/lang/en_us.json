@@ -7,5 +7,7 @@
   "tetra.material.pinkkicore_guaba": "Guaba",
   "tetra.variant_category.pinkkicore_guaba.label": "Guaba (prototype)",
   "tetra.material.feature.pinkkicore_guaba_placeholder": "Placeholder material",
-  "tetra.material.feature.pinkkicore_guaba_placeholder.tooltip": "Compatibility placeholder stats; no unique effects."
+  "tetra.material.feature.pinkkicore_guaba_placeholder.tooltip": "Compatibility placeholder stats; no unique effects.",
+  "entity.pinkkicore.bingwa": "Bingwa",
+  "item.pinkkicore.bingwa_spawn_egg": "Bingwa Spawn Egg"
 }

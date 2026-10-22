@@ -1,23 +1,19 @@
+<script setup>
+import guabaRecipe from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba.json'
+
+const items = {
+  'minecraft:melon_slice': { name: '西瓜片', image: '/images/minecraft/melon_slice.png' },
+  'minecraft:mud': { name: '泥巴', image: '/images/minecraft/mud.svg' },
+  'pinkkicore:guaba': { name: '瓜巴', image: '/images/guaba.png', link: '/items#guaba' }
+}
+</script>
+
 # 合成与加工
 
-## 瓜巴：无序合成 {#guaba}
+## 瓜巴 {#guaba}
 
-适用：Minecraft **1.20.1 / Forge**，PinkkiCore **0.1.0 开发中**。已实现、尚未发布；次要目标尚未适配。
+1.20.1 Forge · 0.1.0 开发版（未发布）
 
-| 输入 | 数量 |
-| --- | --- |
-| 西瓜片 `minecraft:melon_slice` | 1 |
-| 泥巴 `minecraft:mud` | 1 |
+<CraftingRecipe :recipe="guabaRecipe" :items="items" />
 
-产出 **1 个[瓜巴](./items.md#guaba)**（`pinkkicore:guaba`）。两种材料各消耗 1 个，不留下额外容器或副产物。
-
-- 无序配方，材料位置任意；背包 2×2 与工作台 3×3 均可制作。
-- 精确使用原版泥巴方块，不接受泥土、泥坯或黏土球替代。
-- 首次获得西瓜片或泥巴时解锁原版配方书条目；配方本身没有进度门槛。
-- 配方 ID：`pinkkicore:guaba`。
-
-以上为本 mod 的发行基准配方；整合包和数据包可能修改配方，请以当前游戏配方数据为准。
-
-安装对应模组后，瓜巴还可用于[寂静装备、匠魂与 Tetra 的材料试作](./compatibility.md#guaba)。这些用途不新增瓜巴的获取途径。
-
-[返回玩家指南](./guide.md)
+查看[瓜巴的用途](./items.md#guaba)。

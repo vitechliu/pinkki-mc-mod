@@ -1,6 +1,6 @@
 # PinkkiCore
 
-面向 Minecraft Java 版的多版本 mod，MIT 许可证。1.20.1 已实装基础材料[瓜巴](wiki/items.md#guaba)及其无序配方（0.1.0 开发中，尚未发布）；次要目标尚未适配。
+面向 Minecraft Java 版的多版本 mod，MIT 许可证。1.20.1 已实装基础材料[瓜巴](wiki/items.md#guaba)及其无序配方，以及中立生物[饼蛙和刷怪蛋](wiki/bosses.md#bingwa)（0.1.0 开发中，尚未发布）；次要目标尚未适配。
 
 | 优先级 | Minecraft | 加载器 | Java | 构建工具 |
 | --- | --- | --- | --- | --- |
@@ -22,7 +22,7 @@ Minecraft、加载器、Gradle 和构建插件版本固定在仓库配置中。�
 
 表中 Forge 47.4.28 是固定构建 SDK，运行最低版本单独配置为 47.1.0。GeckoLib 的新功能不能绕过编译基线直接使用；修改任一最低版本都应说明原因并重新验证。详见 [依赖选型、验证范围与整合包核对流程](docs/geckolib-compatibility.md)。次要目标尚未接入本次依赖；ATM10 为 1.21.1，需后续按需适配 NeoForge 目标。
 
-模型设计流程的首个样例是 [饼蛙造型与动作审阅](designs/bingwa/README.md)，包含可编辑 Blockbench 工程及七段动作。它目前是未打入 mod 的设计稿。
+模型设计流程的首个样例是 [饼蛙造型与动作审阅](designs/bingwa/README.md)，包含可编辑 Blockbench 工程及七段动作。已在 1.20.1 接入实体与刷怪蛋；[玩家说明](wiki/bosses.md#bingwa)包含指令、获取方式与中立反击规则。
 
 后续建模可使用项目 skill [`$design-minecraft-model`](.agents/skills/design-minecraft-model/SKILL.md)，从参考设计、模型与动作制作，到可旋转 3D 审阅和资产校验。用法见 [模型设计流程](docs/development-workflow.md#模型设计与审阅)。
 

@@ -22,3 +22,22 @@ dependencies {
     // GeckoLib embeds this in its release JAR; development runs need it explicitly.
     implementation 'com.eliotlash.mclib:mclib:20'
 }
+
+// Opt-in headless release-JAR probe. This source set is never packaged in the mod.
+if (project.hasProperty('bingwaProbe')) {
+    sourceSets {
+        bingwaProbe {
+            java.srcDir '../../scripts/tests/bingwa_probe'
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        }
+    }
+    tasks.register('bingwaProbeJar', Jar) {
+        archiveFileName = 'bingwa-probe.jar'
+        from sourceSets.bingwaProbe.output
+        from('../../scripts/tests/bingwa_probe/mods.toml') { into 'META-INF' }
+    }
+    reobf {
+        bingwaProbeJar { classpath.from(sourceSets.bingwaProbe.compileClasspath) }
+    }
+    tasks.named('bingwaProbeJar').configure { finalizedBy 'reobfBingwaProbeJar' }
+}

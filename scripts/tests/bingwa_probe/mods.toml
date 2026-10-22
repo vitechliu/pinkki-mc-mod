@@ -1,0 +1,7 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="MIT"
+[[mods]]
+modId="pinkkicore_bingwa_probe"
+version="1.0.0"
+displayName="Bingwa headless test probe"
