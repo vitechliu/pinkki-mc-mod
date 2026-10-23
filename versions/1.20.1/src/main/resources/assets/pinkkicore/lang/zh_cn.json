@@ -40,5 +40,18 @@
   "gui.pinkkicore.side.both": "双向",
   "jei.pinkkicore.duration": "耗时：%s 秒",
   "jei.pinkkicore.guaba.reusable": "需要放入瓜巴，不消耗",
-  "jei.pinkkicore.guaba.consumed": "每次消耗 %s 个瓜巴"
+  "jei.pinkkicore.guaba.consumed": "每次消耗 %s 个瓜巴",
+  "effect.pinkkicore.guaba": "瓜巴",
+  "item.minecraft.potion.effect.guaba": "瓜巴药水",
+  "item.minecraft.potion.effect.long_guaba": "瓜巴药水",
+  "item.minecraft.potion.effect.strong_guaba": "瓜巴药水",
+  "item.minecraft.splash_potion.effect.guaba": "喷溅型瓜巴药水",
+  "item.minecraft.splash_potion.effect.long_guaba": "喷溅型瓜巴药水",
+  "item.minecraft.splash_potion.effect.strong_guaba": "喷溅型瓜巴药水",
+  "item.minecraft.lingering_potion.effect.guaba": "滞留型瓜巴药水",
+  "item.minecraft.lingering_potion.effect.long_guaba": "滞留型瓜巴药水",
+  "item.minecraft.lingering_potion.effect.strong_guaba": "滞留型瓜巴药水",
+  "item.minecraft.tipped_arrow.effect.guaba": "瓜巴之箭",
+  "item.minecraft.tipped_arrow.effect.long_guaba": "瓜巴之箭",
+  "item.minecraft.tipped_arrow.effect.strong_guaba": "瓜巴之箭"
 }

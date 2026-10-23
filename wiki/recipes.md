@@ -27,3 +27,9 @@ const items = {
 <GuabaConversion :recipe="dirtToMud" :items="items" />
 
 左上角放瓜巴，左侧放原料，右侧取产物。当前“泥土 → 泥巴”为占位配方；整合包可修改配方。操作与自动化见[瓜巴工作台](./guaba-workbench.md)。
+
+## 瓜巴药水酿造 {#guaba-brewing}
+
+<GuabaBrewing />
+
+酿造台需要烈焰粉供能，底部可同时放入三瓶相同药水。持续时间、等级及喷溅/滞留见[瓜巴药水](./guaba-potions.md)。

@@ -38,6 +38,8 @@ npm run wiki:preview
 
 本次仅改善 Wiki 配方展示及写作规则，不改变游戏配方，也无需更新游戏内手册或制造游戏功能适配待办；游戏内手册尚未实现。
 
+瓜巴药水使用 `GuabaBrewing.vue` 读取 `versions/1.20.1/src/main/resources/data/pinkkicore/guaba_potions.json`，与 Java 酿造注册共用定义；数值表同样读取定义。药水瓶、药液遮罩、酿造台、红石粉、荧石粉图标取自原版 1.20.1 客户端资源，药液由 CSS 着色；Minecraft 素材不纳入 MIT 许可。该定义是 JAR 启动时读取的配置，不提供数据包热重载。同步玩家条目、图标和更新记录后构建 Wiki。
+
 ## GitHub Pages
 
 仓库 Settings → Pages → Source 选择 **GitHub Actions**，用户已完成该设置。`.github/workflows/wiki.yml` 在 `main` 上的 Wiki 源码、主版本配方数据、依赖或自身配置变更时构建并部署；PR 仅构建，不发布。也可在 `main` 上手动运行 **Build and deploy Wiki**。

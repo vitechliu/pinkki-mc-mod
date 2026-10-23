@@ -5,6 +5,7 @@ import io.github.vitech.pinkkicore.core.ModInfo;
 import io.github.vitech.pinkkicore.forge.item.ModItems;
 import io.github.vitech.pinkkicore.forge.entity.ModEntities;
 import io.github.vitech.pinkkicore.forge.workbench.WorkbenchContent;
+import io.github.vitech.pinkkicore.forge.effect.GuabaPotions;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -19,10 +20,12 @@ public final class PinkkiCore {
         ModEntities.register(bus);
         ModItems.register(bus);
         WorkbenchContent.register(bus);
+        GuabaPotions.register(bus);
         bus.addListener(this::onCommonSetup);
     }
 
     private void onCommonSetup(final FMLCommonSetupEvent event) {
+        event.enqueueWork(GuabaPotions::registerBrewing);
         LogUtils.getLogger().info(ModInfo.startupMessage());
     }
 }

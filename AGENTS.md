@@ -77,9 +77,11 @@ python3 scripts/smoke-server.py 1.20.1
 
 开发操作参考 `README.md`，架构参考 `docs/architecture.md`，发布参考 `docs/release.md`。
 
-用户使用 HMCL 3.16.3，本地手动兼容性测试参考 `docs/hmcl-testing.md`。项目专用游戏目录位于 `.local/hmcl/.minecraft`，采用各实例独立，保留 `clean` 与 `compat` 两类实例。`scripts/hmcl-test.py` 只用于准备目录、同步发行 JAR 和归档日志，不启动游戏；分析时优先读取用户指定的 `.local/hmcl/reports/` 报告。未经用户要求，不改动其原有 HMCL 游戏目录，也不改变本文件的默认禁止实机测试规则。
+用户使用 HMCL 3.16.3，本地手动兼容性测试参考 `docs/hmcl-testing.md`。项目专用游戏目录位于 `.local/hmcl/.minecraft`，采用各实例独立，保留 `clean` 与 `compat` 两类实例。用户要求本地“部署”时，默认执行 `python3 scripts/deploy-local.py`，只构建并校验 1.20.1，自动安装 PinkkiCore 和缺少的 GeckoLib 到 clean 与 compat；用户指定单个实例时用 `--profile`。不能只构建就报告部署完成，须检查 `.local/hmcl/deployments/` 的安装回执与哈希；保留其他 mod、配置和存档。部署不启动游戏，也不代表远程发布。`scripts/hmcl-test.py` 用于准备目录和归档日志，低层 `sync` 不替代完整部署；分析时优先读取用户指定的 `.local/hmcl/reports/` 报告。未经用户要求，不改动其原有 HMCL 游戏目录，也不改变本文件的默认禁止实机测试规则。
 
 行为、目录或命令变更时同步相关文档。`docs/verification.md` 是初始化时的历史验证记录，后续变更不能自动沿用其通过结论。工作总结说明改动、实际执行的验证，以及仍未验证的范围。
+
+HMCL 资源热同步使用 `python3 scripts/hot-sync.py`。用户已明确确认：项目内 1.20.1 clean/compat 两个 HMCL 实例的全部世界仅用于测试，因此默认同步两个实例的资源包和所有已有世界的数据包，不再要求用户逐次指定世界。完成适用的资源/数据修改并通过检查后主动执行此命令，告知用户按 F3+T 或 /reload；新建世界在下次同步自动纳入。只发现 saves 下有 level.dat 的实体目录，不跟随符号链接，不创建世界，不改动 level.dat 或区块；仅管理专用覆盖包。可用 `--profile`、`--world` 缩小范围，或 `--resources-only` 仅处理资源。命令不编译或替换 Java/JAR，也不启动或操作游戏；Java 等不可热更新变更仍需退出游戏后完整部署。正式 JAR 验收前用 `hot-sync.py remove` 移除两个实例资源包及所有测试世界的受管数据包。同步日志、备份及清单位于 `.local/hmcl/hot-sync/`；诊断报告中的清单不等于游戏内已启用或验证成功。完整流程见 `docs/hot-sync.md`。
 
 ## 游戏内引导手册与玩家 Wiki 同步
 

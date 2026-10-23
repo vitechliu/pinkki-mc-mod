@@ -6,6 +6,7 @@ on:
     paths:
       - 'wiki/**'
       - 'versions/1.20.1/src/main/resources/data/pinkkicore/recipes/**'
+      - 'versions/1.20.1/src/main/resources/data/pinkkicore/guaba_potions.json'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/wiki.yml'
@@ -13,6 +14,7 @@ on:
     paths:
       - 'wiki/**'
       - 'versions/1.20.1/src/main/resources/data/pinkkicore/recipes/**'
+      - 'versions/1.20.1/src/main/resources/data/pinkkicore/guaba_potions.json'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/wiki.yml'

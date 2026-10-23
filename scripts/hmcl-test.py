@@ -61,11 +61,12 @@ def is_our_mod(jar):
     return False
 
 
-def sync(mc, profile):
+def sync(mc, profile, verified=False):
     target = instance(mc, profile)
     mods = safe_file(target / "mods", target)
     mods.mkdir(exist_ok=True)
-    subprocess.run([sys.executable, str(ROOT / "scripts/verify-artifact.py"), mc], check=True)
+    if not verified:
+        subprocess.run([sys.executable, str(ROOT / "scripts/verify-artifact.py"), mc], check=True)
     source = artifact(mc)
     old = [safe_file(p, target) for p in mods.glob("*.jar") if is_our_mod(safe_file(p, target))]
     destination = safe_file(mods / source.name, target)
@@ -112,10 +113,22 @@ def report(mc, profile, note):
     for jar in sorted(safe_file(target / "mods", target).glob("*.jar")):
         safe_file(jar, target)
         mods.append({"file": jar.name, "sha256": hashlib.sha256(jar.read_bytes()).hexdigest()})
+    # Snapshot only our overlay manifests, not world contents or third-party packs.
+    overlays = []
+    overlay_name = "pinkkicore-dev-overlay/.pinkkicore-hot-sync.json"
+    candidates = [target / "resourcepacks" / overlay_name]
+    candidates += list(safe_file(target / "saves", target).glob(f"*/datapacks/{overlay_name}"))
+    for manifest in candidates:
+        safe_file(manifest, target)
+        if manifest.is_file():
+            overlays.append({"path": str(manifest.relative_to(target)),
+                             "manifest": json.loads(manifest.read_text())})
     (output / "report.json").write_text(json.dumps({
         "created_at": datetime.now().astimezone().isoformat(), "minecraft": mc,
         "loader": TARGETS[mc], "instance": target.name, "note": note,
         "copied_logs": copied, "mods": mods,
+        "hot_sync_overlays": overlays,
+        "overlay_notice": "清单仅表示准备了覆盖包，不代表游戏内已启用或成功重载。",
         "notice": "目录名称代表约定目标；实际加载器和版本以本次游戏日志为准。未收集账号配置、存档或完整模组。",
     }, ensure_ascii=False, indent=2) + "\n")
     print(f"日志与 mod 清单已归档：{output}")

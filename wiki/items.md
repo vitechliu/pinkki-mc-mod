@@ -6,7 +6,7 @@
 
 > 一切瓜巴的起源
 
-瓜巴是基础合成材料，可用于[瓜巴工作台加工](./guaba-workbench.md)和[其他模组的装备制作](./compatibility.md#guaba)。不可食用，每组最多堆叠 64 个。
+瓜巴是基础合成材料，可用于[酿造瓜巴药水](./guaba-potions.md)、[瓜巴工作台加工](./guaba-workbench.md)和[其他模组的装备制作](./compatibility.md#guaba)。不可食用，每组最多堆叠 64 个。
 
 获取方式：[西瓜片与泥巴合成](./recipes.md#guaba)。
 

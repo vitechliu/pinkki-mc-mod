@@ -70,3 +70,21 @@ if (project.hasProperty('workbenchProbe')) {
     }
     tasks.named('workbenchProbeJar').configure { finalizedBy 'reobfWorkbenchProbeJar' }
 }
+
+if (project.hasProperty('guabaEffectProbe')) {
+    sourceSets {
+        guabaEffectProbe {
+            java.srcDir '../../scripts/tests/guaba_effect_probe'
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        }
+    }
+    tasks.register('guabaEffectProbeJar', Jar) {
+        archiveFileName = 'guaba-effect-probe.jar'
+        from sourceSets.guabaEffectProbe.output
+        from('../../scripts/tests/guaba_effect_probe/mods.toml') { into 'META-INF' }
+    }
+    reobf {
+        guabaEffectProbeJar { classpath.from(sourceSets.guabaEffectProbe.compileClasspath) }
+    }
+    tasks.named('guabaEffectProbeJar').configure { finalizedBy 'reobfGuabaEffectProbeJar' }
+}

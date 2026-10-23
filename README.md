@@ -92,6 +92,8 @@ pinkkicore-forge-1.19.1-0.1.0.jar
 
 ### 热更新能做到什么
 
+HMCL 已提供独立命令 `python3 scripts/hot-sync.py`，默认同步 1.20.1 两个项目实例的客户端资源包及全部已有测试世界的数据包，不必指定世界；首次由用户确认启用，之后资源同步完按 F3+T，数据同步完执行 /reload。具体用法、日志和正式验收前的移除方式见 [资源热同步](docs/hot-sync.md)。它不热替换 Java 或 mod JAR。
+
 | 修改类型 | 操作 | 限制 |
 | --- | --- | --- |
 | 纹理、语言、模型等客户端资源 | 编译/复制资源后，游戏中按 `F3+T`（Mac 可能要配合 Fn） | 文件必须先到运行中的资源目录 |
@@ -99,7 +101,7 @@ pinkkicore-forge-1.19.1-0.1.0.jar
 | 已加载 Java 类的方法体 | Debug 启动后，重新编译，IDEA 执行 Reload Changed Classes | 标准 HotSwap；下一次调用方法才执行新逻辑 |
 | 新增字段/方法、改类结构、注册物品、Mixin、构造和初始化逻辑 | 重启开发客户端/服务端 | HotSwap 不会重放 mod 初始化和注册流程 |
 
-HotSwap 设置位于 Settings → Build, Execution, Deployment → Debugger → HotSwap。若 IDEA 提示不能替换类，重启即可。命令行 `runClient` 的普通运行模式不会自动启用 HotSwap。资源修改后可执行 `./scripts/mod.sh 1.20.1 processResources`；使用 IDEA 原生运行配置时，还需确认修改进入该配置实际使用的输出目录（IDEA Build Project）。当前唯一日志在初始化时执行，即便替换了方法体，也要再次调用它才会看到变化；最容易验证的方式是断点和 Debug 的 Evaluate Expression。
+HotSwap 设置位于 Settings → Build, Execution, Deployment → Debugger → HotSwap。若 IDEA 提示不能替换类，重启即可。命令行 `runClient` 的普通运行模式不会自动启用 HotSwap。资源修改后可执行 `./scripts/mod.sh 1.20.1 processResources`；使用 IDEA 原生运行配置时，还需确认修改进入该配置实际使用的输出目录（IDEA Build Project）。方法体替换不会重放初始化或自动重建已有对象状态；需在后续调用时验证变化，也可配合断点与 Debug 的 Evaluate Expression。
 
 不要在运行中替换 `mods/` 下的 JAR；加载器不支持完整 mod 卸载重载。当前未安装额外的 HotSwap Agent 或修改 JVM。
 
@@ -136,7 +138,7 @@ python3 scripts/smoke-server.py 1.20.1
 
 ## Git 与自动发布
 
-使用 HMCL 安装其他 mod、测试发行 JAR 并在项目内保留日志，参见 [HMCL 本地测试流程](docs/hmcl-testing.md)。
+使用 HMCL 安装其他 mod、测试发行 JAR 并在项目内保留日志，参见 [HMCL 本地测试流程](docs/hmcl-testing.md)。 已创建项目实例后，运行 `python3 scripts/deploy-local.py` 即可构建 1.20.1 并自动安装到 clean、compat，缺少 GeckoLib 时补齐；不会启动游戏。
 
 详见 [GitHub 发布说明](docs/release.md)、[代码结构与版本策略](docs/architecture.md) 和 [本次验证记录](docs/verification.md)。
 

@@ -66,6 +66,8 @@ macOS 文件选择框默认隐藏 `.local`。可以按 `Command+Shift+G`，粘�
 │       │   └── crash-reports/
 │       └── PinkkiCore-1.20.1-compat/     同样结构，可安装其他 mod
 ├── backups/                           同步 mod 前保留的旧 PinkkiCore JAR
+├── deployments/                       构建日志、安装回执和文件哈希
+├── runtime-cache/                     校验过的前置 mod 原始发行包
 ├── reports/                           按时间归档的诊断日志与 mod 清单
 └── launcher-logs/                     手动保存 HMCL 启动日志或错误报告
 ```
@@ -80,23 +82,27 @@ macOS 文件选择框默认隐藏 `.local`。可以按 `Command+Shift+G`，粘�
 
 1.20.1 的 clean 与 compat 实例都需要 GeckoLib。新建独立实例可使用 [GeckoLib 4.8.4 Forge 1.20.1](https://modrinth.com/mod/geckolib/version/aC5KMoNg)；导入整合包时先保留原有满足 `[4.4.9,5)` 的版本，同一实例只留一份。Forge 运行下限为 47.1.0，不能只因构建 SDK 为 47.4.28 就升级整合包。具体包仍按 [兼容策略](geckolib-compatibility.md) 核对。
 
-日常更新流程如下。先手动退出测试游戏，再从项目根目录执行：
+日常本地部署：先手动退出测试游戏，再从项目根目录执行（macOS/Linux，Python 3.11+）：
 
 ```bash
-# 只编译，不启动客户端
-set -o pipefail
-./scripts/mod.sh 1.20.1 build 2>&1 | tee .local/hmcl/build-1.20.1.log
+# 默认构建并校验 1.20.1，自动安装到 clean 和 compat
+python3 scripts/deploy-local.py
 
-# 校验并同步到兼容性实例，仅替换 mod ID 为 pinkkicore 的 JAR
-python3 scripts/hmcl-test.py sync 1.20.1 compat
-
-# 如需同步干净实例
-python3 scripts/hmcl-test.py sync 1.20.1 clean
+# 仅在明确指定单个实例时使用
+python3 scripts/deploy-local.py --profile compat
 ```
 
-脚本会先备份旧 PinkkiCore，避免同时留下两个版本；保留第三方 mod、配置和存档。它不安装 Minecraft/Forge/GeckoLib，不检查游戏是否仍在运行，也不会启动 HMCL 或游戏；操作前必须自行退出游戏，并确认启用了版本隔离。
+以后要求代理“部署”时，默认执行上述命令，把当前发行 JAR 安装进两个实例，不能只构建后就宣称部署完成。不启动 HMCL 或游戏，也不发布 GitHub Release 或部署真实服务端。脚本不安装 Minecraft/Forge；实例未安装、隔离设置不明确、Java 不是 17 或游戏未退出时会停止。
+
+部署先检查实例的 Minecraft/Forge、实际 Java 和独立目录，再构建并校验发行 JAR。缺少 GeckoLib 时自动安装固定的 Forge 1.20.1 / 4.4.9 原始发行包；优先复用经过 SHA512 校验的原始 Gradle 缓存，否则从 Modrinth CDN 下载，固定地址与校验值见 `config/hmcl-runtime.json`。不会安装开发映射 JAR、单独的 MCLib 或可选 JEI。已有满足要求的 GeckoLib 4.x 保留；旧版、重复或无法确认兼容性时停止，交由用户处理，不擅自升级整合包。
+
+旧 PinkkiCore 备份到 `.local/hmcl/backups/`，替换后清除同一 mod ID 的旧 JAR；第三方 mod、配置和存档保留。每次部署的构建日志与安装回执位于 `.local/hmcl/deployments/<时间>/build.log`、`receipt.json`，包括实际 Java、Forge、发行包及安装文件哈希。构建或校验失败不会进入安装；如果安装阶段发生磁盘错误，可能只完成部分实例，检查回执并修复后重试，不视作全部部署成功。部署期间请勿手动启动游戏。
+
+`hmcl-test.py sync` 是仅校验与复制已有 JAR 的低层工具，不构建、不补前置或检查运行状态；日常部署统一使用 `deploy-local.py`。
 
 然后手动从 HMCL 启动所选实例。发行 JAR 替换后需要重启游戏，不能像 IDEA 的 Debug 方法体 HotSwap 那样直接生效。资源包/数据包重载仍取决于具体修改内容。
+
+只改贴图、模型、语言或已有配方数据时，可使用 `python3 scripts/hot-sync.py` 准备受管覆盖包，用户手动重载；数据包同步、移除和日志操作见 [资源热同步](hot-sync.md)。用户已确认两个项目实例的所有世界均为测试世界，默认自动同步全部已有世界的数据包，无需指定世界；不替换 mod JAR。正式 JAR 验收前应移除覆盖包，避免旧资源遮住新包。
 
 建议先在 clean 实例确认，再在 compat 实例重现。增加其他 mod 时分批安装，每批记录名称与版本；涉及游戏内容的测试使用专用测试世界，避免把日常存档当成可反复删 mod 的测试场地。
 

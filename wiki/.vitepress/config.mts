@@ -15,6 +15,7 @@ export default defineConfig({
       { text: '玩家指南', items: [
         { text: '项目与版本', link: '/guide' },
         { text: '道具与方块', link: '/items' },
+        { text: '瓜巴药水', link: '/guaba-potions' },
         { text: '瓜巴工作台', link: '/guaba-workbench' },
         { text: '合成与加工', link: '/recipes' },
         { text: '模组兼容', link: '/compatibility' },

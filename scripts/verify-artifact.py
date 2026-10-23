@@ -141,6 +141,20 @@ def main():
                     assert f"gui.pinkkicore.redstone.{mode}" in strings
                 for side in ("down", "up", "north", "south", "west", "east"):
                     assert f"gui.pinkkicore.direction.{side}" in strings
+            for path in ('effect/GuabaEffect', 'effect/GuabaPotions'):
+                assert f'io/github/vitech/pinkkicore/forge/{path}.class' in archive.namelist()
+            definition_path = 'data/pinkkicore/guaba_potions.json'
+            assert archive.read(definition_path) == (ROOT / 'versions/1.20.1/src/main/resources' / definition_path).read_bytes()
+            definition = json.loads(archive.read(definition_path))
+            assert len(definition['levels']) == 4
+            assert [(p['amplifier'], p['duration']) for p in definition['potions']] == [(0, 3600), (0, 9600), (1, 1800)]
+            assert archive.read('assets/pinkkicore/textures/mob_effect/guaba.png') == texture
+            for language in ('zh_cn', 'en_us'):
+                strings = json.loads(archive.read(f'assets/pinkkicore/lang/{language}.json'))
+                assert 'effect.pinkkicore.guaba' in strings
+                for container in ('potion', 'splash_potion', 'lingering_potion', 'tipped_arrow'):
+                    for variant in ('guaba', 'long_guaba', 'strong_guaba'):
+                        assert f'item.minecraft.{container}.effect.{variant}' in strings
         assert "LICENSE" in archive.namelist()
         if loader == "neoforge":
             assert "META-INF/mods.toml" not in archive.namelist(), "Forge metadata leaked into NeoForge JAR"

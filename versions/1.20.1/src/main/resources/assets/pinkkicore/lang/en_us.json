@@ -40,5 +40,18 @@
   "gui.pinkkicore.side.both": "Both",
   "jei.pinkkicore.duration": "Time: %s s",
   "jei.pinkkicore.guaba.reusable": "Guaba required, not consumed",
-  "jei.pinkkicore.guaba.consumed": "Consumes %s Guaba per operation"
+  "jei.pinkkicore.guaba.consumed": "Consumes %s Guaba per operation",
+  "effect.pinkkicore.guaba": "Guaba",
+  "item.minecraft.potion.effect.guaba": "Potion of Guaba",
+  "item.minecraft.potion.effect.long_guaba": "Potion of Guaba",
+  "item.minecraft.potion.effect.strong_guaba": "Potion of Guaba",
+  "item.minecraft.splash_potion.effect.guaba": "Splash Potion of Guaba",
+  "item.minecraft.splash_potion.effect.long_guaba": "Splash Potion of Guaba",
+  "item.minecraft.splash_potion.effect.strong_guaba": "Splash Potion of Guaba",
+  "item.minecraft.lingering_potion.effect.guaba": "Lingering Potion of Guaba",
+  "item.minecraft.lingering_potion.effect.long_guaba": "Lingering Potion of Guaba",
+  "item.minecraft.lingering_potion.effect.strong_guaba": "Lingering Potion of Guaba",
+  "item.minecraft.tipped_arrow.effect.guaba": "Arrow of Guaba",
+  "item.minecraft.tipped_arrow.effect.long_guaba": "Arrow of Guaba",
+  "item.minecraft.tipped_arrow.effect.strong_guaba": "Arrow of Guaba"
 }
