@@ -45,6 +45,11 @@ def main():
             assert deps["geckolib"]["side"] == "BOTH"
             assert deps["geckolib"]["versionRange"] == target_props["geckolib_version_range"]
             assert deps["forge"]["versionRange"] == f"[{target_props['forge_min_version']},48)"
+            assert deps['jei']['mandatory'] is False and deps['jei']['side'] == 'CLIENT'
+            assert deps['jei']['versionRange'] == target_props['jei_version_range']
+            assert not any(path.startswith('mezz/jei/') for path in archive.namelist()), 'JEI must remain external'
+            for plugin_class in ('GuabaJeiPlugin', 'GuabaConversionCategory'):
+                assert f'io/github/vitech/pinkkicore/forge/client/jei/{plugin_class}.class' in archive.namelist()
             assert not any(
                 path.startswith(("software/bernie/", "com/eliotlash/", "META-INF/jarjar/"))
                 for path in archive.namelist()
@@ -109,6 +114,33 @@ def main():
             assert tetra["material"] == {"items": ["pinkkicore:guaba"], "count": 1}
             assert not any(path.startswith(("pinkkicore/test/", "net/silentchaos512/", "slimeknights/", "se/mickelus/"))
                            for path in archive.namelist()), "Test probe or optional mod code leaked into release"
+            for source, resource in [
+                ("guaba_workbench.json", "models/block/guaba_workbench.json"),
+                ("textures/guaba_workbench.png", "textures/block/guaba_workbench.png"),
+            ]:
+                expected = (ROOT / "designs/guaba-workbench" / source).read_bytes()
+                actual = archive.read(f"assets/pinkkicore/{resource}")
+                assert actual == expected, "Workbench source/export mismatch"
+            state = json.loads(archive.read("assets/pinkkicore/blockstates/guaba_workbench.json"))
+            assert set(state["variants"]) == {"facing="+side for side in ("north", "east", "south", "west")}
+            conversion = json.loads(archive.read("data/pinkkicore/recipes/guaba_conversion/dirt_to_mud.json"))
+            assert conversion == {"type": "pinkkicore:guaba_conversion", "ingredient": {"item": "minecraft:dirt"},
+                                  "input_count": 1, "guaba_cost": 1, "result": {"item": "minecraft:mud", "count": 1}}
+            workbench_item = json.loads(archive.read("assets/pinkkicore/models/item/guaba_workbench.json"))
+            assert workbench_item == {"parent": "pinkkicore:block/guaba_workbench"}
+            workbench_loot = json.loads(archive.read("data/pinkkicore/loot_tables/blocks/guaba_workbench.json"))
+            assert workbench_loot["pools"][0]["entries"][0]["name"] == "pinkkicore:guaba_workbench"
+            for path in ("workbench/WorkbenchContent", "workbench/GuabaWorkbenchBlock", "workbench/GuabaWorkbenchEntity",
+                         "workbench/GuabaWorkbenchMenu", "workbench/GuabaConversionRecipe", "workbench/RedstoneMode",
+                         "workbench/SideMode", "client/GuabaWorkbenchScreen"):
+                assert f"io/github/vitech/pinkkicore/forge/{path}.class" in archive.namelist()
+            for language in ("zh_cn", "en_us"):
+                strings = json.loads(archive.read(f"assets/pinkkicore/lang/{language}.json"))
+                assert "block.pinkkicore.guaba_workbench" in strings
+                for mode in range(4):
+                    assert f"gui.pinkkicore.redstone.{mode}" in strings
+                for side in ("down", "up", "north", "south", "west", "east"):
+                    assert f"gui.pinkkicore.direction.{side}" in strings
         assert "LICENSE" in archive.namelist()
         if loader == "neoforge":
             assert "META-INF/mods.toml" not in archive.namelist(), "Forge metadata leaked into NeoForge JAR"

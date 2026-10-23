@@ -18,6 +18,8 @@ side="BOTH"
 
 ${geckolib_dependency}
 
+${jei_dependency}
+
 [[dependencies.${mod_id}]]
 modId="minecraft"
 mandatory=true

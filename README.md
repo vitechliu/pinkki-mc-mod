@@ -1,6 +1,6 @@
 # PinkkiCore
 
-面向 Minecraft Java 版的多版本 mod，MIT 许可证。1.20.1 已实装基础材料[瓜巴](wiki/items.md#guaba)及其无序配方，以及中立生物[饼蛙和刷怪蛋](wiki/bosses.md#bingwa)（0.1.0 开发中，尚未发布）；次要目标尚未适配。
+面向 Minecraft Java 版的多版本 mod，MIT 许可证。1.20.1 已实装基础材料[瓜巴](wiki/items.md#guaba)及其无序配方，中立生物[饼蛙和刷怪蛋](wiki/bosses.md#bingwa)，以及支持转换加工与自动化设置的[瓜巴工作台](wiki/guaba-workbench.md)（0.1.0 开发中，尚未发布）；次要目标尚未适配。
 
 | 优先级 | Minecraft | 加载器 | Java | 构建工具 |
 | --- | --- | --- | --- | --- |
@@ -25,6 +25,10 @@ Minecraft、加载器、Gradle 和构建插件版本固定在仓库配置中。�
 模型设计流程的首个样例是 [饼蛙造型与动作审阅](designs/bingwa/README.md)，包含可编辑 Blockbench 工程及七段动作。已在 1.20.1 接入实体与刷怪蛋；[玩家说明](wiki/bosses.md#bingwa)包含指令、获取方式与中立反击规则。
 
 后续建模可使用项目 skill [`$design-minecraft-model`](.agents/skills/design-minecraft-model/SKILL.md)，从参考设计、模型与动作制作，到可旋转 3D 审阅和资产校验。用法见 [模型设计流程](docs/development-workflow.md#模型设计与审阅)。
+
+## 瓜巴工作台
+
+1.20.1 工作台已接入确认后的模型，右键打开三槽转换界面；每次 20 刻，先以泥土转泥巴作为占位配方。支持四态红石、六面输入输出配置和漏斗/Forge 物品管道。当前从创造模式“功能方块”获取，暂无生存合成配方。[玩家操作](wiki/guaba-workbench.md)与[开发、数据包及无头验证说明](docs/guaba-workbench.md)已同步；自研游戏内手册尚未实现，客户端仍待手工验收。
 
 ## 瓜巴材料兼容试作
 
@@ -137,6 +141,8 @@ python3 scripts/smoke-server.py 1.20.1
 详见 [GitHub 发布说明](docs/release.md)、[代码结构与版本策略](docs/architecture.md) 和 [本次验证记录](docs/verification.md)。
 
 ## 参考资料
+
+- [Mod 源码参考库](docs/reference-mods.md)：十二个 Mod 的 1.20.1 本地源码、分支及检索方法。
 
 - [Forge 1.20.1 开发入门](https://docs.minecraftforge.net/en/1.20.1/gettingstarted/)
 - [Forge 1.19.1 官方下载](https://files.minecraftforge.net/net/minecraftforge/forge/index_1.19.1.html)

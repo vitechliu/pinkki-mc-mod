@@ -2,6 +2,7 @@ package io.github.vitech.pinkkicore.forge.item;
 
 import io.github.vitech.pinkkicore.core.ModInfo;
 import io.github.vitech.pinkkicore.forge.entity.ModEntities;
+import io.github.vitech.pinkkicore.forge.workbench.WorkbenchContent;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
@@ -32,5 +33,6 @@ public final class ModItems {
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(GUABA);
         }
+        if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) event.accept(WorkbenchContent.ITEM);
     }
 }

@@ -7,6 +7,11 @@ apply from: '../../gradle/forge.gradle'
 
 repositories {
     maven {
+        name = 'JEI'
+        url = 'https://maven.blamejared.com/'
+        content { includeGroup 'mezz.jei' }
+    }
+    maven {
         name = 'GeckoLib'
         url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
         content {
@@ -21,6 +26,12 @@ dependencies {
     implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
     // GeckoLib embeds this in its release JAR; development runs need it explicitly.
     implementation 'com.eliotlash.mclib:mclib:20'
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
+    // Explicit development opt-in. Normal builds/servers do not install JEI.
+    if (project.hasProperty('jeiRuntime')) {
+        runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    }
 }
 
 // Opt-in headless release-JAR probe. This source set is never packaged in the mod.
@@ -40,4 +51,22 @@ if (project.hasProperty('bingwaProbe')) {
         bingwaProbeJar { classpath.from(sourceSets.bingwaProbe.compileClasspath) }
     }
     tasks.named('bingwaProbeJar').configure { finalizedBy 'reobfBingwaProbeJar' }
+}
+
+if (project.hasProperty('workbenchProbe')) {
+    sourceSets {
+        workbenchProbe {
+            java.srcDir '../../scripts/tests/workbench_probe'
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        }
+    }
+    tasks.register('workbenchProbeJar', Jar) {
+        archiveFileName = 'workbench-probe.jar'
+        from sourceSets.workbenchProbe.output
+        from('../../scripts/tests/workbench_probe/mods.toml') { into 'META-INF' }
+    }
+    reobf {
+        workbenchProbeJar { classpath.from(sourceSets.workbenchProbe.compileClasspath) }
+    }
+    tasks.named('workbenchProbeJar').configure { finalizedBy 'reobfWorkbenchProbeJar' }
 }

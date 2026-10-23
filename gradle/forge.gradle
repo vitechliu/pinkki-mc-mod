@@ -61,12 +61,21 @@ versionRange="${geckolib_version_range}"
 ordering="NONE"
 side="BOTH"
 """ : ''
+def jeiDependency = project.hasProperty('jei_version_range') ? """
+[[dependencies.${mod_id}]]
+modId="jei"
+mandatory=false
+versionRange="${jei_version_range}"
+ordering="AFTER"
+side="CLIENT"
+""" : ''
 def replacements = metadata.collectEntries { key, value -> [(key.toString()): value] } + [
     minecraft_version: minecraft_version,
     pack_format: pack_format,
     loader_range: "[${forgeMajor},${forgeMajor + 1})",
     forge_range: "[${forgeMinimum},${forgeMajor + 1})",
-    geckolib_dependency: geckoDependency
+    geckolib_dependency: geckoDependency,
+    jei_dependency: jeiDependency
 ]
 tasks.named('processResources', ProcessResources).configure {
     inputs.properties replacements

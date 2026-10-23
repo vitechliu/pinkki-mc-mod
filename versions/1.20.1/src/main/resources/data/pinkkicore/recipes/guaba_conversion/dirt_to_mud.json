@@ -1,0 +1,12 @@
+{
+  "type": "pinkkicore:guaba_conversion",
+  "ingredient": {
+    "item": "minecraft:dirt"
+  },
+  "input_count": 1,
+  "guaba_cost": 1,
+  "result": {
+    "item": "minecraft:mud",
+    "count": 1
+  }
+}

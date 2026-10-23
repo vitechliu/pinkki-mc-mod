@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32" viewBox="0 0 32 32">
+  <defs><image id="texture" width="16" height="16" image-rendering="pixelated" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAA0UlEQVR42nWSsQ1CMQxEvQ4rINFR0SOBxAgpaRgA/Q3YhelAF+mi9+/nF1YS2zn7zq7v+/H7tEu31/XYbea7nw6ruM/SRYlM0HtZluEzIO+KycporsI3qzGHeSW01tpwsJukkl0MAAcV0GdyJ6AKpa/cVlZyq9SG9yFicpR4TKDipOmzMjnH525m/g6QTp5uOT8zNt2D5J68SaVyPORsYPtJxVrVjBcraHSkwDH3TUxnguyZu1pRkD1v541wpjHb0MokKkz+WWgDkDtgkfbm7wJ/9oUoq3qXqFkAAAAASUVORK5CYII="/></defs>
+  <use xlink:href="#texture" transform="matrix(.875 .4375 -.875 .4375 16 1)"/>
+  <use xlink:href="#texture" transform="matrix(.875 .4375 0 1 2 8)"/>
+  <path d="M2 8 16 15 16 31 2 24Z" fill="#000" opacity=".25"/>
+  <use xlink:href="#texture" transform="matrix(.875 -.4375 0 1 16 15)"/>
+  <path d="M16 15 30 8 30 24 16 31Z" fill="#000" opacity=".4"/>
+</svg>
