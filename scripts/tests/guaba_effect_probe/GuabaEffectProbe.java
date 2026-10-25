@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import net.minecraftforge.common.brewing.BrewingRecipe;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -52,6 +53,23 @@ public final class GuabaEffectProbe {
             var normal=potion("guaba"); var extended=potion("long_guaba"); var strong=potion("strong_guaba");
             check(normal.getEffects().get(0).getDuration()==3600 && extended.getEffects().get(0).getDuration()==9600
                 && strong.getEffects().get(0).getDuration()==1800 && strong.getEffects().get(0).getAmplifier()==1,"potion definitions");
+            int visibleRecipes = 0;
+            for (var recipe : BrewingRecipeRegistry.getRecipes()) {
+                if (!(recipe instanceof BrewingRecipe standard)) continue;
+                if (!ForgeRegistries.POTIONS.getKey(PotionUtils.getPotion(standard.getOutput())).getNamespace().equals("pinkkicore")) continue;
+                var inputs = standard.getInput().getItems();
+                var reagents = standard.getIngredient().getItems();
+                check(inputs.length == 1 && reagents.length == 1, "JEI recipe has no concrete inputs");
+                check(ItemStack.isSameItemSameTags(brew(inputs[0], reagents[0].getItem()), standard.getOutput()), "JEI output differs from actual brewing");
+                var named = inputs[0].copy(); named.setHoverName(net.minecraft.network.chat.Component.literal("Probe bottle"));
+                var namedOutput = brew(named, reagents[0].getItem());
+                check(namedOutput.hasCustomHoverName(), "brewing lost existing bottle NBT");
+                check(PotionUtils.getPotion(namedOutput) == PotionUtils.getPotion(standard.getOutput()), "named bottle failed brewing");
+                check(!standard.isInput(bottle(inputs[0].getItem(), Potions.WATER)), "potion NBT ignored");
+                visibleRecipes++;
+            }
+            check(visibleRecipes == 9, "JEI standard brewing recipes: expected 9, got " + visibleRecipes);
+            System.out.println("GUABA_EFFECT JEI-readable 9 recipes + concrete potion NBT + exact outputs + named bottle preservation PASS");
             for (Item container : new Item[]{Items.POTION,Items.SPLASH_POTION,Items.LINGERING_POTION}) {
                 var basic=brew(bottle(container,Potions.AWKWARD),ModItems.GUABA.get()); result(basic,container,normal);
                 result(brew(basic,Items.REDSTONE),container,extended); result(brew(basic,Items.GLOWSTONE_DUST),container,strong);

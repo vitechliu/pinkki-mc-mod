@@ -39,31 +39,32 @@ def box(u, v, width, height, depth, color):
     fill(u, v + depth, (width + depth) * 2, height, color)
 
 
-# HEAD: widely spaced anime eyes; four skin pixels separate the 2px eye bands.
-# Pupils at face columns 1 and 6 (was 2 and 4); no overlay obscures either eye.
+# HEAD: centered anime eyes; two skin pixels separate the 2px eye bands.
+# Pupils at zero-based face columns 2 and 5; no overlay obscures either eye.
+# Face v5: eyes/fringe lowered another texel; no mouth; horn mounts stay fixed.
 box(0, 0, 8, 8, 8, 'h')
 art(8, 8, [
-    'hhHiiHhh', 'hHHiHHjh', 'HsstsssH', 'dDssssDd',
-    'weSssSew', 'bssssssb', 'sssbbsss', 'SssssssS',
+    'hhHiiHhh', 'hHHiHHjh', 'hHHiHHjh', 'hHHiHHjh',
+    'HsstsssH', 'sdDssDds', 'sweSsews', 'bssssssb',
 ])
-art(0, 8, ['jhhHHihh','jhHHHihh','jhHhHhhh','jhHssshh',
-           'jhHssShh','jhHShhhh','jhhHhhhj','jjhhhjjj'])
-art(16, 8, ['HiiHHhhj','HiiHHhhj','HHHhHhhj','ssHhHhhj',
-            'sSHhHhhj','hhHhHhhj','hhHhhjjj','jhhjjjjj'])
-art(24, 8, ['jhHiiHhj','jhHiiHhj','jhHiHHhj','jhHiHHhj',
-            'jhHiHHhj','jhHHHhhj','jjhHHhjj','jjjhhjjj'])
+art(0, 8, ['jhhHHihh','jhhHHihh','jhhHHihh','jhHHHihh',
+           'jhHhHhhh','jhHssshh','jhHssShh','jhHShhhh'])
+art(16, 8, ['HiiHHhhj','HiiHHhhj','HiiHHhhj','HiiHHhhj',
+            'HHHhHhhj','ssHhHhhj','sSHhHhhj','hhHhHhhj'])
+art(24, 8, ['jhHiiHhj','jhHiiHhj','jhHiiHhj','jhHiiHhj',
+            'jhHiHHhj','jhHiHHhj','jhHiHHhj','jhHHHhhj'])
 art(8, 0, ['jjhhHhhj','jhHiiHhj','hHiiHHhh','hHiHHHhh',
            'hHHHhhHh','hhHhHHHh','jhHHHHhj','jjhhhhjj'])
 
 # HEAD OVERLAY: clipped pastel horn accessories and swept fringe.
-art(40, 8, ['Yy....w.','yyH..ww.','yHH..Hw.', '........',
-            '........','........','h.......','j.......'])
-art(32, 8, ['.y......','.yy.....','hhhH....','hHiH....',
-            'hHiH....','hHiH....','hHiH....','jhHH....'])
-art(48, 8, ['......w.','.....ww.','....HHHh','....HHih',
-            '....hHHh','....hHHh','....hhHh','.....hhh'])
-art(56, 8, ['..HiiH..','.hHiiHh.','.hHiiHh.','.hHiHHh.',
-            '.hHiHHh.','.hHiHHh.','.hHHHHh.','..hhhh..'])
+art(40, 8, ['Yy....w.','yyH..ww.','yHH..Hw.', '.HH..H..',
+            '.HH..H..','h......h','........','........'])
+art(32, 8, ['.y......','.yy.....','hhhH....','hhhH....',
+            'hhhH....','hHiH....','hHiH....','hHiH....'])
+art(48, 8, ['......w.','.....ww.','....HHHh','....HHHh',
+            '....HHHh','....HHih','....hHHh','....hHHh'])
+art(56, 8, ['..HiiH..','..HiiH..','..HiiH..','.hHiiHh.',
+            '.hHiiHh.','.hHiHHh.','.hHiHHh.','.hHiHHh.'])
 art(40, 0, ['........','.yy...w.','.yH..ww.','.hHHHHh.',
             '.hHiiHh.','.hHiHHh.','..hHHh..','........'])
 

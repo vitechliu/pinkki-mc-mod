@@ -15,7 +15,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
-import net.minecraftforge.common.brewing.IBrewingRecipe;
+import net.minecraftforge.common.brewing.BrewingRecipe;
+import net.minecraftforge.common.crafting.StrictNBTIngredient;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -56,19 +58,24 @@ public final class GuabaPotions {
             Potion input = Objects.requireNonNull(ForgeRegistries.POTIONS.getValue(new ResourceLocation(rule.get("input").getAsString())));
             Potion output = Objects.requireNonNull(ForgeRegistries.POTIONS.getValue(new ResourceLocation(rule.get("output").getAsString())));
             Item reagent = Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(new ResourceLocation(rule.get("ingredient").getAsString())));
-            BrewingRecipeRegistry.addRecipe(new IBrewingRecipe() {
-                @Override public boolean isInput(ItemStack stack) {
-                    return (stack.is(Items.POTION) || stack.is(Items.SPLASH_POTION) || stack.is(Items.LINGERING_POTION))
-                            && PotionUtils.getPotion(stack) == input;
-                }
-                @Override public boolean isIngredient(ItemStack stack) { return stack.is(reagent); }
-                @Override public ItemStack getOutput(ItemStack stack, ItemStack ingredient) {
-                    if (!isInput(stack) || !isIngredient(ingredient)) return ItemStack.EMPTY;
-                    ItemStack result = stack.copy();
-                    result.setCount(1);
-                    return PotionUtils.setPotion(result, output);
-                }
-            });
+            // JEI can enumerate Forge BrewingRecipe inputs/outputs, but not an opaque IBrewingRecipe.
+            // Separate bottle types ensure the displayed output always retains the input bottle type.
+            for (Item bottle : new Item[]{Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION}) {
+                BrewingRecipeRegistry.addRecipe(new BrewingRecipe(
+                        StrictNBTIngredient.of(PotionUtils.setPotion(new ItemStack(bottle), input)),
+                        Ingredient.of(reagent), PotionUtils.setPotion(new ItemStack(bottle), output)) {
+                    @Override public boolean isInput(ItemStack stack) {
+                        // Match the potion while retaining support for renamed/custom-tagged bottles.
+                        return stack.is(bottle) && PotionUtils.getPotion(stack) == input;
+                    }
+                    @Override public ItemStack getOutput(ItemStack stack, ItemStack ingredient) {
+                        if (!isInput(stack) || !isIngredient(ingredient)) return ItemStack.EMPTY;
+                        ItemStack result = stack.copy();
+                        result.setCount(1);
+                        return PotionUtils.setPotion(result, output);
+                    }
+                });
+            }
         }
     }
 }

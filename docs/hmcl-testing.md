@@ -82,7 +82,9 @@ macOS 文件选择框默认隐藏 `.local`。可以按 `Command+Shift+G`，粘�
 
 1.20.1 的 clean 与 compat 实例都需要 GeckoLib。新建独立实例可使用 [GeckoLib 4.8.4 Forge 1.20.1](https://modrinth.com/mod/geckolib/version/aC5KMoNg)；导入整合包时先保留原有满足 `[4.4.9,5)` 的版本，同一实例只留一份。Forge 运行下限为 47.1.0，不能只因构建 SDK 为 47.4.28 就升级整合包。具体包仍按 [兼容策略](geckolib-compatibility.md) 核对。
 
-日常本地部署：先手动退出测试游戏，再从项目根目录执行（macOS/Linux，Python 3.11+）：
+日常代码修改、重新构建并通过适用检查后，代理默认自动把新 mod 部署到 clean、compat 两个实例，无需再次要求“部署”。须检查本次安装回执及两个实例 JAR 哈希；构建、提供下载链接或仅热同步都不算完成。纯文档/未接入设计稿或用户明确限制部署范围时除外。游戏仍在运行时报告待退出，不自动关闭游戏或覆盖其 JAR；用户退出后继续。
+
+本地部署命令如下；执行前由用户手动退出测试游戏（项目根目录，macOS/Linux，Python 3.11+）：
 
 ```bash
 # 默认构建并校验 1.20.1，自动安装到 clean 和 compat

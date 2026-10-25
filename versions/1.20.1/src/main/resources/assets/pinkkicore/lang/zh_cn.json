@@ -16,7 +16,7 @@
   "gui.pinkkicore.output": "产物",
   "gui.pinkkicore.sides": "面配置",
   "gui.pinkkicore.side.label": "%s：%s",
-  "gui.pinkkicore.sides.tooltip": "点击切换：禁用 → 输入 → 输出 → 双向。输入接收瓜巴和原料；输出只提取产物。方位使用世界方向。",
+  "gui.pinkkicore.sides.tooltip": "点击切换：禁用 → 输入 → 输出 → 双向 → 瓜巴输入。瓜巴输入只向左上瓜巴格供料；输入与双向保留原有规则。方位使用世界方向。",
   "gui.pinkkicore.redstone.tooltip": "红石：%s\n当前：%s\n点击切换模式",
   "gui.pinkkicore.signal.on": "有信号",
   "gui.pinkkicore.signal.off": "无信号",
@@ -53,5 +53,6 @@
   "item.minecraft.lingering_potion.effect.strong_guaba": "滞留型瓜巴药水",
   "item.minecraft.tipped_arrow.effect.guaba": "瓜巴之箭",
   "item.minecraft.tipped_arrow.effect.long_guaba": "瓜巴之箭",
-  "item.minecraft.tipped_arrow.effect.strong_guaba": "瓜巴之箭"
+  "item.minecraft.tipped_arrow.effect.strong_guaba": "瓜巴之箭",
+  "gui.pinkkicore.side.guaba_input": "瓜巴输入"
 }

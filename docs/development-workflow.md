@@ -2,7 +2,7 @@
 
 ## 日常只处理 1.20.1
 
-普通需求默认只实现、构建、无头测试和准备部署 **Minecraft 1.20.1 / Forge**。即使修改了共享代码，也不因此自动构建、运行或部署其他版本；其他版本允许暂时落后。客户端仍由用户手动测试，代理遵守 AGENTS.md 的实机测试限制。
+普通需求默认只实现、构建、无头测试，并在验证通过后自动部署到项目内 **Minecraft 1.20.1 / Forge** 的 clean、compat 两个 HMCL 测试实例。即使修改了共享代码，也不因此自动构建、运行或部署其他版本；其他版本允许暂时落后。客户端仍由用户手动测试，代理遵守 AGENTS.md 的实机测试限制。
 
 通常按修改需要执行：
 
@@ -13,7 +13,7 @@ python3 scripts/verify-artifact.py 1.20.1
 python3 scripts/smoke-server.py 1.20.1
 ```
 
-本地“部署”默认执行 `python3 scripts/deploy-local.py`：只构建与校验 1.20.1，并自动安装 PinkkiCore 和缺少的 GeckoLib 到项目 HMCL 的 clean、compat 两个实例。用户明确指定时使用 `--profile clean` 或 `--profile compat`。不能只完成构建就报告部署成功；检查安装回执与哈希。没有安装对应实例时说明待完成的操作，不启动游戏。构建日志、备份和回执均留在 `.local/hmcl/`，详见 [HMCL 测试流程](hmcl-testing.md)。不要默认使用 `build-all.sh`。
+修改代码或其他发行内容、重新构建并通过适用检查后，必须主动执行 `python3 scripts/deploy-local.py`，不再等待用户另行要求部署：只构建与校验 1.20.1，并自动安装 PinkkiCore 和缺少的 GeckoLib 到项目 HMCL 的 clean、compat 两个实例。用户明确指定时使用 `--profile clean` 或 `--profile compat`。不能只完成构建、发送 JAR 链接或热同步就结束；检查本次安装回执成功，并核对两个实例 mod JAR 的 SHA256 与发行产物一致。游戏运行时不替换 JAR、不关闭游戏，明确报告部署待退出，用户退出后继续；没有安装对应实例、依赖冲突或脚本失败时说明具体阻碍。纯文档/未接入设计稿、用户明确限定仅构建或暂不部署的任务除外。构建日志、备份和回执均留在 `.local/hmcl/`，详见 [HMCL 测试流程](hmcl-testing.md)。不要默认使用 `build-all.sh`。
 
 日常资源调试可以执行 `python3 scripts/hot-sync.py`，默认同步 1.20.1 两个项目 HMCL 实例的受管资源包及所有已有世界的数据包（用户确认全部为测试世界），无需逐次指定世界。完成适用的资源/数据变更后主动同步，游戏由用户重载；不把热同步报告当成完整部署或客户端验收。用法见 [资源热同步](hot-sync.md)。
 

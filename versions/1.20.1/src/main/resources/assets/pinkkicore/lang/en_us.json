@@ -16,7 +16,7 @@
   "gui.pinkkicore.output": "Output",
   "gui.pinkkicore.sides": "Side config",
   "gui.pinkkicore.side.label": "%s: %s",
-  "gui.pinkkicore.sides.tooltip": "Click: Disabled > Input > Output > Both. Input accepts Guaba and ingredients; output extracts products only. Uses world directions.",
+  "gui.pinkkicore.sides.tooltip": "Click: Disabled > Input > Output > Both > Guaba input. Guaba input feeds only the top-left Guaba slot. Input/Both retain normal routing. Uses world directions.",
   "gui.pinkkicore.redstone.tooltip": "Redstone: %s\nSignal: %s\nClick to cycle modes",
   "gui.pinkkicore.signal.on": "on",
   "gui.pinkkicore.signal.off": "off",
@@ -53,5 +53,6 @@
   "item.minecraft.lingering_potion.effect.strong_guaba": "Lingering Potion of Guaba",
   "item.minecraft.tipped_arrow.effect.guaba": "Arrow of Guaba",
   "item.minecraft.tipped_arrow.effect.long_guaba": "Arrow of Guaba",
-  "item.minecraft.tipped_arrow.effect.strong_guaba": "Arrow of Guaba"
+  "item.minecraft.tipped_arrow.effect.strong_guaba": "Arrow of Guaba",
+  "gui.pinkkicore.side.guaba_input": "Guaba in"
 }

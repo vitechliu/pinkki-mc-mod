@@ -51,6 +51,10 @@ public final class WorkbenchProbe {
         machine.inventory.setStackInSlot(2, ItemStack.EMPTY);
     }
     private IItemHandler port(Direction side) { return machine.getCapability(ForgeCapabilities.ITEM_HANDLER, side).orElseThrow(AssertionError::new); }
+    private void setSide(Direction side, SideMode target) {
+        for (int i=0; i<SideMode.values().length && machine.sideMode(side)!=target; i++) machine.handleButton(10+side.ordinal());
+        check(machine.sideMode(side)==target,"side mode cycle did not reach "+target);
+    }
     private void started(ServerStartedEvent event) {
         try {
             level = event.getServer().overworld();
@@ -96,24 +100,45 @@ public final class WorkbenchProbe {
             reset();
             for(Direction side:Direction.values()) {
                 IItemHandler handler=port(side);
-                for(int i=0;i<4;i++) {
+                SideMode initial=machine.sideMode(side);
+                for(int i=0;i<SideMode.values().length;i++) {
                     machine.inventory.setStackInSlot(2,new ItemStack(Items.MUD,4));
                     SideMode mode=machine.sideMode(side);
-                    check(handler.insertItem(0,new ItemStack(ModItems.GUABA.get()),true).isEmpty()==mode.input,"side catalyst input "+side+mode);
+                    check(handler.insertItem(0,new ItemStack(ModItems.GUABA.get()),true).isEmpty()==(mode.input || mode==SideMode.GUABA_INPUT),"side catalyst input "+side+mode);
                     check(handler.insertItem(1,new ItemStack(Items.DIRT),true).isEmpty()==mode.input,"side material input "+side+mode);
                     check(!handler.insertItem(0,new ItemStack(Items.STONE),true).isEmpty(),"non-guaba fuel accepted");
                     check(!handler.insertItem(2,new ItemStack(Items.MUD),true).isEmpty(),"output insertion accepted");
                     check(!handler.extractItem(2,1,true).isEmpty()==mode.output,"side output "+side+mode);
                     check(handler.extractItem(0,1,true).isEmpty() && handler.extractItem(1,1,true).isEmpty(),"inputs extractable");
+                    check(handler.isItemValid(0,new ItemStack(ModItems.GUABA.get()))==(mode.input || mode==SideMode.GUABA_INPUT),"reported guaba validity "+side+mode);
+                    check(handler.isItemValid(1,new ItemStack(Items.DIRT))==mode.input,"reported input validity "+side+mode);
+                    check(machine.inventory.getStackInSlot(0).isEmpty() && machine.inventory.getStackInSlot(1).isEmpty() && machine.inventory.getStackInSlot(2).getCount()==4,"simulation changed inventory");
                     machine.handleButton(10+side.ordinal());
                 }
+                check(machine.sideMode(side)==initial,"side mode cycle did not wrap");
             }
             check(!machine.getCapability(ForgeCapabilities.ITEM_HANDLER).isPresent(), "unsided config bypass");
             var cached=port(Direction.NORTH);machine.handleButton(10+Direction.NORTH.ordinal()); // input -> output
             check(!cached.insertItem(1,new ItemStack(Items.DIRT),false).isEmpty(),"cached port ignored mode change");
             var cap=machine.getCapability(ForgeCapabilities.ITEM_HANDLER,Direction.NORTH);
             machine.invalidateCaps(); check(!cap.isPresent(),"capability invalidation");machine.reviveCaps();check(port(Direction.NORTH)!=cached,"capability revival");
-            System.out.println("WORKBENCH all 6 faces x 4 IO modes + simulation + cached ports + capability lifecycle PASS");
+            System.out.println("WORKBENCH all 6 faces x 5 IO modes + simulation + cached ports + capability lifecycle PASS");
+
+            // A cached dedicated port must never fall through into the material/output slots.
+            reset();var dedicated=port(Direction.UP);setSide(Direction.UP,SideMode.GUABA_INPUT);
+            check(dedicated.insertItem(0,new ItemStack(ModItems.GUABA.get(),64),false).isEmpty(),"dedicated catalyst insert");
+            check(!dedicated.insertItem(0,new ItemStack(ModItems.GUABA.get()),false).isEmpty(),"full catalyst slot accepted overflow");
+            check(!dedicated.insertItem(1,new ItemStack(ModItems.GUABA.get()),false).isEmpty(),"dedicated port fell through to material slot");
+            check(!dedicated.insertItem(2,new ItemStack(Items.MUD),false).isEmpty(),"dedicated port accepted output");
+            check(machine.inventory.getStackInSlot(1).isEmpty() && machine.inventory.getStackInSlot(2).isEmpty(),"dedicated port polluted other slots");
+            check(dedicated.extractItem(0,1,false).isEmpty(),"dedicated port extracted catalyst");
+            var dedicatedSaved=machine.saveWithoutMetadata();var dedicatedRestored=new GuabaWorkbenchEntity(POS,machine.getBlockState());dedicatedRestored.load(dedicatedSaved);
+            check(dedicatedRestored.sideMode(Direction.UP)==SideMode.GUABA_INPUT && dedicatedRestored.data.get(2+Direction.UP.ordinal())==4,"new mode NBT/menu sync");
+            for(int legacy=0;legacy<4;legacy++) {
+                dedicatedSaved.putInt("Side_up",legacy);dedicatedRestored.load(dedicatedSaved);
+                check(dedicatedRestored.sideMode(Direction.UP).ordinal()==legacy,"legacy side mode ID changed");
+            }
+            System.out.println("WORKBENCH dedicated Guaba routing + overflow isolation + saved/menu mode 4 + legacy IDs PASS");
 
             reset();
             // Actual vanilla hoppers exercise Forge's hopper capability bridge.
@@ -126,13 +151,23 @@ public final class WorkbenchProbe {
             check(machine.inventory.getStackInSlot(0).is(ModItems.GUABA.get()) && machine.inventory.getStackInSlot(1).is(Items.DIRT),"real hopper input");
             tick(20);
             // Default DOWN=OUTPUT. First disable it and verify a hopper cannot bypass it.
-            machine.handleButton(10+Direction.DOWN.ordinal());machine.handleButton(10+Direction.DOWN.ordinal()); // output -> both -> off
+            setSide(Direction.DOWN,SideMode.DISABLED);
             lower.setCooldown(0);HopperBlockEntity.pushItemsTick(level,POS.below(),lower.getBlockState(),lower);
             check(lower.isEmpty() && machine.inventory.getStackInSlot(2).is(Items.MUD),"disabled side leaked to real hopper");
-            machine.handleButton(10+Direction.DOWN.ordinal());machine.handleButton(10+Direction.DOWN.ordinal()); // off -> input -> output
+            setSide(Direction.DOWN,SideMode.OUTPUT);
             lower.setCooldown(0);HopperBlockEntity.pushItemsTick(level,POS.below(),lower.getBlockState(),lower);
             check(lower.getItem(0).is(Items.MUD) && machine.inventory.getStackInSlot(2).isEmpty(),"real hopper output");
             System.out.println("WORKBENCH real vanilla hopper input/output + disabled-side isolation PASS");
+
+            reset();setSide(Direction.UP,SideMode.GUABA_INPUT);
+            level.setBlockAndUpdate(POS.above(),Blocks.HOPPER.defaultBlockState());
+            var guabaHopper=(HopperBlockEntity)level.getBlockEntity(POS.above());
+            guabaHopper.setItem(0,new ItemStack(Items.DIRT,3));guabaHopper.setItem(1,new ItemStack(ModItems.GUABA.get(),2));
+            for(int i=0;i<12;i++) { guabaHopper.setCooldown(0);HopperBlockEntity.pushItemsTick(level,POS.above(),guabaHopper.getBlockState(),guabaHopper); }
+            check(machine.inventory.getStackInSlot(0).getCount()==2 && machine.inventory.getStackInSlot(1).isEmpty() && guabaHopper.getItem(0).getCount()==3,"dedicated real hopper routing");
+            machine.inventory.setStackInSlot(1,new ItemStack(Items.DIRT));tick(20);
+            check(machine.inventory.getStackInSlot(0).getCount()==1 && machine.inventory.getStackInSlot(2).is(Items.MUD),"auto supplied Guaba did not process");
+            System.out.println("WORKBENCH real hopper dedicated Guaba input + foreign material retained + conversion PASS");
 
             reset();feed(2,2);tick(7);machine.handleButton(0);machine.handleButton(10+Direction.EAST.ordinal());
             CompoundTag saved=machine.saveWithoutMetadata();

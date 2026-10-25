@@ -67,7 +67,7 @@ public final class GuabaWorkbenchEntity extends BlockEntity implements MenuProvi
         if (button == 0) redstone = RedstoneMode.values()[(redstone.ordinal()+1)%4];
         else if (button >= 10 && button < 16) {
             Direction side = Direction.values()[button-10];
-            sides.put(side, SideMode.values()[(sideMode(side).ordinal()+1)%4]);
+            sides.put(side, sideMode(side).next());
         } else return false;
         setChanged();
         return true;
@@ -143,9 +143,9 @@ public final class GuabaWorkbenchEntity extends BlockEntity implements MenuProvi
         @Override public int getSlots() { return inventory.getSlots(); }
         @Override public ItemStack getStackInSlot(int slot) { return inventory.getStackInSlot(slot); }
         @Override public int getSlotLimit(int slot) { return inventory.getSlotLimit(slot); }
-        @Override public boolean isItemValid(int slot, ItemStack stack) { return mode().input && inventory.isItemValid(slot, stack); }
+        @Override public boolean isItemValid(int slot, ItemStack stack) { return mode().canInsertSlot(slot) && inventory.isItemValid(slot, stack); }
         @Override public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-            return mode().input && slot != OUTPUT ? inventory.insertItem(slot, stack, simulate) : stack;
+            return mode().canInsertSlot(slot) ? inventory.insertItem(slot, stack, simulate) : stack;
         }
         @Override public ItemStack extractItem(int slot, int amount, boolean simulate) {
             return mode().output && slot == OUTPUT ? inventory.extractItem(slot, amount, simulate) : ItemStack.EMPTY;

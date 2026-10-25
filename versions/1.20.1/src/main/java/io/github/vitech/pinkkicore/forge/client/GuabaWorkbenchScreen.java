@@ -27,8 +27,8 @@ public final class GuabaWorkbenchScreen extends AbstractContainerScreen<GuabaWor
     }
     @Override protected void init() {
         super.init();
-        // Reserve room for the six-face drawer, including at the minimum GUI scale.
-        leftPos = Math.max(2, (width-312)/2);
+        // Keep AbstractContainerScreen's centering of the main panel. JEI uses
+        // getExtraGuiAreas() to avoid the tabs/drawer without shifting the machine.
         sideButtons.clear();
         redstone = addRenderableWidget(Button.builder(Component.literal("R"), b -> send(0))
             .bounds(leftPos+178, topPos+8, 22, 22).build());
