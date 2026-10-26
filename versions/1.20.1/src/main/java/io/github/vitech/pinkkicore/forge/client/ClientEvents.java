@@ -17,6 +17,7 @@ public final class ClientEvents {
         event.enqueueWork(() -> MenuScreens.register(WorkbenchContent.MENU.get(), GuabaWorkbenchScreen::new));
     }
     @SubscribeEvent public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(ModEntities.PINKKI.get(), PinkkiRenderer::new);
         event.registerEntityRenderer(ModEntities.BINGWA.get(), BingwaRenderer::new);
     }
 }

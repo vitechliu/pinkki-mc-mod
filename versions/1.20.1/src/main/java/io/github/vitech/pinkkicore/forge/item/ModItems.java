@@ -19,6 +19,9 @@ public final class ModItems {
     public static final RegistryObject<Item> BINGWA_SPAWN_EGG = ITEMS.register("bingwa_spawn_egg", () ->
         new ForgeSpawnEggItem(ModEntities.BINGWA, 0xEFE4BD, 0xE89328, new Item.Properties()));
 
+    public static final RegistryObject<Item> PINKKI_SPAWN_EGG = ITEMS.register("pinkki_spawn_egg", () ->
+        new ForgeSpawnEggItem(ModEntities.PINKKI, 0xF4BFD0, 0xCFF4EB, new Item.Properties()));
+
     private ModItems() {}
 
     public static void register(IEventBus bus) {
@@ -29,6 +32,7 @@ public final class ModItems {
     private static void addCreativeContents(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS) {
             event.accept(BINGWA_SPAWN_EGG);
+            event.accept(PINKKI_SPAWN_EGG);
         }
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(GUABA);

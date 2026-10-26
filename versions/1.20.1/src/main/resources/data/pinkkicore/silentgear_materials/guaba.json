@@ -43,8 +43,18 @@
     "rod": {}
   },
   "traits": {
-    "main": [],
-    "rod": []
+    "main": [
+      {
+        "name": "pinkkicore:guaba_touch",
+        "level": 1
+      }
+    ],
+    "rod": [
+      {
+        "name": "pinkkicore:guaba_touch",
+        "level": 1
+      }
+    ]
   },
   "model": {
     "main/all": [

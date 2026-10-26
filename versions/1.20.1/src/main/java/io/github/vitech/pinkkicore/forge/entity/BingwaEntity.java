@@ -1,5 +1,6 @@
 package io.github.vitech.pinkkicore.forge.entity;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
@@ -44,10 +45,23 @@ public class BingwaEntity extends PathfinderMob implements GeoEntity {
 
     public BingwaEntity(EntityType<? extends BingwaEntity> type, Level level) {
         super(type, level);
+        setCustomName(type.getDescription());
+        setCustomNameVisible(true);
         moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.1F, 0.5F, false);
         setPathfindingMalus(BlockPathTypes.WATER, 0);
         setPathfindingMalus(BlockPathTypes.WATER_BORDER, 0);
         setMaxUpStep(1.0F);
+    }
+
+    @Override public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        // Migrate old unnamed mobs, while preserving saved/custom names and explicit visibility.
+        if (!tag.contains("CustomName", 8)) {
+            setCustomName(getType().getDescription());
+            setCustomNameVisible(true);
+        } else if (!tag.contains("CustomNameVisible", 1)) {
+            setCustomNameVisible(true);
+        }
     }
 
     public static AttributeSupplier.Builder createAttributes() {

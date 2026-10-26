@@ -10,7 +10,9 @@
   "magicCapacity": 0,
   "toolLevel": "minecraft:wood",
   "toolEfficiency": 2.0,
-  "effects": {},
+  "effects": {
+    "pinkkicore_guaba_touch": 1
+  },
   "tints": {
     "glyph": "C87945",
     "texture": "C87945"
@@ -29,6 +31,6 @@
     "axe_dig": "minecraft:wood"
   },
   "features": [
-    "pinkkicore_guaba_placeholder"
+    "pinkkicore_guaba_touch"
   ]
 }

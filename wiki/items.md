@@ -23,3 +23,7 @@
 消耗瓜巴转换原料的工作方块，支持红石与六面输入输出控制。从创造模式“功能方块”获取，没有生存合成配方。
 
 查看[操作与自动化说明](./guaba-workbench.md)和[加工配方](./recipes.md#guaba-conversion)。
+
+## 粉红妹刷怪蛋 {#pinkki-spawn-egg}
+
+注册 ID：`pinkkicore:pinkki_spawn_egg`。使用后生成[粉红妹](./bosses.md#pinkki)，位于创造模式的刷怪蛋分类。

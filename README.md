@@ -1,6 +1,6 @@
 # PinkkiCore
 
-面向 Minecraft Java 版的多版本 mod，MIT 许可证。1.20.1 已实装基础材料[瓜巴](wiki/items.md#guaba)及其无序配方，中立生物[饼蛙和刷怪蛋](wiki/bosses.md#bingwa)，以及支持转换加工与自动化设置的[瓜巴工作台](wiki/guaba-workbench.md)（0.1.0 开发中，尚未发布）；次要目标尚未适配。
+面向 Minecraft Java 版的多版本 mod，MIT 许可证。1.20.1 已实装基础材料[瓜巴](wiki/items.md#guaba)及其无序配方，中立生物[饼蛙和刷怪蛋](wiki/bosses.md#bingwa)、可拾取装备的人形 NPC [粉红妹](wiki/bosses.md#pinkki)，以及支持转换加工与自动化设置的[瓜巴工作台](wiki/guaba-workbench.md)（0.1.0 开发中，尚未发布）；次要目标尚未适配。
 
 | 优先级 | Minecraft | 加载器 | Java | 构建工具 |
 | --- | --- | --- | --- | --- |
@@ -32,7 +32,7 @@ Minecraft、加载器、Gradle 和构建插件版本固定在仓库配置中。�
 
 ## 瓜巴材料兼容试作
 
-1.20.1 已为 Silent Gear（寂静装备）、Tinkers' Construct（匠魂）和 Tetra 添加可选的瓜巴材料数据；不要求安装三个模组，不内嵌它们或其前置。属性是兼容性占位，暂无瓜巴专属特性。详见[调研、参数与验证范围](docs/guaba-material-compatibility.md)及[玩家操作说明](wiki/compatibility.md)。自研游戏内手册尚未实现。
+1.20.1 已为 Silent Gear（寂静装备）、Tinkers' Construct（匠魂）和 Tetra 添加可选的瓜巴材料数据；不要求安装三个模组，不内嵌它们或其前置。基础属性仍为兼容性占位，现已接入“瓜巴之触”：命中目标施加瓜巴 I，持续 10 秒。详见[调研、参数与验证范围](docs/guaba-material-compatibility.md)及[玩家操作说明](wiki/compatibility.md)。自研游戏内手册尚未实现。
 
 ## 从零开始：本机运行
 

@@ -96,9 +96,30 @@ def main():
                 assert strings["item.pinkkicore.bingwa_spawn_egg"] == egg_name
             for path in ("entity/BingwaEntity", "entity/ModEntities", "client/BingwaModel", "client/BingwaRenderer", "client/ClientEvents"):
                 assert f"io/github/vitech/pinkkicore/forge/{path}.class" in archive.namelist()
+            assert archive.read("assets/pinkkicore/textures/entity/pinkki.png") == (ROOT / "designs/pinkki-skin/pinkki-alex.png").read_bytes(), "Pinkki skin/source mismatch"
+            assert json.loads(archive.read("assets/pinkkicore/models/item/pinkki_spawn_egg.json")) == {"parent": "minecraft:item/template_spawn_egg"}
+            assert json.loads(archive.read("data/pinkkicore/loot_tables/entities/pinkki.json")) == {"type": "minecraft:entity", "pools": []}
+            for language, entity_name, egg_name in [("zh_cn", "粉红妹", "粉红妹刷怪蛋"), ("en_us", "Pinkki", "Pinkki Spawn Egg")]:
+                strings = json.loads(archive.read(f"assets/pinkkicore/lang/{language}.json"))
+                assert strings["entity.pinkkicore.pinkki"] == entity_name
+                assert strings["item.pinkkicore.pinkki_spawn_egg"] == egg_name
+            for path in ("entity/PinkkiEntity", "client/PinkkiRenderer"):
+                assert f"io/github/vitech/pinkkicore/forge/{path}.class" in archive.namelist()
+            assert not any("pinkkicore/test/" in name for name in archive.namelist()), "Test probe leaked into release JAR"
             silent = json.loads(archive.read("data/pinkkicore/silentgear_materials/guaba.json"))
             assert silent["crafting_items"]["main"] == {"item": "pinkkicore:guaba"}
-            assert silent["traits"] == {"main": [], "rod": []}
+            trait_entry = {"name": "pinkkicore:guaba_touch", "level": 1}
+            assert silent["traits"] == {"main": [trait_entry], "rod": [trait_entry]}
+            trait = json.loads(archive.read("data/pinkkicore/silentgear_traits/guaba_touch.json"))
+            assert trait["type"] == "silentgear:target_effect" and trait["max_level"] == 1
+            assert trait["effects"]["tool"]["1"] == [{"effect": "pinkkicore:guaba", "amplifier": 0, "duration": 10.0}]
+            modifier = json.loads(archive.read("data/pinkkicore/tinkering/modifiers/guaba_touch.json"))
+            module = modifier["modules"][0]
+            assert module["type"] == "tconstruct:mob_effect" and module["hooks"] == ["tconstruct:melee_hit"]
+            assert module["effect"] == "pinkkicore:guaba" and module["level"] == {"flat": 1.0}
+            assert module["time"] == {"flat": 200.0} and module["chance"] == {"flat": 1.0}
+            traits = json.loads(archive.read("data/pinkkicore/tinkering/materials/traits/guaba.json"))
+            assert traits["default"] == [trait_entry]
             definition = json.loads(archive.read("data/pinkkicore/tinkering/materials/definition/guaba.json"))
             optional_condition = {"type": "forge:mod_loaded", "modid": "tconstruct"}
             assert definition["condition"] == optional_condition
@@ -110,8 +131,12 @@ def main():
                 json.loads(archive.read(f"data/pinkkicore/tinkering/materials/{section}/guaba.json"))
             json.loads(archive.read("assets/pinkkicore/tinkering/materials/guaba.json"))
             tetra = json.loads(archive.read("data/tetra/materials/wood/pinkkicore_guaba.json"))
-            assert tetra["key"] == "pinkkicore_guaba" and tetra["effects"] == {}
+            assert tetra["key"] == "pinkkicore_guaba" and tetra["effects"] == {"pinkkicore_guaba_touch": 1}
             assert tetra["material"] == {"items": ["pinkkicore:guaba"], "count": 1}
+            hit = json.loads(archive.read("data/tetra/item_effects/pinkkicore_guaba_touch.json"))
+            assert hit["trigger"] == "tetra:apply_hit_effects" and hit["effect"] == "pinkkicore_guaba_touch"
+            assert hit["outcome"] == {"type": "tetra:apply_effect", "effect": "pinkkicore:guaba", "entity": "target",
+                                      "source": "attacker", "duration": 200, "amplifier": 0}
             assert not any(path.startswith(("pinkkicore/test/", "net/silentchaos512/", "slimeknights/", "se/mickelus/"))
                            for path in archive.namelist()), "Test probe or optional mod code leaked into release"
             for source, resource in [

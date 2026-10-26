@@ -15,6 +15,10 @@ public final class ModEntities {
         EntityType.Builder.of(BingwaEntity::new, MobCategory.CREATURE)
             .sized(1.35F, 1.05F).clientTrackingRange(8).build(ModInfo.ID + ":bingwa"));
 
+    public static final RegistryObject<EntityType<PinkkiEntity>> PINKKI = ENTITIES.register("pinkki", () ->
+        EntityType.Builder.of(PinkkiEntity::new, MobCategory.CREATURE)
+            .sized(0.6F, 1.8F).clientTrackingRange(10).build(ModInfo.ID + ":pinkki"));
+
     private ModEntities() {}
 
     public static void register(IEventBus bus) {
@@ -23,6 +27,7 @@ public final class ModEntities {
     }
 
     private static void attributes(EntityAttributeCreationEvent event) {
+        event.put(PINKKI.get(), PinkkiEntity.createAttributes().build());
         event.put(BINGWA.get(), BingwaEntity.createAttributes().build());
     }
 }

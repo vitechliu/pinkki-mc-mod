@@ -1,6 +1,6 @@
 # Pinkki / Pastel Spark 皮肤设计
 
-2026-10-23，依据用户提供的角色插画制作。仅设计审阅，未注册为 NPC、未接入游戏运行资源。
+2026-10-23，依据用户提供的角色插画制作。皮肤设计源资产；2026-10-25 已将该 v5 皮肤接入 1.20.1 Forge 的粉红妹 NPC。
 
 - `pinkki-alex.png`：64×64 RGBA 标准 Java 皮肤，使用 Alex / Slim（3 像素手臂），包含基础与覆盖层。
 - `pinkki-alex.bbmodel`：Blockbench Minecraft Skin 工程，纹理内嵌。打开后如覆盖层隐藏，使用 Skin → Toggle Skin Layer。
@@ -29,4 +29,14 @@
 
 验证：PNG 尺寸/颜色格式、两份工程内嵌纹理一致性、审阅副本 12 部件及覆盖层可见性检查通过；已在 Blockbench 浏览器实际检查正面、背面、斜角，并通过新标签页独立打开最终分享链接。截图保存在 `.local/pinkki-skin-review/`。未启动 Minecraft，未验证游戏客户端效果。
 
-本次只有设计源资产，无游戏内玩法变化，因此不修改玩家 Wiki、未实现的游戏手册或版本适配检查点。
+2026-10-24 的皮肤设计阶段没有游戏内玩法变化；当时未修改玩家 Wiki、未实现的游戏手册或版本适配检查点。
+
+## 粉红妹 NPC 接入
+
+实体 `pinkkicore:pinkki`、刷怪蛋 `pinkkicore:pinkki_spawn_egg`。保持现有五官、Slim 3 像素手臂、基础和覆盖层；运行纹理 `versions/1.20.1/src/main/resources/assets/pinkkicore/textures/entity/pinkki.png` 与 `pinkki-alex.png` 逐字节一致。更新皮肤后需同步该运行纹理，并执行发行包校验。
+
+本次选择原版 `PlayerModel` / Slim 图层与原版装备层，以直接支持手持物、四个护甲槽、头部物品和鞘翅显示；不另造 GeckoLib 骨骼或重复皮肤几何。站立、行走摆臂、观察与近战挥手由原版人形模型逐帧计算，没有独立的关键帧动画资源。模型 32 像素高对应原版人形视觉尺度，碰撞箱为 0.6 × 1.8 格；编辑工程中的姿态仅供外观审阅。
+
+可在 Blockbench 打开 `pinkki-review.bbmodel` 拖动旋转、缩放和检查十二个基础/覆盖部件。旧云分享链接本次已提示失效，请使用本地源工程，不依赖旧快照。本次重新在 Blockbench 打开源工程审阅；游戏渲染、护甲贴合与持物观感仍待客户端人工验收。
+
+行为、独立无头测试证据和手册接入缺口见 `docs/changes/2026-10-25-pinkki-npc.md`。

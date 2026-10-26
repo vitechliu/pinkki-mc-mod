@@ -96,7 +96,7 @@ def check(name, research, libraries, java_home, artifact, probe, geckolib, eula)
         lines.put(None)
 
     threading.Thread(target=read, daemon=True).start()
-    ready = passed = stopped = sent = errors = False
+    ready = passed = stopped = sent = errors = auth_key_unavailable = False
     log = run / 'console.log'
     deadline = time.monotonic() + 180
     try:
@@ -113,7 +113,13 @@ def check(name, research, libraries, java_home, artifact, probe, geckolib, eula)
                 ready |= 'Done (' in line
                 passed |= 'GUABA_COMPAT_PROBE PASS' in line
                 stopped |= 'Stopping server' in line
-                errors |= '/ERROR]' in line or 'GUABA_COMPAT_PROBE FAIL' in line
+                # This offline test does not exercise authenticated multiplayer. Record the
+                # unrelated background key fetch separately; all other ERROR lines fail.
+                auth_failure = ('Yggdrasil Key Fetcher/ERROR]' in line
+                                and '[mojang/YggdrasilServicesKeyInfo]' in line
+                                and 'Failed to request yggdrasil public key' in line)
+                auth_key_unavailable |= auth_failure
+                errors |= ('/ERROR]' in line and not auth_failure) or 'GUABA_COMPAT_PROBE FAIL' in line
                 if 'GUABA_COMPAT_PROBE' in line or 'GUABA ' in line:
                     print(name, line.strip(), flush=True)
                 if (passed or 'GUABA_COMPAT_PROBE FAIL' in line) and not sent:
@@ -126,7 +132,7 @@ def check(name, research, libraries, java_home, artifact, probe, geckolib, eula)
         return {
             'case': name, 'passed': code == 0 and ready and passed and stopped and not errors,
             'exit_code': code, 'ready': ready, 'probe_pass': passed, 'stopped': stopped,
-            'errors': errors, 'log': str(log.relative_to(ROOT)),
+            'errors': errors, 'auth_key_unavailable': auth_key_unavailable, 'log': str(log.relative_to(ROOT)),
             'artifact_sha256': hashlib.sha256(artifact.read_bytes()).hexdigest(),
         }
     finally:
@@ -164,6 +170,13 @@ def main():
     props = dict(line.split('=', 1) for line in (ROOT / 'mod.properties').read_text().splitlines()
                  if '=' in line and not line.startswith('#'))
     artifact = ROOT / 'versions/1.20.1/build/libs' / f"{props['mod_id']}-forge-1.20.1-{props['mod_version']}.jar"
+    # Use one immutable artifact across the matrix even if another local build runs.
+    snapshot = research / artifact.name
+    before = hashlib.sha256(artifact.read_bytes()).hexdigest()
+    shutil.copy2(artifact, snapshot)
+    if hashlib.sha256(snapshot.read_bytes()).hexdigest() != before:
+        raise ValueError('Artifact changed while copying; retry the test')
+    artifact = snapshot
     results = []
     for name in selected:
         result = check(name, research, libraries, java_home, artifact, probe, args.geckolib.resolve(), eula)
