@@ -53,3 +53,5 @@ Pages 工作流独立于 mod 构建与 Release；发布 Wiki 不发布 mod，也
 本地构建通过不代表远端 Pages 已发布。提交并推送后，需要查看 Wiki 工作流及部署网址才能确认在线结果。占位 Wiki 不涉及游戏功能变更，无需创建版本适配待办或运行游戏测试。
 
 当前稳定版工具链的 `npm audit` 报告 3 项开发依赖告警（2 moderate、1 high，涉及 Vite/esbuild），暂无该稳定依赖范围内的自动修复。开发与预览服务器仅绑定 `127.0.0.1`；GitHub Pages 仅接收构建后的静态文件。这不代表开发依赖告警已修复，后续应随 VitePress 稳定版升级复查。预览使用 Vite CLI，避免 VitePress 1.x 预览命令忽略 host 参数。
+
+雷霆瓜巴复用相同酿造组件，使用 `<GuabaBrewing thunder />` 选择定义中的 `thunder.brewing`；其属性表以 `<table data-effect="thunder_guaba">` 标记。手册编译器将两种药水的 `brewing`、`potion_stats` 块记录为对应效果 ID，客户端按 ID 筛选实际注册酿造配方，并把雷霆属性幅度乘 `thunder.amplitude_multiplier`。添加同类组件参数时同步手册编译器和渲染，不能只添加网页展示。

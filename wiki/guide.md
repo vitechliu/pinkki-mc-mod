@@ -1,10 +1,10 @@
 # 项目与版本
 
-适用 Minecraft Java **1.20.1 / Forge**。安装对应版本的 PinkkiCore 后，可使用[引导手册](./handbook.md)在游戏内离线阅读。
+适用 Minecraft Java **1.20.1 / Forge**。安装对应版本的 PinkkiCore 后，可使用[瓜巴手册](./handbook.md)在游戏内离线阅读。
 
 ## 阅读目录
 
-- [引导手册](./handbook.md)：获取、阅读与搜索。
+- [瓜巴手册](./handbook.md)：获取、阅读与搜索。
 - [道具与方块](./items.md)：用途、获取方式与属性。
 - [合成与加工](./recipes.md)：材料、加工条件与产物。
 - [瓜巴药水](./guaba-potions.md)：每秒波动的移速与护甲，以及酿造方法。

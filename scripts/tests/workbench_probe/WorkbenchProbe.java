@@ -296,6 +296,7 @@ public final class WorkbenchProbe {
             check(guaba==2 && dirt==3 && mud==4 && block==1,"break drops: "+guaba+"/"+dirt+"/"+mud+"/"+block);
             check(!menu.stillValid(player),"removed machine menu stayed valid");
             System.out.println("WORKBENCH block + inventory drops exactly once + removed menu invalid PASS");
+            ChargingChecks.run(level,player);
             System.out.println("WORKBENCH_PROBE PASS");
         } catch(Throwable error) { error.printStackTrace();System.out.println("WORKBENCH_PROBE FAIL "+error); }
     }

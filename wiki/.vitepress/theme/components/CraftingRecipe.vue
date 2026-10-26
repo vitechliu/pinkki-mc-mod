@@ -5,29 +5,34 @@ import { withBase } from 'vitepress'
 type ItemVisual = { name: string; image: string; link?: string }
 type Recipe = {
   type: string
-  ingredients: { item: string }[]
+  ingredients?: { item: string }[]
+  pattern?: string[]
+  key?: Record<string, { item: string }>
   result: { item: string; count?: number }
 }
 const props = defineProps<{ recipe: Recipe; items: Record<string, ItemVisual> }>()
-if (props.recipe.type !== 'minecraft:crafting_shapeless' || props.recipe.ingredients.length > 9) {
-  throw new Error('CraftingRecipe 当前仅支持最多九格的无序合成')
-}
-for (const id of [...props.recipe.ingredients.map(i => i.item), props.recipe.result.item]) {
+const shaped = props.recipe.type === 'minecraft:crafting_shaped'
+if (!shaped && props.recipe.type !== 'minecraft:crafting_shapeless') throw new Error('不支持的合成类型')
+const ingredients = shaped
+  ? (props.recipe.pattern ?? []).flatMap(row => Array.from({ length: 3 }, (_, i) => row[i] && row[i] !== ' ' ? props.recipe.key?.[row[i]] : null))
+  : props.recipe.ingredients ?? []
+if (ingredients.length > 9) throw new Error('配方超过九格')
+for (const id of [...ingredients.filter(Boolean).map(i => i!.item), props.recipe.result.item]) {
   if (!props.items[id]) throw new Error(`配方缺少物品图标：${id}`)
 }
 const slots = computed(() => Array.from({ length: 9 }, (_, i) => {
-  const ingredient = props.recipe.ingredients[i]
+  const ingredient = ingredients[i]
   return ingredient ? props.items[ingredient.item] : null
 }))
 const output = computed(() => props.items[props.recipe.result.item])
-const description = computed(() => `${props.recipe.ingredients.map(i => props.items[i.item].name).join(' + ')} → ${output.value.name} × ${props.recipe.result.count ?? 1}`)
+const description = computed(() => `${ingredients.filter(Boolean).map(i => props.items[i!.item].name).join(' + ')} → ${output.value.name} × ${props.recipe.result.count ?? 1}`)
 </script>
 
 <template>
   <figure class="crafting-recipe" :aria-label="description">
     <div class="recipe-heading">
       <span>合成</span>
-      <span class="recipe-kind">无序合成</span>
+      <span class="recipe-kind">{{ shaped ? '有序合成' : '无序合成' }}</span>
     </div>
     <div class="recipe-panel">
       <div class="recipe-grid" aria-label="合成材料">

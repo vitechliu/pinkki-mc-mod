@@ -1,0 +1,50 @@
+<div id="guaba-model-review">
+  <div class="viz-row"><strong>瓜巴充电桩</strong><span class="text-small">附魔台座 · 三向铜针 · 4/5 格高</span></div>
+  <canvas aria-label="瓜巴充电桩三维模型，可拖动旋转并用滚轮缩放" role="img"></canvas>
+  <div class="viz-controls">
+    <button class="btn" type="button" data-view="iso">立体</button>
+    <button class="btn" type="button" data-view="top">切面</button>
+    <button class="btn" type="button" data-view="front">正面</button>
+    <button class="btn" type="button" data-view="side">侧面</button>
+    <button class="btn" type="button" data-view="back">背面</button>
+  </div>
+</div>
+<style>
+#guaba-model-review canvas{display:block;width:100%;height:360px;touch-action:none;cursor:grab}
+</style>
+<script>
+(() => {
+const root=document.getElementById('guaba-model-review');
+const data=/*ASSET*/null;
+const canvas=root.querySelector('canvas'),ctx=canvas.getContext('2d'),img=new Image();
+let yaw=3.86159,pitch=.62,zoom=1,drag=null;
+function faces(bounds) {
+ const [x0,y0,z0]=bounds.from,[x1,y1,z1]=bounds.to;
+ return {north:[[x1,y1,z0],[x0,y1,z0],[x0,y0,z0],[x1,y0,z0]],south:[[x0,y1,z1],[x1,y1,z1],[x1,y0,z1],[x0,y0,z1]],east:[[x1,y1,z1],[x1,y1,z0],[x1,y0,z0],[x1,y0,z1]],west:[[x0,y1,z0],[x0,y1,z1],[x0,y0,z1],[x0,y0,z0]],up:[[x0,y1,z0],[x1,y1,z0],[x1,y1,z1],[x0,y1,z1]],down:[[x0,y0,z1],[x1,y0,z1],[x1,y0,z0],[x0,y0,z0]]};
+}
+function rotate(p){const x=p[0]-8,y=p[1]-6.4,z=p[2]-8;const a=x*Math.cos(yaw)-z*Math.sin(yaw),b=x*Math.sin(yaw)+z*Math.cos(yaw);return [a,y*Math.cos(pitch)-b*Math.sin(pitch),y*Math.sin(pitch)+b*Math.cos(pitch)];}
+function draw(){
+ const w=canvas.clientWidth,h=360,dpr=window.devicePixelRatio||1;canvas.width=w*dpr;canvas.height=h*dpr;ctx.scale(dpr,dpr);ctx.clearRect(0,0,w,h);ctx.imageSmoothingEnabled=false;
+ const scale=Math.min(w/31,h/28)*zoom;
+ const project=p=>{const r=rotate(p);return [w/2+r[0]*scale,h/2-r[1]*scale,r[2]]};
+ const theme=getComputedStyle(root),line=theme.getPropertyValue('--border').trim()||'rgba(128,128,128,.25)';ctx.strokeStyle=line;ctx.lineWidth=1;
+ for(let i=0;i<=16;i+=4){for(const pair of [[[i,0,0],[i,0,16]],[[0,0,i],[16,0,i]]]){const a=project(pair[0]),b=project(pair[1]);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();}}
+ const list=data.model.elements.flatMap(bounds=>Object.entries(faces(bounds)).map(([name,points])=>({bounds,name,p:points.map(project)}))).sort((a,b)=>a.p.reduce((s,v)=>s+v[2],0)-b.p.reduce((s,v)=>s+v[2],0));
+ for(const {bounds,name,p} of list){
+  const [a,b,,d]=p,cross=(b[0]-a[0])*(d[1]-a[1])-(b[1]-a[1])*(d[0]-a[0]);if(cross<=0)continue;
+  const uv=bounds.faces[name].uv.map(v=>v*4),tw=uv[2]-uv[0],th=uv[3]-uv[1];
+  ctx.save();ctx.transform((b[0]-a[0])/tw,(b[1]-a[1])/tw,(d[0]-a[0])/th,(d[1]-a[1])/th,a[0],a[1]);
+  ctx.drawImage(img,uv[0],uv[1],tw,th,0,0,tw,th);
+  ctx.fillStyle=name==='up'?'rgba(0,0,0,0)':name==='north'||name==='south'?'rgba(0,0,0,.12)':'rgba(0,0,0,.25)';ctx.fillRect(0,0,tw,th);ctx.restore();
+ }
+ canvas.dataset.view=[yaw.toFixed(3),pitch.toFixed(3),zoom.toFixed(3)].join(',');
+}
+img.onload=draw;img.src=data.texture;
+canvas.addEventListener('pointerdown',e=>{drag=[e.clientX,e.clientY];canvas.setPointerCapture(e.pointerId)});
+canvas.addEventListener('pointermove',e=>{if(!drag)return;yaw+=(e.clientX-drag[0])*.012;pitch=Math.max(-1.55,Math.min(1.55,pitch+(e.clientY-drag[1])*.012));drag=[e.clientX,e.clientY];draw()});
+canvas.addEventListener('pointerup',()=>drag=null);canvas.addEventListener('pointercancel',()=>drag=null);
+canvas.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.55,Math.min(1.65,zoom*Math.exp(-e.deltaY*.001)));draw()},{passive:false});
+root.querySelectorAll('button[data-view]').forEach(button=>button.addEventListener('click',()=>{[yaw,pitch]=({iso:[3.86159,.62],top:[0,1.55],front:[Math.PI,0],side:[Math.PI/2,0],back:[0,0]})[button.dataset.view];draw()}));
+new ResizeObserver(draw).observe(canvas);
+})();
+</script>

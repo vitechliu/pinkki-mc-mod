@@ -1,4 +1,7 @@
 <script setup>
+import chargingStation from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_charging_station.json'
+import chargeGuaba from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_charging/guaba_to_thunder_guaba.json'
+import chargeCreeper from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_charging/creeper_to_charged_creeper.json'
 import bowConversion from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_conversion/bow_to_guaba_bow.json'
 import swordConversion from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_conversion/diamond_sword_to_guaba_sword.json'
 import guideRecipe from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guide_book.json'
@@ -6,12 +9,18 @@ import guabaRecipe from '../versions/1.20.1/src/main/resources/data/pinkkicore/r
 import dirtToMud from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_conversion/dirt_to_mud.json'
 
 const items = {
+  'minecraft:lightning_rod': { name: '避雷针', image: '/images/minecraft/lightning_rod.svg' },
+  'minecraft:enchanting_table': { name: '附魔台', image: '/images/minecraft/enchanting_table.svg' },
+  'minecraft:creeper_spawn_egg': { name: '苦力怕刷怪蛋', image: '/images/minecraft/creeper_spawn_egg.png' },
+  'pinkkicore:charged_creeper_spawn_egg': { name: '闪电苦力怕刷怪蛋', image: '/images/charged_creeper_spawn_egg.png' },
+  'pinkkicore:thunder_guaba': { name: '雷霆瓜巴', image: '/images/thunder_guaba.png' },
+  'pinkkicore:guaba_charging_station': { name: '瓜巴充电桩', image: '/images/guaba_charging_station.png' },
   'minecraft:bow': { name: '弓', image: '/images/minecraft/bow.png' },
   'pinkkicore:guaba_bow': { name: '瓜巴弓', image: '/images/guaba_bow.png', link: '/items#guaba-bow' },
   'minecraft:diamond_sword': { name: '钻石剑', image: '/images/minecraft/diamond_sword.png' },
   'pinkkicore:guaba_sword': { name: '瓜巴剑', image: '/images/guaba_sword.png', link: '/items#guaba-sword' },
   'minecraft:book': { name: '书', image: '/images/minecraft/book.png' },
-  'pinkkicore:guide_book': { name: '引导手册', image: '/images/minecraft/book.png', link: '/handbook' },
+  'pinkkicore:guide_book': { name: '瓜巴手册', image: '/images/guide_book.png', link: '/handbook' },
   'minecraft:melon_slice': { name: '西瓜片', image: '/images/minecraft/melon_slice.png' },
   'minecraft:mud': { name: '泥巴', image: '/images/minecraft/mud.svg' },
   'minecraft:dirt': { name: '泥土', image: '/images/minecraft/dirt.svg' },
@@ -39,11 +48,11 @@ const items = {
 
 酿造台需要烈焰粉供能，底部可同时放入三瓶相同药水。持续时间、等级及喷溅/滞留见[瓜巴药水](./guaba-potions.md)。
 
-## 引导手册 {#guide-book}
+## 瓜巴手册 {#guide-book}
 
 <CraftingRecipe :recipe="guideRecipe" :items="items" />
 
-右键阅读[引导手册](./handbook.md)。
+右键阅读[瓜巴手册](./handbook.md)。
 
 ## 瓜巴剑 {#guaba-sword}
 
@@ -56,3 +65,15 @@ const items = {
 <GuabaConversion :recipe="bowConversion" :items="items" />
 
 保留输入弓的附魔、名称和已消耗耐久。查看[瓜巴弓](./items.md#guaba-bow)。
+
+## 瓜巴充电桩 {#guaba-charging-station}
+
+<CraftingRecipe :recipe="chargingStation" :items="items" />
+
+## 充电桩加工 {#guaba-charging}
+
+<GuabaCharging :recipe="chargeGuaba" :items="items" />
+
+<GuabaCharging :recipe="chargeCreeper" :items="items" />
+
+查看[充电桩操作与自动化](./items.md#guaba-charging-station)。

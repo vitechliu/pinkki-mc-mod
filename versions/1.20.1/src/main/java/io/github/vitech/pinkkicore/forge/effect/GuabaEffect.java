@@ -10,12 +10,25 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
 /** Server-authoritative, independent rolls; transient modifiers never alter base attributes. */
-public final class GuabaEffect extends MobEffect {
-    private static final UUID SPEED = UUID.fromString("be04e213-58c6-463e-aad1-bbc1d078da60");
-    private static final UUID ARMOR = UUID.fromString("925328ed-cc88-47e1-87dc-28d29fe14e75");
-    private static final String NEXT_ROLL = "pinkkicore:guaba_next_roll";
+public class GuabaEffect extends MobEffect {
+    private static final UUID GUABA_SPEED = UUID.fromString("be04e213-58c6-463e-aad1-bbc1d078da60");
+    private static final UUID GUABA_ARMOR = UUID.fromString("925328ed-cc88-47e1-87dc-28d29fe14e75");
+    private final UUID speedId;
+    private final UUID armorId;
+    private final String nextRoll;
+    private final double amplitudeMultiplier;
 
-    public GuabaEffect() { super(MobEffectCategory.BENEFICIAL, 0xA5AD35); }
+    public GuabaEffect() {
+        this(GUABA_SPEED, GUABA_ARMOR, "pinkkicore:guaba_next_roll", 0xA5AD35, 1);
+    }
+
+    protected GuabaEffect(UUID speedId, UUID armorId, String nextRoll, int color, double amplitudeMultiplier) {
+        super(MobEffectCategory.NEUTRAL, color);
+        this.speedId = speedId;
+        this.armorId = armorId;
+        this.nextRoll = nextRoll;
+        this.amplitudeMultiplier = amplitudeMultiplier;
+    }
 
     @Override
     public boolean isDurationEffectTick(int duration, int amplifier) { return true; }
@@ -26,9 +39,9 @@ public final class GuabaEffect extends MobEffect {
         var speed = entity.getAttribute(Attributes.MOVEMENT_SPEED);
         var armor = entity.getAttribute(Attributes.ARMOR);
         // Missing transient modifiers also handles reloading an entity with a saved effect.
-        if ((speed != null && speed.getModifier(SPEED) == null)
-                || (armor != null && armor.getModifier(ARMOR) == null)
-                || entity.level().getGameTime() >= entity.getPersistentData().getLong(NEXT_ROLL)) {
+        if ((speed != null && speed.getModifier(speedId) == null)
+                || (armor != null && armor.getModifier(armorId) == null)
+                || entity.level().getGameTime() >= entity.getPersistentData().getLong(nextRoll)) {
             roll(entity, amplifier);
         }
     }
@@ -41,9 +54,9 @@ public final class GuabaEffect extends MobEffect {
     @Override
     public void removeAttributeModifiers(LivingEntity entity, AttributeMap attributes, int amplifier) {
         if (entity.level().isClientSide) return;
-        remove(entity.getAttribute(Attributes.MOVEMENT_SPEED), SPEED);
-        remove(entity.getAttribute(Attributes.ARMOR), ARMOR);
-        entity.getPersistentData().remove(NEXT_ROLL);
+        remove(entity.getAttribute(Attributes.MOVEMENT_SPEED), speedId);
+        remove(entity.getAttribute(Attributes.ARMOR), armorId);
+        entity.getPersistentData().remove(nextRoll);
     }
 
     private static void remove(AttributeInstance attribute, UUID id) {
@@ -56,15 +69,15 @@ public final class GuabaEffect extends MobEffect {
         attribute.addTransientModifier(new AttributeModifier(id, "Guaba fluctuation", amount, operation));
     }
 
-    private static void roll(LivingEntity entity, int amplifier) {
+    private void roll(LivingEntity entity, int amplifier) {
         var levels = GuabaPotions.SPEC.getAsJsonArray("levels");
         var bounds = levels.get(Math.max(0, Math.min(3, amplifier))).getAsJsonObject();
         double speedMin = bounds.get("speed_min").getAsDouble();
         double armorMin = bounds.get("armor_min").getAsDouble();
         double speed = speedMin + entity.getRandom().nextDouble() * (bounds.get("speed_max").getAsDouble() - speedMin);
         double armor = armorMin + entity.getRandom().nextDouble() * (bounds.get("armor_max").getAsDouble() - armorMin);
-        replace(entity.getAttribute(Attributes.MOVEMENT_SPEED), SPEED, speed - 1, AttributeModifier.Operation.MULTIPLY_TOTAL);
-        replace(entity.getAttribute(Attributes.ARMOR), ARMOR, armor, AttributeModifier.Operation.ADDITION);
-        entity.getPersistentData().putLong(NEXT_ROLL, entity.level().getGameTime() + 20);
+        replace(entity.getAttribute(Attributes.MOVEMENT_SPEED), speedId, (speed - 1) * amplitudeMultiplier, AttributeModifier.Operation.MULTIPLY_TOTAL);
+        replace(entity.getAttribute(Attributes.ARMOR), armorId, armor * amplitudeMultiplier, AttributeModifier.Operation.ADDITION);
+        entity.getPersistentData().putLong(nextRoll, entity.level().getGameTime() + 20);
     }
 }

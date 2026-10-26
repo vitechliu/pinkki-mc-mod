@@ -35,8 +35,9 @@ public final class GuabaEffectProbe {
     private boolean done;
     private double lastSpeed, lastArmor, baseSpeed;
     private long rollTime;
-    private static final double[][] BOUNDS = {{.5,1.75,0,8},{.65,2.5,2,16},{.8,3.25,4,24},{1,4,6,32}};
+    private static final double[][] BOUNDS = {{.5,1.5,-8,8},{.35,1.65,-16,16},{.2,1.8,-24,24},{.05,1.95,-32,32}};
     public GuabaEffectProbe() {
+        new ThunderGuabaProbe();
         MinecraftForge.EVENT_BUS.addListener(this::started);
         MinecraftForge.EVENT_BUS.addListener(this::tick);
     }
@@ -68,8 +69,8 @@ public final class GuabaEffectProbe {
                 check(!standard.isInput(bottle(inputs[0].getItem(), Potions.WATER)), "potion NBT ignored");
                 visibleRecipes++;
             }
-            check(visibleRecipes == 9, "JEI standard brewing recipes: expected 9, got " + visibleRecipes);
-            System.out.println("GUABA_EFFECT JEI-readable 9 recipes + concrete potion NBT + exact outputs + named bottle preservation PASS");
+            check(visibleRecipes == 18, "JEI standard brewing recipes: expected 18, got " + visibleRecipes);
+            System.out.println("GUABA_EFFECT JEI-readable 18 recipes + concrete potion NBT + exact outputs + named bottle preservation PASS");
             for (Item container : new Item[]{Items.POTION,Items.SPLASH_POTION,Items.LINGERING_POTION}) {
                 var basic=brew(bottle(container,Potions.AWKWARD),ModItems.GUABA.get()); result(basic,container,normal);
                 result(brew(basic,Items.REDSTONE),container,extended); result(brew(basic,Items.GLOWSTONE_DUST),container,strong);
@@ -94,15 +95,38 @@ public final class GuabaEffectProbe {
             System.out.println("GUABA_EFFECT actual brewing stand 3 bottles + reagent/fuel consumption PASS");
             cow=EntityType.COW.create(level); cow.setNoAi(true); cow.setInvulnerable(true); cow.setNoGravity(true); cow.setPos(8,100,8);
             level.addFreshEntity(cow); baseSpeed=cow.getAttributeBaseValue(Attributes.MOVEMENT_SPEED);
+            check(GuabaPotions.GUABA.get().getCategory() == net.minecraft.world.effect.MobEffectCategory.NEUTRAL, "effect category");
+            cow.getRandom().setSeed(20261026L);
             for(int amplifier=0;amplifier<4;amplifier++) {
+                int slower=0, faster=0, negativeArmor=0, positiveArmor=0;
                 cow.addEffect(new MobEffectInstance(GuabaPotions.GUABA.get(),600,amplifier));
                 for(int sample=0;sample<400;sample++) {
                     GuabaPotions.GUABA.get().addAttributeModifiers(cow,cow.getAttributes(),amplifier);
                     bounds(amplifier);
+                    double ratio=cow.getAttributeValue(Attributes.MOVEMENT_SPEED)/baseSpeed;
+                    if(ratio<1) slower++; else if(ratio>1) faster++;
+                    if(armorAmount()<0) negativeArmor++; else if(armorAmount()>0) positiveArmor++;
                     check(cow.getAttribute(Attributes.MOVEMENT_SPEED).getModifiers().size()==1,"stacking modifiers");
                 }
+                check(slower>100 && faster>100 && negativeArmor>100 && positiveArmor>100, "one-sided rolls at level " + amplifier);
                 cow.removeAllEffects(); restored();
             }
+            // A negative armor roll must reduce existing armor, while vanilla still clamps naked armor to zero.
+            cow.getAttribute(Attributes.ARMOR).setBaseValue(20);
+            cow.addEffect(new MobEffectInstance(GuabaPotions.GUABA.get(),600,0));
+            boolean reduced=false;
+            for(int i=0;i<100;i++) {
+                GuabaPotions.GUABA.get().addAttributeModifiers(cow,cow.getAttributes(),0);
+                if(armorAmount()<0) {
+                    check(Math.abs(cow.getAttributeValue(Attributes.ARMOR)-(20+armorAmount()))<1e-9, "negative armor did not reduce equipped defense");
+                    reduced=true;
+                }
+            }
+            check(reduced, "no negative armor roll");
+            cow.removeAllEffects();
+            check(cow.getAttributeValue(Attributes.ARMOR)==20, "equipped defense not restored");
+            cow.getAttribute(Attributes.ARMOR).setBaseValue(0);
+            System.out.println("GUABA_EFFECT symmetric I-IV positive/negative rolls + armor reduction/clamp + neutral category PASS");
             cow.addEffect(new MobEffectInstance(GuabaPotions.GUABA.get(),600,255)); bounds(3); cow.removeAllEffects();
             // Save/load while active: transient modifiers are recreated and never double-counted.
             cow.addEffect(new MobEffectInstance(GuabaPotions.GUABA.get(),600,1));
@@ -125,15 +149,19 @@ public final class GuabaEffectProbe {
             remember();
         } catch(Throwable error) { fail(error); }
     }
+    private double armorAmount() {
+        return cow.getAttribute(Attributes.ARMOR).getModifier(UUID.fromString("925328ed-cc88-47e1-87dc-28d29fe14e75")).getAmount();
+    }
     private void bounds(int amplifier) {
-        double speed=cow.getAttributeValue(Attributes.MOVEMENT_SPEED)/baseSpeed, armor=cow.getAttributeValue(Attributes.ARMOR);
+        double speed=cow.getAttributeValue(Attributes.MOVEMENT_SPEED)/baseSpeed, armor=armorAmount();
+        if(armor<0) check(cow.getAttributeValue(Attributes.ARMOR)==0, "vanilla armor floor bypassed");
         double[] b=BOUNDS[amplifier];check(speed>=b[0] && speed<=b[1] && armor>=b[2] && armor<=b[3],"bounds "+amplifier+" "+speed+"/"+armor);
     }
     private void restored() {
         check(Math.abs(cow.getAttributeValue(Attributes.MOVEMENT_SPEED)-baseSpeed)<1e-9 && cow.getAttributeValue(Attributes.ARMOR)==0,"base attributes not restored");
     }
     private void remember() {
-        lastSpeed=cow.getAttributeValue(Attributes.MOVEMENT_SPEED);lastArmor=cow.getAttributeValue(Attributes.ARMOR);
+        lastSpeed=cow.getAttributeValue(Attributes.MOVEMENT_SPEED);lastArmor=armorAmount();
         rollTime=cow.getPersistentData().getLong("pinkkicore:guaba_next_roll")-20;
     }
     private void tick(TickEvent.ServerTickEvent event) {
@@ -144,15 +172,17 @@ public final class GuabaEffectProbe {
                 long time=cow.getPersistentData().getLong("pinkkicore:guaba_next_roll")-20;
                 if(time!=rollTime) {
                     check(time-rollTime==20,"roll interval "+(time-rollTime));
-                    check(cow.getAttributeValue(Attributes.MOVEMENT_SPEED)!=lastSpeed && cow.getAttributeValue(Attributes.ARMOR)!=lastArmor,"no reroll");
+                    check(cow.getAttributeValue(Attributes.MOVEMENT_SPEED)!=lastSpeed && armorAmount()!=lastArmor,"no reroll");
                     remember();
-                } else check(cow.getAttributeValue(Attributes.MOVEMENT_SPEED)==lastSpeed && cow.getAttributeValue(Attributes.ARMOR)==lastArmor,"changed before 20 ticks");
+                } else check(cow.getAttributeValue(Attributes.MOVEMENT_SPEED)==lastSpeed && armorAmount()==lastArmor,"changed before 20 ticks");
             } else if(ticks>=99) {
-                restored(); cow.discard(); done=true;
+                restored();
+                if(!ThunderGuabaProbe.passed) return;
+                cow.discard(); done=true;
                 System.out.println("GUABA_EFFECT real server ticks: 20-tick cadence + stable between rolls + natural expiry PASS");
                 System.out.println("GUABA_EFFECT_PROBE PASS");
             }
-            check(ticks<110,"effect never expired");
+            check(ticks<1000,"effect never expired");
         }catch(Throwable error){fail(error);}
     }
     private void fail(Throwable error) { done=true;System.out.println("GUABA_EFFECT_PROBE FAIL "+error);error.printStackTrace(); }

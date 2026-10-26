@@ -7,7 +7,7 @@ import re
 
 ROOT = Path(__file__).resolve().parent.parent
 PAGES = ('handbook', 'items', 'guaba-workbench', 'guaba-potions', 'recipes', 'compatibility', 'bosses')
-ITEM_IMAGES = {'/images/thunder_guaba.png': 'pinkkicore:thunder_guaba', '/images/guaba_bow.png': 'pinkkicore:guaba_bow', '/images/guaba_sword.png': 'pinkkicore:guaba_sword', '/images/guaba.png': 'pinkkicore:guaba',
+ITEM_IMAGES = {'/images/guaba_charging_station.png': 'pinkkicore:guaba_charging_station', '/images/charged_creeper_spawn_egg.png': 'pinkkicore:charged_creeper_spawn_egg', '/images/thunder_guaba.png': 'pinkkicore:thunder_guaba', '/images/guaba_bow.png': 'pinkkicore:guaba_bow', '/images/guaba_sword.png': 'pinkkicore:guaba_sword', '/images/guaba.png': 'pinkkicore:guaba',
                '/images/guaba_workbench.svg': 'pinkkicore:guaba_workbench'}
 
 
@@ -30,18 +30,20 @@ def compile_book(root=ROOT):
                 anchor = heading[3] or re.sub(r'[^\w\u4e00-\u9fff -]', '', label).strip().replace(' ', '-').lower()
                 anchors[f'{page}#{anchor}'] = len(blocks)
                 blocks.append(dict(type='heading', text=label, anchor=anchor))
-            elif line.startswith('<table>'):
-                blocks.append(dict(type='potion_stats'))
+            elif line.startswith('<table'):
+                effect = 'thunder_guaba' if 'data-effect="thunder_guaba"' in line else 'guaba'
+                blocks.append(dict(type='potion_stats', id=effect))
             elif line.startswith(('<thead', '<tbody', '</table')):
                 continue
-            elif '<CraftingRecipe ' in line or '<GuabaConversion ' in line:
+            elif '<CraftingRecipe ' in line or '<GuabaConversion ' in line or '<GuabaCharging ' in line:
                 variable = re.search(r':recipe="(\w+)"', line).group(1)
                 path = (root / 'wiki' / imports[variable]).resolve()
                 relative = path.relative_to(root / 'versions/1.20.1/src/main/resources/data')
                 namespace, _, *parts = relative.parts
                 blocks.append(dict(type='recipe', id=namespace + ':' + '/'.join(parts).removesuffix('.json')))
-            elif line.strip() == '<GuabaBrewing />':
-                blocks.append(dict(type='brewing'))
+            elif line.strip() in ('<GuabaBrewing />', '<GuabaBrewing thunder />'):
+                effect = 'thunder_guaba' if ' thunder ' in line else 'guaba'
+                blocks.append(dict(type='brewing', id=effect))
             elif re.match(r'!\[.*\]\((.*)\)', line):
                 path = re.match(r'!\[.*\]\((.*)\)', line)[1]
                 if path == '/images/thunder_guaba_conversion.svg':

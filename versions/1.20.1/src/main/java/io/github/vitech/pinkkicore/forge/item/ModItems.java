@@ -14,6 +14,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public final class ModItems {
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, ModInfo.ID);
+    public static final RegistryObject<Item> CHARGED_CREEPER_EGG = ITEMS.register("charged_creeper_spawn_egg", ChargedCreeperEggItem::new);
     public static final RegistryObject<Item> GUIDE_BOOK = ITEMS.register("guide_book", io.github.vitech.pinkkicore.forge.guide.GuideItem::new);
     public static final RegistryObject<Item> GUABA_BOW = ITEMS.register("guaba_bow", GuabaBowItem::new);
     public static final RegistryObject<Item> GUABA_SWORD = ITEMS.register("guaba_sword", GuabaSwordItem::new);
@@ -37,6 +38,7 @@ public final class ModItems {
     private static void addCreativeContents(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS) {
             event.accept(BINGWA_SPAWN_EGG);
+            event.accept(CHARGED_CREEPER_EGG);
             event.accept(PINKKI_SPAWN_EGG);
         }
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) event.accept(GUIDE_BOOK);
@@ -45,6 +47,9 @@ public final class ModItems {
             event.accept(GUABA);
             event.accept(THUNDER_GUABA);
         }
-        if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) event.accept(WorkbenchContent.ITEM);
+        if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
+            event.accept(WorkbenchContent.ITEM);
+            event.accept(io.github.vitech.pinkkicore.forge.charging.ChargingContent.ITEM);
+        }
     }
 }

@@ -20,6 +20,10 @@ class GuideContentTest(unittest.TestCase):
         self.assertIn('pinkkicore:guaba_conversion/dirt_to_mud', ids)
         self.assertTrue(any(b['type'] == 'brewing' for b in entries['guaba-potions']['blocks']))
         self.assertTrue(any(b['type'] == 'potion_stats' for b in entries['guaba-potions']['blocks']))
+        for block_type in ('brewing', 'potion_stats'):
+            self.assertEqual({b['id'] for b in entries['guaba-potions']['blocks'] if b['type'] == block_type}, {'guaba', 'thunder_guaba'})
+        self.assertIn('雷击强度和间隔不随等级变化', str(entries['guaba-potions']))
+
 
     def temporary_wiki(self):
         temporary = tempfile.TemporaryDirectory()

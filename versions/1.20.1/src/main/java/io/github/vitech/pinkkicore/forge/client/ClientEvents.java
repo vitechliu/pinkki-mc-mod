@@ -19,6 +19,7 @@ public final class ClientEvents {
     @SubscribeEvent public static void setup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             MenuScreens.register(WorkbenchContent.MENU.get(), GuabaWorkbenchScreen::new);
+            MenuScreens.register(io.github.vitech.pinkkicore.forge.charging.ChargingContent.MENU.get(), GuabaChargingScreen::new);
             ItemProperties.register(ModItems.GUABA_BOW.get(), new ResourceLocation("pull"), (stack, level, entity, seed) ->
                 entity == null || entity.getUseItem() != stack ? 0F : (stack.getUseDuration() - entity.getUseItemRemainingTicks()) / 20F);
             ItemProperties.register(ModItems.GUABA_BOW.get(), new ResourceLocation("pulling"), (stack, level, entity, seed) ->

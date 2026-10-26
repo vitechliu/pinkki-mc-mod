@@ -20,12 +20,14 @@ public final class PinkkiCore {
         ModEntities.register(bus);
         ModItems.register(bus);
         WorkbenchContent.register(bus);
+        io.github.vitech.pinkkicore.forge.charging.ChargingContent.register(bus);
         GuabaPotions.register(bus);
         bus.addListener(this::onCommonSetup);
     }
 
     private void onCommonSetup(final FMLCommonSetupEvent event) {
         event.enqueueWork(GuabaPotions::registerBrewing);
+        event.enqueueWork(io.github.vitech.pinkkicore.forge.item.ChargedCreeperEggItem::registerDispenser);
         LogUtils.getLogger().info(ModInfo.startupMessage());
     }
 }

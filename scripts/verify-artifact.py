@@ -48,7 +48,7 @@ def main():
             assert deps['jei']['mandatory'] is False and deps['jei']['side'] == 'CLIENT'
             assert deps['jei']['versionRange'] == target_props['jei_version_range']
             assert not any(path.startswith('mezz/jei/') for path in archive.namelist()), 'JEI must remain external'
-            for plugin_class in ('GuabaJeiPlugin', 'GuabaConversionCategory'):
+            for plugin_class in ('GuabaJeiPlugin', 'GuabaConversionCategory', 'GuabaLightningCategory', 'GuabaLightningCategory$Conversion'):
                 assert f'io/github/vitech/pinkkicore/forge/client/jei/{plugin_class}.class' in archive.namelist()
             assert not any(
                 path.startswith(("software/bernie/", "com/eliotlash/", "META-INF/jarjar/"))
@@ -61,6 +61,12 @@ def main():
                 assert f'io/github/vitech/pinkkicore/forge/{guide_class}.class' in archive.namelist()
             assert not {'patchouli', 'guideme', 'mantle'} & set(deps), 'Guide must not require a framework'
             assert not any(path.startswith(('vazkii/patchouli/', 'guideme/', 'slimeknights/mantle/')) for path in archive.namelist())
+            manual_icon = archive.read('assets/pinkkicore/textures/item/guide_book.png')
+            assert manual_icon == (ROOT / 'wiki/public/images/guide_book.png').read_bytes()
+            assert struct.unpack('>II', manual_icon[16:24]) == (32, 32)
+            assert json.loads(archive.read('assets/pinkkicore/models/item/guide_book.json'))['textures']['layer0'] == 'pinkkicore:item/guide_book'
+            for lang, expected in [('zh_cn', '瓜巴手册'), ('en_us', 'Guaba Handbook')]:
+                assert json.loads(archive.read(f'assets/pinkkicore/lang/{lang}.json'))['item.pinkkicore.guide_book'] == expected
             guide_recipe = json.loads(archive.read('data/pinkkicore/recipes/guide_book.json'))
             assert guide_recipe['result']['item'] == 'pinkkicore:guide_book'
             assert guide_recipe['ingredients'] == [{'item': 'minecraft:book'}, {'item': 'pinkkicore:guaba'}]
@@ -217,17 +223,50 @@ def main():
                     assert f"gui.pinkkicore.direction.{side}" in strings
             for path in ('effect/GuabaEffect', 'effect/GuabaPotions'):
                 assert f'io/github/vitech/pinkkicore/forge/{path}.class' in archive.namelist()
+            charging_craft = json.loads(archive.read('data/pinkkicore/recipes/guaba_charging_station.json'))
+            assert charging_craft['pattern'] == [' L ', 'LEL', 'TTT']
+            assert charging_craft['key'] == {'L': {'item': 'minecraft:lightning_rod'}, 'E': {'item': 'minecraft:enchanting_table'}, 'T': {'item': 'pinkkicore:thunder_guaba'}}
+            assert charging_craft['result'] == {'item': 'pinkkicore:guaba_charging_station', 'count': 1}
+            for charging_recipe_name, source, result in [('guaba_to_thunder_guaba', 'pinkkicore:guaba', 'pinkkicore:thunder_guaba'),
+                                         ('creeper_to_charged_creeper', 'minecraft:creeper_spawn_egg', 'pinkkicore:charged_creeper_spawn_egg')]:
+                assert json.loads(archive.read(f'data/pinkkicore/recipes/guaba_charging/{charging_recipe_name}.json')) == {
+                    'type': 'pinkkicore:guaba_charging', 'ingredient': {'item': source}, 'input_count': 1, 'result': {'item': result, 'count': 1}}
+            for path in ('ChargingContent', 'GuabaChargingBlock', 'GuabaChargingEntity', 'GuabaChargingMenu', 'GuabaChargingRecipe'):
+                assert f'io/github/vitech/pinkkicore/forge/charging/{path}.class' in archive.namelist()
+            assert 'io/github/vitech/pinkkicore/forge/item/ChargedCreeperEggItem.class' in archive.namelist()
+            for source, target in [('guaba_charging_station.json', 'models/block/guaba_charging_station.json'),
+                                   ('guaba_charging_station.png', 'textures/block/guaba_charging_station.png'),
+                                   ('charged_creeper_spawn_egg.png', 'textures/item/charged_creeper_spawn_egg.png')]:
+                assert archive.read('assets/pinkkicore/'+target) == (ROOT / 'designs/guaba-charging-station' / source).read_bytes()
+            assert archive.read('assets/pinkkicore/textures/item/charged_creeper_spawn_egg.png') == (ROOT / 'wiki/public/images/charged_creeper_spawn_egg.png').read_bytes()
             definition_path = 'data/pinkkicore/guaba_potions.json'
             assert archive.read(definition_path) == (ROOT / 'versions/1.20.1/src/main/resources' / definition_path).read_bytes()
             definition = json.loads(archive.read(definition_path))
             assert len(definition['levels']) == 4
+            for level in definition['levels']:
+                assert abs(level['speed_min'] + level['speed_max'] - 2) < 1e-9, 'Guaba speed must be symmetric around 100%'
+                assert level['armor_min'] == -level['armor_max'], 'Guaba armor must be symmetric around zero'
+                assert 0 < level['speed_min'] < 1 < level['speed_max']
+            for lower, higher in zip(definition['levels'], definition['levels'][1:]):
+                assert higher['speed_min'] < lower['speed_min'] and higher['speed_max'] > lower['speed_max']
+                assert higher['armor_max'] > lower['armor_max'] > 0
+
             assert [(p['amplifier'], p['duration']) for p in definition['potions']] == [(0, 3600), (0, 9600), (1, 1800)]
             assert archive.read('assets/pinkkicore/textures/mob_effect/guaba.png') == texture
+            thunder = definition['thunder']
+            assert thunder['amplitude_multiplier'] == 1.5
+            assert (thunder['lightning_min_ticks'], thunder['lightning_max_ticks']) == (100, 200)
+            assert [(p['amplifier'], p['duration']) for p in thunder['potions']] == [(0, 3600), (0, 9600), (1, 1800)]
+            assert thunder['brewing'][0] == {'input': 'minecraft:awkward', 'ingredient': 'pinkkicore:thunder_guaba', 'output': 'pinkkicore:thunder_guaba'}
+            assert 'io/github/vitech/pinkkicore/forge/effect/ThunderGuabaEffect.class' in archive.namelist()
+            assert archive.read('assets/pinkkicore/textures/mob_effect/thunder_guaba.png') == archive.read('assets/pinkkicore/textures/item/thunder_guaba.png')
+
             for language in ('zh_cn', 'en_us'):
                 strings = json.loads(archive.read(f'assets/pinkkicore/lang/{language}.json'))
                 assert 'effect.pinkkicore.guaba' in strings
+                assert 'effect.pinkkicore.thunder_guaba' in strings
                 for container in ('potion', 'splash_potion', 'lingering_potion', 'tipped_arrow'):
-                    for variant in ('guaba', 'long_guaba', 'strong_guaba'):
+                    for variant in ('guaba', 'long_guaba', 'strong_guaba', 'thunder_guaba', 'long_thunder_guaba', 'strong_thunder_guaba'):
                         assert f'item.minecraft.{container}.effect.{variant}' in strings
         assert "LICENSE" in archive.namelist()
         if loader == "neoforge":

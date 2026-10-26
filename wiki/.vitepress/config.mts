@@ -14,7 +14,7 @@ export default defineConfig({
     sidebar: [
       { text: '玩家指南', items: [
         { text: '项目与版本', link: '/guide' },
-        { text: '引导手册', link: '/handbook' },
+        { text: '瓜巴手册', link: '/handbook' },
         { text: '道具与方块', link: '/items' },
         { text: '瓜巴药水', link: '/guaba-potions' },
         { text: '瓜巴工作台', link: '/guaba-workbench' },

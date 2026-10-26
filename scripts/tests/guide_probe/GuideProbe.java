@@ -48,7 +48,7 @@ public final class GuideProbe {
                 var book = GuideBook.read(reader);
                 check(book.entries().size() == 7, "missing Wiki chapters");
                 check(book.entries().stream().anyMatch(e -> e.matches("六面") && e.id().equals("guaba-workbench")), "Chinese body search");
-                check(book.entries().stream().anyMatch(e -> e.matches("引导手册")), "Chinese title search");
+                check(book.entries().stream().anyMatch(e -> e.matches("瓜巴手册")), "Chinese title search");
                 for (var entry : book.entries()) for (var block : entry.blocks()) if (block.type().equals("recipe"))
                     check(level.getRecipeManager().byKey(new ResourceLocation(block.id())).isPresent(), "missing live recipe " + block.id());
             }

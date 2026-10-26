@@ -30,6 +30,8 @@ public final class GuabaPotions {
     private static final DeferredRegister<Potion> POTIONS = DeferredRegister.create(ForgeRegistries.POTIONS, ModInfo.ID);
     public static final RegistryObject<MobEffect> GUABA = EFFECTS.register("guaba", GuabaEffect::new);
 
+    public static final RegistryObject<MobEffect> THUNDER_GUABA = EFFECTS.register("thunder_guaba", ThunderGuabaEffect::new);
+
     private GuabaPotions() {}
 
     private static JsonObject loadSpec() {
@@ -42,18 +44,28 @@ public final class GuabaPotions {
     }
 
     public static void register(IEventBus bus) {
-        for (var entry : SPEC.getAsJsonArray("potions")) {
-            var definition = entry.getAsJsonObject();
-            String id = definition.get("id").getAsString();
-            POTIONS.register(id, () -> new Potion(id, new MobEffectInstance(GUABA.get(),
-                    definition.get("duration").getAsInt(), definition.get("amplifier").getAsInt())));
-        }
+        registerPotionDefinitions(SPEC, GUABA);
+        registerPotionDefinitions(SPEC.getAsJsonObject("thunder"), THUNDER_GUABA);
         EFFECTS.register(bus);
         POTIONS.register(bus);
     }
 
+    private static void registerPotionDefinitions(JsonObject spec, RegistryObject<MobEffect> effect) {
+        for (var entry : spec.getAsJsonArray("potions")) {
+            var definition = entry.getAsJsonObject();
+            String id = definition.get("id").getAsString();
+            POTIONS.register(id, () -> new Potion(id, new MobEffectInstance(effect.get(),
+                    definition.get("duration").getAsInt(), definition.get("amplifier").getAsInt())));
+        }
+    }
+
     public static void registerBrewing() {
-        for (var entry : SPEC.getAsJsonArray("brewing")) {
+        registerBrewingDefinitions(SPEC);
+        registerBrewingDefinitions(SPEC.getAsJsonObject("thunder"));
+    }
+
+    private static void registerBrewingDefinitions(JsonObject spec) {
+        for (var entry : spec.getAsJsonArray("brewing")) {
             var rule = entry.getAsJsonObject();
             Potion input = Objects.requireNonNull(ForgeRegistries.POTIONS.getValue(new ResourceLocation(rule.get("input").getAsString())));
             Potion output = Objects.requireNonNull(ForgeRegistries.POTIONS.getValue(new ResourceLocation(rule.get("output").getAsString())));

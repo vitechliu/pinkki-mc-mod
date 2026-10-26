@@ -150,14 +150,17 @@ public final class GuideScreen extends Screen {
             } else if (block.type().equals("potion_stats")) {
                 try (var reader = new InputStreamReader(Objects.requireNonNull(getClass().getResourceAsStream(
                         "/data/pinkkicore/guaba_potions.json")), StandardCharsets.UTF_8)) {
-                    var levels = JsonParser.parseReader(reader).getAsJsonObject().getAsJsonArray("levels");
+                    var definition = JsonParser.parseReader(reader).getAsJsonObject();
+                    var levels = definition.getAsJsonArray("levels");
+                    double scale = block.id().equals("thunder_guaba")
+                            ? definition.getAsJsonObject("thunder").get("amplitude_multiplier").getAsDouble() : 1;
                     for (int i = 0; i < levels.size(); i++) {
                         var level = levels.get(i).getAsJsonObject();
-                        textRows(String.format(Locale.ROOT, "%s · %s %.0f%%–%.0f%% · %s +%d–%d",
+                        textRows(String.format(Locale.ROOT, "%s · %s %+.1f%% 至 %+.1f%% · %s %+.0f 至 %+.0f",
                                 List.of("I", "II", "III", "IV").get(i), Component.translatable("guide.pinkkicore.speed").getString(),
-                                level.get("speed_min").getAsDouble()*100, level.get("speed_max").getAsDouble()*100,
+                                (level.get("speed_min").getAsDouble()-1)*scale*100, (level.get("speed_max").getAsDouble()-1)*scale*100,
                                 Component.translatable("guide.pinkkicore.armor").getString(),
-                                level.get("armor_min").getAsInt(), level.get("armor_max").getAsInt()), false, null);
+                                level.get("armor_min").getAsDouble()*scale, level.get("armor_max").getAsDouble()*scale), false, null);
                     }
                 } catch (Exception e) { textRows(Component.translatable("guide.pinkkicore.unavailable").getString(), false, null); }
             } else if (block.type().equals("brewing")) {
@@ -165,7 +168,9 @@ public final class GuideScreen extends Screen {
                 for (var rule : BrewingRecipeRegistry.getRecipes()) if (rule instanceof BrewingRecipe brewing
                         && brewing.getOutput().is(Items.POTION)
                         && net.minecraft.world.item.alchemy.PotionUtils.getPotion(brewing.getOutput()) != net.minecraft.world.item.alchemy.Potions.EMPTY
-                        && Objects.requireNonNull(ForgeRegistries.POTIONS.getKey(net.minecraft.world.item.alchemy.PotionUtils.getPotion(brewing.getOutput()))).getNamespace().equals("pinkkicore")) {
+                        && net.minecraft.world.item.alchemy.PotionUtils.getPotion(brewing.getOutput()).getEffects().stream()
+                            .anyMatch(effect -> Objects.requireNonNull(ForgeRegistries.MOB_EFFECTS.getKey(effect.getEffect()))
+                                .equals(new ResourceLocation("pinkkicore", block.id().isBlank() ? "guaba" : block.id())))) {
                     // Store registry index, not a second copy of the recipe.
                     var rowBlock = new GuideBook.Block("brewing_rule", "", Integer.toString(BrewingRecipeRegistry.getRecipes().indexOf(rule)), "");
                     rows.add(new Row(contentHeight, 76, null, rowBlock)); contentHeight += 84;
@@ -256,6 +261,11 @@ public final class GuideScreen extends Screen {
             slot(g, input, x, y+40, mx,my); g.drawString(font, "→", x+37, y+45, 0x594B38, false);
             slot(g, conversion.getResultItem(minecraft.level.registryAccess()), x+62, y+40, mx,my);
             label(g, Component.translatable(conversion.guabaCost()==0 ? "guide.pinkkicore.catalyst" : "guide.pinkkicore.cost", conversion.guabaCost()), x, y+68);
+        } else if (recipe instanceof io.github.vitech.pinkkicore.forge.charging.GuabaChargingRecipe charging) {
+            label(g, Component.translatable("block.pinkkicore.guaba_charging_station"), x, y);
+            slot(g, sample(charging.getIngredients().get(0)), x, y+40, mx,my);
+            g.drawString(font, "→", x+37, y+45, 0x28687C, false);
+            slot(g, charging.getResultItem(minecraft.level.registryAccess()), x+62, y+40, mx,my);
         } else label(g, Component.translatable("guide.pinkkicore.unavailable"), x, y);
     }
     @Override public boolean mouseScrolled(double x, double y, double delta) {
