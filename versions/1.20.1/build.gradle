@@ -106,3 +106,50 @@ if (project.hasProperty('pinkkiProbe')) {
     }
     tasks.named('pinkkiProbeJar').configure { finalizedBy 'reobfPinkkiProbeJar' }
 }
+
+// Wiki is the authoritative player prose. Generated guide JSON stays in build/.
+def guideOutput = layout.buildDirectory.dir('generated/guide')
+tasks.register('generateGuide', Exec) {
+    workingDir rootProject.file('../..')
+    commandLine 'python3', 'scripts/generate-guide.py', '--output', guideOutput.get().asFile.absolutePath
+    inputs.files(fileTree('../../wiki') { include '*.md' }, '../../scripts/generate-guide.py')
+    outputs.dir guideOutput
+}
+sourceSets.main.resources.srcDir guideOutput
+tasks.named('processResources').configure { dependsOn 'generateGuide' }
+
+if (project.hasProperty('guideProbe')) {
+    sourceSets {
+        guideProbe {
+            java.srcDir '../../scripts/tests/guide_probe'
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        }
+    }
+    tasks.register('guideProbeJar', Jar) {
+        archiveFileName = 'guide-probe.jar'
+        from sourceSets.guideProbe.output
+        from('../../scripts/tests/guide_probe/mods.toml') { into 'META-INF' }
+    }
+    reobf {
+        guideProbeJar { classpath.from(sourceSets.guideProbe.compileClasspath) }
+    }
+    tasks.named('guideProbeJar').configure { finalizedBy 'reobfGuideProbeJar' }
+}
+
+if (project.hasProperty('thunderGuabaProbe')) {
+    sourceSets {
+        thunderGuabaProbe {
+            java.srcDir '../../scripts/tests/thunder_guaba_probe'
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        }
+    }
+    tasks.register('thunderGuabaProbeJar', Jar) {
+        archiveFileName = 'thunder-guaba-probe.jar'
+        from sourceSets.thunderGuabaProbe.output
+        from('../../scripts/tests/thunder_guaba_probe/mods.toml') { into 'META-INF' }
+    }
+    reobf {
+        thunderGuabaProbeJar { classpath.from(sourceSets.thunderGuabaProbe.compileClasspath) }
+    }
+    tasks.named('thunderGuabaProbeJar').configure { finalizedBy 'reobfThunderGuabaProbeJar' }
+}

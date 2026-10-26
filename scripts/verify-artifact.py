@@ -54,6 +54,16 @@ def main():
                 path.startswith(("software/bernie/", "com/eliotlash/", "META-INF/jarjar/"))
                 for path in archive.namelist()
             ), "Animation dependencies must remain external"
+            import runpy
+            guide_generator = runpy.run_path(str(ROOT / 'scripts/generate-guide.py'))
+            assert json.loads(archive.read('assets/pinkkicore/guide/zh_cn.json')) == guide_generator['compile_book'](), 'Guide prose differs from Wiki'
+            for guide_class in ('guide/GuideBook', 'guide/GuideItem', 'client/guide/GuideScreen', 'client/guide/GuideClientEvents'):
+                assert f'io/github/vitech/pinkkicore/forge/{guide_class}.class' in archive.namelist()
+            assert not {'patchouli', 'guideme', 'mantle'} & set(deps), 'Guide must not require a framework'
+            assert not any(path.startswith(('vazkii/patchouli/', 'guideme/', 'slimeknights/mantle/')) for path in archive.namelist())
+            guide_recipe = json.loads(archive.read('data/pinkkicore/recipes/guide_book.json'))
+            assert guide_recipe['result']['item'] == 'pinkkicore:guide_book'
+            assert guide_recipe['ingredients'] == [{'item': 'minecraft:book'}, {'item': 'pinkkicore:guaba'}]
             recipe = json.loads(archive.read("data/pinkkicore/recipes/guaba.json"))
             assert recipe["type"] == "minecraft:crafting_shapeless"
             assert sorted(recipe["ingredients"], key=lambda item: item["item"]) == [
@@ -76,6 +86,17 @@ def main():
             assert texture[:8] == b"\x89PNG\r\n\x1a\n"
             assert struct.unpack(">II", texture[16:24]) == (16, 16)
             assert texture == (ROOT / "wiki/public/images/guaba.png").read_bytes(), "Wiki icon differs from mod"
+            thunder_texture = archive.read("assets/pinkkicore/textures/item/thunder_guaba.png")
+            assert thunder_texture[:8] == b"\x89PNG\r\n\x1a\n"
+            assert struct.unpack(">II", thunder_texture[16:24]) == (16, 16)
+            assert thunder_texture == (ROOT / "designs/thunder-guaba/thunder_guaba.png").read_bytes()
+            assert thunder_texture == (ROOT / "wiki/public/images/thunder_guaba.png").read_bytes()
+            thunder_model = json.loads(archive.read("assets/pinkkicore/models/item/thunder_guaba.json"))
+            assert thunder_model == {"parent": "minecraft:item/generated", "textures": {"layer0": "pinkkicore:item/thunder_guaba"}}
+            for language, item_name in [("zh_cn", "雷霆瓜巴"), ("en_us", "Thunder Guaba")]:
+                strings = json.loads(archive.read(f"assets/pinkkicore/lang/{language}.json"))
+                assert strings["item.pinkkicore.thunder_guaba"] == item_name
+            assert "io/github/vitech/pinkkicore/forge/item/GuabaLightningConversion.class" in archive.namelist()
             for item_class in ("GuabaItem", "ModItems"):
                 assert f"io/github/vitech/pinkkicore/forge/item/{item_class}.class" in archive.namelist()
             for source, resource in [
@@ -151,6 +172,34 @@ def main():
             conversion = json.loads(archive.read("data/pinkkicore/recipes/guaba_conversion/dirt_to_mud.json"))
             assert conversion == {"type": "pinkkicore:guaba_conversion", "ingredient": {"item": "minecraft:dirt"},
                                   "input_count": 1, "guaba_cost": 1, "result": {"item": "minecraft:mud", "count": 1}}
+            sword_recipe = json.loads(archive.read('data/pinkkicore/recipes/guaba_conversion/diamond_sword_to_guaba_sword.json'))
+            assert sword_recipe == {'type': 'pinkkicore:guaba_conversion', 'ingredient': {'item': 'minecraft:diamond_sword'},
+                                    'input_count': 1, 'guaba_cost': 1, 'copy_input_tag': True,
+                                    'result': {'item': 'pinkkicore:guaba_sword', 'count': 1}}
+            assert json.loads(archive.read('assets/pinkkicore/models/item/guaba_sword.json')) == {
+                'parent': 'minecraft:item/handheld', 'textures': {'layer0': 'pinkkicore:item/guaba_sword'}}
+            sword_icon = archive.read('assets/pinkkicore/textures/item/guaba_sword.png')
+            assert struct.unpack('>II', sword_icon[16:24]) == (16, 16)
+            assert sword_icon == (ROOT / 'wiki/public/images/guaba_sword.png').read_bytes()
+            assert sword_icon == (ROOT / 'designs/guaba-sword/guaba_sword.png').read_bytes()
+            assert 'io/github/vitech/pinkkicore/forge/item/GuabaSwordItem.class' in archive.namelist()
+            bow_recipe = json.loads(archive.read('data/pinkkicore/recipes/guaba_conversion/bow_to_guaba_bow.json'))
+            assert bow_recipe == {'type': 'pinkkicore:guaba_conversion', 'ingredient': {'item': 'minecraft:bow'},
+                                  'input_count': 1, 'guaba_cost': 1, 'copy_input_tag': True,
+                                  'result': {'item': 'pinkkicore:guaba_bow', 'count': 1}}
+            bow_model = json.loads(archive.read('assets/pinkkicore/models/item/guaba_bow.json'))
+            assert bow_model['parent'] == 'minecraft:item/bow'
+            assert len(bow_model['overrides']) == 3
+            for index, predicate in enumerate(({'pulling': 1}, {'pulling': 1, 'pull': .65}, {'pulling': 1, 'pull': .9})):
+                assert bow_model['overrides'][index] == {'predicate': predicate, 'model': f'pinkkicore:item/guaba_bow_pulling_{index}'}
+                assert json.loads(archive.read(f'assets/pinkkicore/models/item/guaba_bow_pulling_{index}.json')) == {
+                    'parent': 'pinkkicore:item/guaba_bow', 'textures': {'layer0': f'pinkkicore:item/guaba_bow_pulling_{index}'}}
+            for suffix in ('', '_pulling_0', '_pulling_1', '_pulling_2'):
+                icon = archive.read(f'assets/pinkkicore/textures/item/guaba_bow{suffix}.png')
+                assert struct.unpack('>II', icon[16:24]) == (16, 16)
+                assert icon == (ROOT / f'designs/guaba-bow/guaba_bow{suffix}.png').read_bytes()
+                if not suffix: assert icon == (ROOT / 'wiki/public/images/guaba_bow.png').read_bytes()
+            assert 'io/github/vitech/pinkkicore/forge/item/GuabaBowItem.class' in archive.namelist()
             workbench_item = json.loads(archive.read("assets/pinkkicore/models/item/guaba_workbench.json"))
             assert workbench_item == {"parent": "pinkkicore:block/guaba_workbench"}
             workbench_loot = json.loads(archive.read("data/pinkkicore/loot_tables/blocks/guaba_workbench.json"))

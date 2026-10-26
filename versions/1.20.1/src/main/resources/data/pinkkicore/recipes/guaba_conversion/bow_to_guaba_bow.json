@@ -1,0 +1,13 @@
+{
+  "type": "pinkkicore:guaba_conversion",
+  "ingredient": {
+    "item": "minecraft:bow"
+  },
+  "input_count": 1,
+  "guaba_cost": 1,
+  "copy_input_tag": true,
+  "result": {
+    "item": "pinkkicore:guaba_bow",
+    "count": 1
+  }
+}

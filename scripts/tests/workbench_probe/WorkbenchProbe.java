@@ -204,6 +204,84 @@ public final class WorkbenchProbe {
             } catch(IllegalArgumentException | com.google.gson.JsonSyntaxException expected) {}
             System.out.println("WORKBENCH menu + shift-click + permission bounds + recipe loading/network validation PASS");
 
+            reset();
+            ItemStack diamond = new ItemStack(Items.DIAMOND_SWORD);
+            diamond.setDamageValue(321);
+            diamond.setHoverName(net.minecraft.network.chat.Component.literal("Named blade"));
+            diamond.enchant(net.minecraft.world.item.enchantment.Enchantments.SHARPNESS, 3);
+            var originalTag = diamond.getTag().copy();
+            machine.inventory.setStackInSlot(0,new ItemStack(ModItems.GUABA.get()));
+            machine.inventory.setStackInSlot(1,diamond);
+            tick(19); check(machine.inventory.getStackInSlot(2).isEmpty(), "sword converted early");
+            tick(1);
+            var sword = machine.inventory.getStackInSlot(2);
+            check(sword.is(ModItems.GUABA_SWORD.get()) && sword.getTag().equals(originalTag), "sword metadata lost");
+            check(machine.inventory.getStackInSlot(0).isEmpty() && machine.inventory.getStackInSlot(1).isEmpty(), "sword costs");
+            var swordRecipe = (GuabaConversionRecipe)level.getRecipeManager().byKey(new ResourceLocation("pinkkicore","guaba_conversion/diamond_sword_to_guaba_sword")).orElseThrow();
+            FriendlyByteBuf swordBuffer = new FriendlyByteBuf(Unpooled.buffer());
+            WorkbenchContent.SERIALIZER.get().toNetwork(swordBuffer,swordRecipe);
+            var swordDecoded = WorkbenchContent.SERIALIZER.get().fromNetwork(swordRecipe.getId(),swordBuffer); swordBuffer.release();
+            var assembled = swordDecoded.assemble(new SimpleContainer(ItemStack.EMPTY,diamond,ItemStack.EMPTY),level.registryAccess());
+            check(assembled.getTag().equals(originalTag), "wire lost tag preservation");
+            assembled.setDamageValue(322); check(diamond.getDamageValue()==321, "tag alias");
+            check(sword.getMaxDamage()==Items.DIAMOND_SWORD.getMaxDamage() && sword.getMaxStackSize()==1, "sword durability/stack");
+            check(sword.getItem().isValidRepairItem(sword,new ItemStack(Items.DIAMOND)), "sword diamond repair");
+            System.out.println("WORKBENCH sword conversion 19/20 ticks + costs + name/enchantment/damage preservation + wire + diamond repair PASS");
+
+            player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,new ItemStack(ModItems.GUABA_SWORD.get()));
+            // Equipment attributes are normally applied by entity ticks. Apply the same vanilla modifier set here.
+            player.getAttributes().addTransientAttributeModifiers(player.getMainHandItem().getAttributeModifiers(net.minecraft.world.entity.EquipmentSlot.MAINHAND));
+            var target = net.minecraft.world.entity.EntityType.COW.create(level);
+            target.setNoAi(true); target.setPos(5,100,5); level.addFreshEntity(target);
+            var blade = (io.github.vitech.pinkkicore.forge.item.GuabaSwordItem)ModItems.GUABA_SWORD.get();
+            boolean[] rolls = new boolean[7];
+            for (int i=0;i<400;i++) {
+                blade.onLeftClickEntity(player.getMainHandItem(),player,target);
+                int value=(int)Math.round(player.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE));
+                check(value>=4 && value<=10, "sword roll bounds: "+value); rolls[value-4]=true;
+            }
+            for(boolean seen : rolls) check(seen,"missing sword roll");
+            io.github.vitech.pinkkicore.forge.item.GuabaSwordItem.endTick(new net.minecraftforge.event.TickEvent.ServerTickEvent(net.minecraftforge.event.TickEvent.Phase.END, () -> true, event.getServer()));
+            check(player.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE)==7,"roll cleanup");
+            blade.hurtEnemy(player.getMainHandItem(),target,player);
+            var effect=target.getEffect(io.github.vitech.pinkkicore.forge.effect.GuabaPotions.GUABA.get());
+            check(effect!=null && effect.getDuration()==100 && effect.getAmplifier()==0,"sword hit effect");
+            target.removeAllEffects();
+            target.addEffect(new net.minecraft.world.effect.MobEffectInstance(io.github.vitech.pinkkicore.forge.effect.GuabaPotions.GUABA.get(),200,1));
+            blade.hurtEnemy(player.getMainHandItem(),target,player);
+            check(target.getEffect(io.github.vitech.pinkkicore.forge.effect.GuabaPotions.GUABA.get()).getAmplifier()==1,"strong effect downgraded");
+            // Exercise actual Player.attack -> Forge item hook -> vanilla damage -> hurtEnemy.
+            class Fighter extends net.minecraftforge.common.util.FakePlayer {
+                float strength = 1F;
+                Fighter() { super(level,new GameProfile(UUID.randomUUID(),"SwordProbe")); }
+                @Override public float getAttackStrengthScale(float partialTick) { return strength; }
+            }
+            var fighter = new Fighter();
+            fighter.setPos(4,100,5);
+            fighter.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,new ItemStack(ModItems.GUABA_SWORD.get()));
+            fighter.getAttributes().addTransientAttributeModifiers(fighter.getMainHandItem().getAttributeModifiers(net.minecraft.world.entity.EquipmentSlot.MAINHAND));
+            fighter.setOnGround(true);
+            for(int mode=0;mode<4;mode++) {
+              fighter.strength = mode==1 ? .5F : 1F;
+              fighter.setOnGround(mode!=2); fighter.fallDistance = mode==2 ? 1F : 0F;
+              if(mode==3) fighter.getMainHandItem().enchant(net.minecraft.world.item.enchantment.Enchantments.SHARPNESS,3);
+              for(int i=0;i<30;i++) {
+                target.removeAllEffects(); target.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH).setBaseValue(100); target.setHealth(100); target.invulnerableTime=0;
+                fighter.attack(target);
+                float dealt=100-target.getHealth();
+                float min = mode==1 ? 1.6F : mode==2 ? 6 : mode==3 ? 6 : 4;
+                float max = mode==1 ? 4 : mode==2 ? 15 : mode==3 ? 12 : 10;
+                check(dealt>=min-.001F && dealt<=max+.001F,"actual attack bounds mode="+mode+": "+dealt);
+                check(target.hasEffect(io.github.vitech.pinkkicore.forge.effect.GuabaPotions.GUABA.get()),"actual attack has no effect");
+                check(fighter.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE)==7,"actual attack roll leaked");
+            }
+              }
+            target.discard();
+            System.out.println("WORKBENCH actual vanilla Player.attack x120 full/cooldown/critical/sharpness + hit effect + cleanup PASS");
+            System.out.println("WORKBENCH sword 400 attack rolls + all 7 values + transient cleanup + 100-tick Guaba I + stronger effect retained PASS");
+
+            reset(); BowChecks.run(level,machine,POS,player);
+
             reset();feed(2,3);machine.inventory.setStackInSlot(2,new ItemStack(Items.MUD,4));
             check(!menu.stillValid(player) && !menu.clickMenuButton(player,0),"same-position replacement reused stale menu");
             level.getEntitiesOfClass(ItemEntity.class,new AABB(POS).inflate(4)).forEach(ItemEntity::discard);

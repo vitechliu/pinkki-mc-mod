@@ -85,7 +85,7 @@ public final class GuabaWorkbenchEntity extends BlockEntity implements MenuProvi
         }
         if (!recipe.getId().equals(activeRecipe)) { progress = 0; activeRecipe = recipe.getId(); }
         if (!redstone.allows(powered())) { status = 3; return; }
-        ItemStack result = recipe.getResultItem(level.registryAccess()), output = inventory.getStackInSlot(OUTPUT);
+        ItemStack result = recipe.assemble(container, level.registryAccess()), output = inventory.getStackInSlot(OUTPUT);
         if (!output.isEmpty() && (!ItemStack.isSameItemSameTags(output, result) || output.getCount()+result.getCount() > Math.min(output.getMaxStackSize(), inventory.getSlotLimit(OUTPUT)))) {
             status = 2;
             return;

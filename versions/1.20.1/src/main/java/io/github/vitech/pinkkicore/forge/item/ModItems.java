@@ -14,7 +14,12 @@ import net.minecraftforge.registries.RegistryObject;
 
 public final class ModItems {
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, ModInfo.ID);
+    public static final RegistryObject<Item> GUIDE_BOOK = ITEMS.register("guide_book", io.github.vitech.pinkkicore.forge.guide.GuideItem::new);
+    public static final RegistryObject<Item> GUABA_BOW = ITEMS.register("guaba_bow", GuabaBowItem::new);
+    public static final RegistryObject<Item> GUABA_SWORD = ITEMS.register("guaba_sword", GuabaSwordItem::new);
     public static final RegistryObject<Item> GUABA = ITEMS.register("guaba", GuabaItem::new);
+    public static final RegistryObject<Item> THUNDER_GUABA = ITEMS.register("thunder_guaba",
+        () -> new Item(new Item.Properties().stacksTo(64).fireResistant()));
 
     public static final RegistryObject<Item> BINGWA_SPAWN_EGG = ITEMS.register("bingwa_spawn_egg", () ->
         new ForgeSpawnEggItem(ModEntities.BINGWA, 0xEFE4BD, 0xE89328, new Item.Properties()));
@@ -34,8 +39,11 @@ public final class ModItems {
             event.accept(BINGWA_SPAWN_EGG);
             event.accept(PINKKI_SPAWN_EGG);
         }
+        if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) event.accept(GUIDE_BOOK);
+        if (event.getTabKey() == CreativeModeTabs.COMBAT) { event.accept(GUABA_SWORD); event.accept(GUABA_BOW); }
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(GUABA);
+            event.accept(THUNDER_GUABA);
         }
         if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) event.accept(WorkbenchContent.ITEM);
     }
