@@ -153,3 +153,21 @@ if (project.hasProperty('thunderGuabaProbe')) {
     }
     tasks.named('thunderGuabaProbeJar').configure { finalizedBy 'reobfThunderGuabaProbeJar' }
 }
+
+if (project.hasProperty('pinkOreProbe')) {
+    sourceSets {
+        pinkOreProbe {
+            java.srcDir '../../scripts/tests/pink_ore_probe'
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        }
+    }
+    tasks.register('pinkOreProbeJar', Jar) {
+        archiveFileName = 'pink-ore-probe.jar'
+        from sourceSets.pinkOreProbe.output
+        from('../../scripts/tests/pink_ore_probe/mods.toml') { into 'META-INF' }
+    }
+    reobf {
+        pinkOreProbeJar { classpath.from(sourceSets.pinkOreProbe.compileClasspath) }
+    }
+    tasks.named('pinkOreProbeJar').configure { finalizedBy 'reobfPinkOreProbeJar' }
+}

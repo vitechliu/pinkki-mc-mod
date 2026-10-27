@@ -1,0 +1,12 @@
+{
+  "trigger": "tetra:apply_hit_effects",
+  "effect": "pinkkicore_thunder_guaba_touch",
+  "outcome": {
+    "type": "tetra:apply_effect",
+    "effect": "pinkkicore:thunder_guaba",
+    "entity": "target",
+    "source": "attacker",
+    "duration": 200,
+    "amplifier": 0
+  }
+}

@@ -49,8 +49,17 @@ public final class GuideProbe {
                 check(book.entries().size() == 7, "missing Wiki chapters");
                 check(book.entries().stream().anyMatch(e -> e.matches("六面") && e.id().equals("guaba-workbench")), "Chinese body search");
                 check(book.entries().stream().anyMatch(e -> e.matches("瓜巴手册")), "Chinese title search");
-                for (var entry : book.entries()) for (var block : entry.blocks()) if (block.type().equals("recipe"))
-                    check(level.getRecipeManager().byKey(new ResourceLocation(block.id())).isPresent(), "missing live recipe " + block.id());
+                for (var entry : book.entries()) for (var block : entry.blocks()) if (block.type().equals("recipe")) {
+                    var id = new ResourceLocation(block.id());
+                    if (level.getRecipeManager().byKey(id).isPresent()) continue;
+                    // Optional host-mod recipes are absent when their actual Forge condition is false.
+                    try (var recipeReader = new InputStreamReader(GuideBook.class.getResourceAsStream(
+                            "/data/" + id.getNamespace() + "/recipes/" + id.getPath() + ".json"), StandardCharsets.UTF_8)) {
+                        var json = com.google.gson.JsonParser.parseReader(recipeReader).getAsJsonObject();
+                        check(!net.minecraftforge.common.crafting.CraftingHelper.processConditions(json, "conditions",
+                                net.minecraftforge.common.crafting.conditions.ICondition.IContext.TAGS_INVALID), "missing live recipe " + block.id());
+                    }
+                }
             }
             System.out.println("GUIDE_PROBE PASS registration + 2x2 recipe + server use + bundled Wiki + Chinese search + live recipe IDs");
         } catch (Throwable error) { error.printStackTrace(); System.out.println("GUIDE_PROBE FAIL " + error); }

@@ -1,4 +1,18 @@
 <script setup>
+import pinkBlockFromIngots from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/pink_block_from_pink_ingot.json'
+import blastDeepslatePinkOre from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/pink_ingot_from_blasting_deepslate_pink_ore.json'
+import blastPinkOre from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/pink_ingot_from_blasting_pink_ore.json'
+import blastRawPink from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/pink_ingot_from_blasting_raw_pink.json'
+import pinkIngotsFromBlock from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/pink_ingot_from_pink_block.json'
+import pinkIngotFromNuggets from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/pink_ingot_from_pink_nugget.json'
+import smeltDeepslatePinkOre from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/pink_ingot_from_smelting_deepslate_pink_ore.json'
+import smeltPinkOre from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/pink_ingot_from_smelting_pink_ore.json'
+import smeltRawPink from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/pink_ingot_from_smelting_raw_pink.json'
+import pinkNuggetsFromIngot from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/pink_nugget_from_pink_ingot.json'
+import rawPinkBlockFromRaw from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/raw_pink_block_from_raw_pink.json'
+import rawPinkFromBlock from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/raw_pink_from_raw_pink_block.json'
+import chargeLightningBottle from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_charging/compat/irons_spellbooks/glass_bottle_to_lightning_bottle.json'
+import chargeLightningRune from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_charging/compat/irons_spellbooks/blank_rune_to_lightning_rune.json'
 import chargingStation from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_charging_station.json'
 import chargeGuaba from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_charging/guaba_to_thunder_guaba.json'
 import chargeCreeper from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_charging/creeper_to_charged_creeper.json'
@@ -9,6 +23,18 @@ import guabaRecipe from '../versions/1.20.1/src/main/resources/data/pinkkicore/r
 import dirtToMud from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_conversion/dirt_to_mud.json'
 
 const items = {
+  'pinkkicore:pink_ore': { name: '粉红矿石', image: '/images/pink_ore.png' },
+  'pinkkicore:deepslate_pink_ore': { name: '深层粉红矿石', image: '/images/deepslate_pink_ore.png' },
+  'pinkkicore:raw_pink': { name: '粗粉红锭', image: '/images/raw_pink.png' },
+  'pinkkicore:pink_ingot': { name: '粉红锭', image: '/images/pink_ingot.png' },
+  'pinkkicore:pink_nugget': { name: '粉红粒', image: '/images/pink_nugget.png' },
+  'pinkkicore:pink_block': { name: '粉红块', image: '/images/pink_block.png' },
+  'pinkkicore:raw_pink_block': { name: '粗粉红块', image: '/images/raw_pink_block.png' },
+  'minecraft:glass_bottle': { name: '玻璃瓶', image: '/images/minecraft/glass_bottle.png' },
+  'irons_spellbooks:blank_rune': { name: '空白符文', image: 'https://raw.githubusercontent.com/iron431/irons-spells-n-spellbooks/b928995887aa362467fa999a9c9fb86419f00f2d/src/main/resources/assets/irons_spellbooks/textures/item/blank_rune.png' },
+  'irons_spellbooks:lightning_rune': { name: '雷霆符文', image: 'https://raw.githubusercontent.com/iron431/irons-spells-n-spellbooks/b928995887aa362467fa999a9c9fb86419f00f2d/src/main/resources/assets/irons_spellbooks/textures/item/lightning_rune.png' },
+  'irons_spellbooks:lightning_bottle': { name: '雷电瓶', image: 'https://raw.githubusercontent.com/iron431/irons-spells-n-spellbooks/b928995887aa362467fa999a9c9fb86419f00f2d/src/main/resources/assets/irons_spellbooks/textures/item/lightning_bottle.png', sprite: true },
+
   'minecraft:lightning_rod': { name: '避雷针', image: '/images/minecraft/lightning_rod.svg' },
   'minecraft:enchanting_table': { name: '附魔台', image: '/images/minecraft/enchanting_table.svg' },
   'minecraft:creeper_spawn_egg': { name: '苦力怕刷怪蛋', image: '/images/minecraft/creeper_spawn_egg.png' },
@@ -77,3 +103,43 @@ const items = {
 <GuabaCharging :recipe="chargeCreeper" :items="items" />
 
 查看[充电桩操作与自动化](./items.md#guaba-charging-station)。
+
+## 铁魔法充能联动 {#irons-charging}
+
+同时安装 Iron’s Spells ’n Spellbooks 时，瓜巴充电桩增加以下配方，每次 1 个原料转换为 1 个产物，耗时约 1 秒。
+
+<GuabaCharging :recipe="chargeLightningBottle" :items="items" />
+
+<GuabaCharging :recipe="chargeLightningRune" :items="items" />
+
+不需要额外瓜巴或能量，也不改变铁魔法原有获取途径；支持漏斗、物品管道和 JEI 配方查询。
+
+## 粉红矿熔炼 {#pink-smelting}
+
+粗粉红锭、粉红矿石和深层粉红矿石均可炼成粉红锭；熔炉耗时 10 秒，高炉耗时 5 秒，每份产出 1 锭、1 点经验，需要燃料。
+
+<SmeltingRecipe :recipe="blastDeepslatePinkOre" :items="items" />
+
+<SmeltingRecipe :recipe="blastPinkOre" :items="items" />
+
+<SmeltingRecipe :recipe="blastRawPink" :items="items" />
+
+<SmeltingRecipe :recipe="smeltDeepslatePinkOre" :items="items" />
+
+<SmeltingRecipe :recipe="smeltPinkOre" :items="items" />
+
+<SmeltingRecipe :recipe="smeltRawPink" :items="items" />
+
+## 粉红材料压缩与拆分 {#pink-storage}
+
+<CraftingRecipe :recipe="pinkIngotFromNuggets" :items="items" />
+
+<CraftingRecipe :recipe="pinkNuggetsFromIngot" :items="items" />
+
+<CraftingRecipe :recipe="pinkBlockFromIngots" :items="items" />
+
+<CraftingRecipe :recipe="pinkIngotsFromBlock" :items="items" />
+
+<CraftingRecipe :recipe="rawPinkBlockFromRaw" :items="items" />
+
+<CraftingRecipe :recipe="rawPinkFromBlock" :items="items" />

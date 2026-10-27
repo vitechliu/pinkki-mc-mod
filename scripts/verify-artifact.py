@@ -55,6 +55,7 @@ def main():
                 for path in archive.namelist()
             ), "Animation dependencies must remain external"
             import runpy
+            runpy.run_path(str(ROOT / 'scripts/check-pink-ore-data.py'))['verify'](archive)
             guide_generator = runpy.run_path(str(ROOT / 'scripts/generate-guide.py'))
             assert json.loads(archive.read('assets/pinkkicore/guide/zh_cn.json')) == guide_generator['compile_book'](), 'Guide prose differs from Wiki'
             for guide_class in ('guide/GuideBook', 'guide/GuideItem', 'client/guide/GuideScreen', 'client/guide/GuideClientEvents'):
@@ -164,6 +165,29 @@ def main():
             assert hit["trigger"] == "tetra:apply_hit_effects" and hit["effect"] == "pinkkicore_guaba_touch"
             assert hit["outcome"] == {"type": "tetra:apply_effect", "effect": "pinkkicore:guaba", "entity": "target",
                                       "source": "attacker", "duration": 200, "amplifier": 0}
+            # Thunder material must stay optional and use the existing Thunder Guaba effect.
+            thunder = json.loads(archive.read("data/pinkkicore/silentgear_materials/thunder_guaba.json"))
+            assert thunder["crafting_items"]["main"] == {"item": "pinkkicore:thunder_guaba"}
+            assert thunder["harvest_tier"] == "minecraft:netherite"
+            assert thunder["stats"]["main"]["durability"] == 1200 and thunder["stats"]["main"]["harvest_speed"] == 10
+            thunder_trait = json.loads(archive.read("data/pinkkicore/silentgear_traits/thunder_guaba_touch.json"))
+            assert thunder_trait["max_level"] == 1
+            assert thunder_trait["effects"]["tool"]["1"] == [{"effect": "pinkkicore:thunder_guaba", "amplifier": 0, "duration": 10.0}]
+            thunder_definition = json.loads(archive.read("data/pinkkicore/tinkering/materials/definition/thunder_guaba.json"))
+            assert thunder_definition["condition"] == optional_condition and thunder_definition["tier"] == 4
+            thunder_mapping = json.loads(archive.read("data/pinkkicore/recipes/compat/tconstruct/thunder_guaba_material.json"))
+            assert thunder_mapping["conditions"] == [optional_condition]
+            assert thunder_mapping["ingredient"] == {"item": "pinkkicore:thunder_guaba"}
+            assert thunder_mapping["material"] == "pinkkicore:thunder_guaba" and thunder_mapping["needed"] == thunder_mapping["value"] == 1
+            thunder_module = json.loads(archive.read("data/pinkkicore/tinkering/modifiers/thunder_guaba_touch.json"))["modules"][0]
+            assert thunder_module == {**module, "effect": "pinkkicore:thunder_guaba"}
+            thunder_tetra = json.loads(archive.read("data/tetra/materials/wood/pinkkicore_thunder_guaba.json"))
+            assert thunder_tetra["material"] == {"items": ["pinkkicore:thunder_guaba"], "count": 1}
+            assert thunder_tetra["durability"] == 1200 and thunder_tetra["toolLevel"] == "minecraft:netherite"
+            thunder_hit = json.loads(archive.read("data/tetra/item_effects/pinkkicore_thunder_guaba_touch.json"))
+            assert thunder_hit["trigger"] == "tetra:apply_hit_effects"
+            assert thunder_hit["effect"] == "pinkkicore_thunder_guaba_touch"
+            assert thunder_hit["outcome"] == {**hit["outcome"], "effect": "pinkkicore:thunder_guaba"}
             assert not any(path.startswith(("pinkkicore/test/", "net/silentchaos512/", "slimeknights/", "se/mickelus/"))
                            for path in archive.namelist()), "Test probe or optional mod code leaked into release"
             for source, resource in [
@@ -239,6 +263,15 @@ def main():
                                    ('charged_creeper_spawn_egg.png', 'textures/item/charged_creeper_spawn_egg.png')]:
                 assert archive.read('assets/pinkkicore/'+target) == (ROOT / 'designs/guaba-charging-station' / source).read_bytes()
             assert archive.read('assets/pinkkicore/textures/item/charged_creeper_spawn_egg.png') == (ROOT / 'wiki/public/images/charged_creeper_spawn_egg.png').read_bytes()
+            for charging_id, charging_input, charging_output in [
+                ('glass_bottle_to_lightning_bottle', 'minecraft:glass_bottle', 'irons_spellbooks:lightning_bottle'),
+                ('blank_rune_to_lightning_rune', 'irons_spellbooks:blank_rune', 'irons_spellbooks:lightning_rune')]:
+                optional_charging = json.loads(archive.read(f'data/pinkkicore/recipes/guaba_charging/compat/irons_spellbooks/{charging_id}.json'))
+                assert optional_charging == {'conditions': [{'type': 'forge:mod_loaded', 'modid': 'irons_spellbooks'}],
+                    'type': 'pinkkicore:guaba_charging', 'ingredient': {'item': charging_input}, 'input_count': 1,
+                    'result': {'item': charging_output, 'count': 1}}
+            assert 'irons_spellbooks' not in deps, 'Data-only optional charging must not require Iron spellbooks'
+            assert not any(p.startswith('io/redspace/ironsspellbooks/') or p.startswith('assets/irons_spellbooks/') for p in archive.namelist()), 'Do not bundle third-party code or artwork'
             definition_path = 'data/pinkkicore/guaba_potions.json'
             assert archive.read(definition_path) == (ROOT / 'versions/1.20.1/src/main/resources' / definition_path).read_bytes()
             definition = json.loads(archive.read(definition_path))

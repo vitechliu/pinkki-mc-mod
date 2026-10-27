@@ -28,7 +28,8 @@ final class ChargingChecks {
     static void run(ServerLevel level, FakePlayer player) {
         BlockPos pos=new BlockPos(10,100,4);level.setBlockAndUpdate(pos,ChargingContent.BLOCK.get().defaultBlockState());
         var machine=(GuabaChargingEntity)level.getBlockEntity(pos);
-        check(level.getRecipeManager().getAllRecipesFor(ChargingContent.RECIPE.get()).size()==2,"charging recipes count");
+        check(level.getRecipeManager().getAllRecipesFor(ChargingContent.RECIPE.get()).size()==(net.minecraftforge.fml.ModList.get().isLoaded("irons_spellbooks")?4:2),"charging recipes count");
+        IronChargingChecks.run(level,pos,machine);
         machine.inventory.setStackInSlot(0,new ItemStack(ModItems.GUABA.get(),2));
         tick(level,pos,machine,19);check(machine.inventory.getStackInSlot(1).isEmpty(),"charging early output");
         tick(level,pos,machine,1);check(machine.inventory.getStackInSlot(1).is(ModItems.THUNDER_GUABA.get()) && machine.inventory.getStackInSlot(0).getCount()==1,"charging result/cost");

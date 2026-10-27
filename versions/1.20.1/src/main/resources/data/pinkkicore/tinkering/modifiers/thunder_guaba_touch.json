@@ -1,0 +1,21 @@
+{
+  "level_display": "tconstruct:no_levels",
+  "modules": [
+    {
+      "type": "tconstruct:mob_effect",
+      "hooks": [
+        "tconstruct:melee_hit"
+      ],
+      "effect": "pinkkicore:thunder_guaba",
+      "level": {
+        "flat": 1.0
+      },
+      "time": {
+        "flat": 200.0
+      },
+      "chance": {
+        "flat": 1.0
+      }
+    }
+  ]
+}

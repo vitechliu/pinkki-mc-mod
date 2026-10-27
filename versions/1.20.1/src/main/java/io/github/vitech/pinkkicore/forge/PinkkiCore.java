@@ -19,6 +19,7 @@ public final class PinkkiCore {
         var bus = FMLJavaModLoadingContext.get().getModEventBus();
         ModEntities.register(bus);
         ModItems.register(bus);
+        io.github.vitech.pinkkicore.forge.ore.PinkOreContent.register(bus);
         WorkbenchContent.register(bus);
         io.github.vitech.pinkkicore.forge.charging.ChargingContent.register(bus);
         GuabaPotions.register(bus);

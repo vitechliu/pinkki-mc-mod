@@ -1,6 +1,6 @@
 # PinkkiCore
 
-面向 Minecraft Java 版的多版本 mod，MIT 许可证。1.20.1 已实装基础材料[瓜巴](wiki/items.md#guaba)及其无序配方，中立生物[饼蛙和刷怪蛋](wiki/bosses.md#bingwa)、可拾取装备的人形 NPC [粉红妹](wiki/bosses.md#pinkki)，以及支持转换加工与自动化设置的[瓜巴工作台](wiki/guaba-workbench.md)（0.1.0 开发中，尚未发布）；次要目标尚未适配。
+面向 Minecraft Java 版的多版本 mod，MIT 许可证。1.20.1 已实装 1 级材料[瓜巴](wiki/items.md#guaba)和[粉红矿](wiki/items.md#pink-ore)及其获取/加工配方，中立生物[饼蛙和刷怪蛋](wiki/bosses.md#bingwa)、可拾取装备的人形 NPC [粉红妹](wiki/bosses.md#pinkki)，以及支持转换加工与自动化设置的[瓜巴工作台](wiki/guaba-workbench.md)（0.1.0 开发中，尚未发布）；次要目标尚未适配。
 
 | 优先级 | Minecraft | 加载器 | Java | 构建工具 |
 | --- | --- | --- | --- | --- |

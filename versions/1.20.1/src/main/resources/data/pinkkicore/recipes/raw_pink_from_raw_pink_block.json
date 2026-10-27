@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "pinkkicore:raw_pink_block"
+    }
+  ],
+  "result": {
+    "item": "pinkkicore:raw_pink",
+    "count": 9
+  }
+}

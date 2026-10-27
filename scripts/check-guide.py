@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""在一次性 Forge 1.20.1 服务端验证引导手册发行 JAR；不启动客户端、不下载依赖。"""
+"""在一次性 Forge 1.20.1 服务端验证手册或粉红矿发行 JAR；不启动客户端、不下载依赖。"""
 import argparse
 import hashlib
 import json
@@ -18,8 +18,11 @@ ROOT = Path(__file__).resolve().parent.parent
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--geckolib', type=Path, required=True)
+    parser.add_argument('--probe', choices=('guide', 'pink-ore'), default='guide', help='Select the isolated release-JAR probe')
     parser.add_argument('--extra-mod', type=Path, action='append', default=[], help='Optional local mod JAR for isolated coexistence checks')
     args = parser.parse_args()
+    marker = 'GUIDE_PROBE' if args.probe == 'guide' else 'PINK_ORE_PROBE'
+    task = 'guideProbe' if args.probe == 'guide' else 'pinkOreProbe'
     library_root = ROOT / '.local/package-test/1.20.1'
     eula = library_root / 'eula.txt'
     if not eula.is_file() or 'eula=true' not in eula.read_text().splitlines():
@@ -27,11 +30,11 @@ def main():
     gecko = args.geckolib.resolve(strict=True)
     props = dict(line.split('=', 1) for line in (ROOT / 'mod.properties').read_text().splitlines() if '=' in line)
     artifact = ROOT / f"versions/1.20.1/build/libs/pinkkicore-forge-1.20.1-{props['mod_version']}.jar"
-    probe = ROOT / 'versions/1.20.1/build/libs/guide-probe.jar'
+    probe = ROOT / f'versions/1.20.1/build/libs/{args.probe}-probe.jar'
     for path in (artifact, probe):
         if not path.is_file():
-            raise SystemExit(f'先执行 ./scripts/mod.sh 1.20.1 build guideProbeJar -PguideProbe：缺少 {path.name}')
-    run = ROOT / '.local/guide-tests' / str(time.time_ns())
+            raise SystemExit(f'先执行 ./scripts/mod.sh 1.20.1 build {task}Jar -P{task}：缺少 {path.name}')
+    run = ROOT / f'.local/{args.probe}-tests' / str(time.time_ns())
     mods = run / 'mods'
     mods.mkdir(parents=True)
     (run / 'libraries').symlink_to(library_root / 'libraries', target_is_directory=True)
@@ -67,12 +70,12 @@ def main():
                 log.write(line)
                 log.flush()
                 ready |= 'Done (' in line
-                passed |= 'GUIDE_PROBE PASS' in line
+                passed |= f'{marker} PASS' in line
                 stopped |= 'Stopping server' in line
-                errors |= '/ERROR]' in line or 'GUIDE_PROBE FAIL' in line
-                if 'GUIDE' in line:
+                errors |= '/ERROR]' in line or f'{marker} FAIL' in line
+                if marker in line:
                     print(line.strip(), flush=True)
-                if (passed or 'GUIDE_PROBE FAIL' in line) and not sent:
+                if (passed or f'{marker} FAIL' in line) and not sent:
                     process.stdin.write('stop\n')
                     process.stdin.flush()
                     sent = True
@@ -81,7 +84,7 @@ def main():
         code = process.wait(timeout=30)
         result = dict(passed=code == 0 and ready and passed and stopped and not errors,
             exit_code=code, ready=ready, probe_pass=passed, stopped=stopped, errors=errors,
-            geckolib=gecko.name, extra_mods=[path.name for path in args.extra_mod], artifact_sha256=hashlib.sha256(artifact.read_bytes()).hexdigest())
+            geckolib=gecko.name, extra_mods=[path.name for path in args.extra_mod], artifact_sha256=hashlib.sha256((mods / artifact.name).read_bytes()).hexdigest())
         (run / 'result.json').write_text(json.dumps(result, indent=2) + '\n')
         print(json.dumps(result), run.relative_to(ROOT))
         if not result['passed']:

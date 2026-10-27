@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { withBase } from 'vitepress'
-type Visual = { name: string; image: string }
+type Visual = { name: string; image: string; sprite?: boolean }
 const props = defineProps<{
   recipe: { type: string; ingredient: { item: string }; result: { item: string; count: number } }
   items: Record<string, Visual>
@@ -12,9 +12,9 @@ for (const id of [props.recipe.ingredient.item, props.recipe.result.item]) if (!
   <figure class="charging">
     <figcaption>瓜巴充电桩 · 1 秒</figcaption>
     <div class="charging-row">
-      <div class="charging-slot"><img :src="withBase(items[recipe.ingredient.item].image)" :alt="items[recipe.ingredient.item].name" /><span>1</span></div>
+      <div class="charging-slot"><img :src="withBase(items[recipe.ingredient.item].image)" :alt="items[recipe.ingredient.item].name" :style="items[recipe.ingredient.item].sprite ? { objectFit: 'cover', objectPosition: 'top' } : {}" /><span>1</span></div>
       <strong>⚡ →</strong>
-      <div class="charging-slot"><img :src="withBase(items[recipe.result.item].image)" :alt="items[recipe.result.item].name" /><span>{{ recipe.result.count }}</span></div>
+      <div class="charging-slot"><img :src="withBase(items[recipe.result.item].image)" :alt="items[recipe.result.item].name" :style="items[recipe.result.item].sprite ? { objectFit: 'cover', objectPosition: 'top' } : {}" /><span>{{ recipe.result.count }}</span></div>
     </div>
     <figcaption>{{ items[recipe.ingredient.item].name }} → {{ items[recipe.result.item].name }}</figcaption>
   </figure>

@@ -1,0 +1,27 @@
+{
+  "type": "silentgear:target_effect",
+  "max_level": 1,
+  "conditions": [
+    {
+      "type": "silentgear:gear_type",
+      "gear_type": "tool"
+    }
+  ],
+  "name": {
+    "translate": "trait.pinkkicore.thunder_guaba_touch"
+  },
+  "description": {
+    "translate": "trait.pinkkicore.thunder_guaba_touch.desc"
+  },
+  "effects": {
+    "tool": {
+      "1": [
+        {
+          "effect": "pinkkicore:thunder_guaba",
+          "amplifier": 0,
+          "duration": 10.0
+        }
+      ]
+    }
+  }
+}

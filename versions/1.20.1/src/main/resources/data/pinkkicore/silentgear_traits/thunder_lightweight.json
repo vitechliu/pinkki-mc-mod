@@ -1,0 +1,27 @@
+{
+  "type": "silentgear:attribute",
+  "max_level": 1,
+  "conditions": [
+    {
+      "type": "silentgear:gear_type",
+      "gear_type": "tool"
+    }
+  ],
+  "name": {
+    "translate": "trait.pinkkicore.thunder_lightweight"
+  },
+  "description": {
+    "translate": "trait.pinkkicore.thunder_lightweight.desc"
+  },
+  "attribute_modifiers": {
+    "tool/mainhand": [
+      {
+        "attribute": "minecraft:generic.movement_speed",
+        "operation": 1,
+        "value": [
+          0.05
+        ]
+      }
+    ]
+  }
+}

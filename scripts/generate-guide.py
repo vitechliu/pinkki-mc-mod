@@ -9,6 +9,8 @@ ROOT = Path(__file__).resolve().parent.parent
 PAGES = ('handbook', 'items', 'guaba-workbench', 'guaba-potions', 'recipes', 'compatibility', 'bosses')
 ITEM_IMAGES = {'/images/guaba_charging_station.png': 'pinkkicore:guaba_charging_station', '/images/charged_creeper_spawn_egg.png': 'pinkkicore:charged_creeper_spawn_egg', '/images/thunder_guaba.png': 'pinkkicore:thunder_guaba', '/images/guaba_bow.png': 'pinkkicore:guaba_bow', '/images/guaba_sword.png': 'pinkkicore:guaba_sword', '/images/guaba.png': 'pinkkicore:guaba',
                '/images/guaba_workbench.svg': 'pinkkicore:guaba_workbench'}
+ITEM_IMAGES.update({f'/images/{name}.png': f'pinkkicore:{name}' for name in
+                    ('pink_ore', 'deepslate_pink_ore', 'raw_pink', 'pink_ingot', 'pink_nugget', 'pink_block', 'raw_pink_block')})
 
 
 def compile_book(root=ROOT):
@@ -35,7 +37,7 @@ def compile_book(root=ROOT):
                 blocks.append(dict(type='potion_stats', id=effect))
             elif line.startswith(('<thead', '<tbody', '</table')):
                 continue
-            elif '<CraftingRecipe ' in line or '<GuabaConversion ' in line or '<GuabaCharging ' in line:
+            elif any(f'<{component} ' in line for component in ('CraftingRecipe', 'GuabaConversion', 'GuabaCharging', 'SmeltingRecipe')):
                 variable = re.search(r':recipe="(\w+)"', line).group(1)
                 path = (root / 'wiki' / imports[variable]).resolve()
                 relative = path.relative_to(root / 'versions/1.20.1/src/main/resources/data')

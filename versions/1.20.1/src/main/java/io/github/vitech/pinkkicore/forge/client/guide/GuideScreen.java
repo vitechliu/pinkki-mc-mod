@@ -23,6 +23,8 @@ import net.minecraft.Util;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
+import net.minecraft.world.item.crafting.BlastingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraftforge.common.brewing.BrewingRecipe;
@@ -254,6 +256,12 @@ public final class GuideScreen extends Screen {
             }
             g.drawString(font, "→", x+75, y+43, 0x594B38, false);
             slot(g, crafting.getResultItem(minecraft.level.registryAccess()), x+96, y+38, mx,my);
+        } else if (recipe instanceof AbstractCookingRecipe cooking) {
+            label(g, Component.translatable(cooking instanceof BlastingRecipe ? "guide.pinkkicore.blasting" : "guide.pinkkicore.smelting"), x, y);
+            slot(g, sample(cooking.getIngredients().get(0)), x, y+22, mx,my);
+            g.drawString(font, "→", x+37, y+28, 0x9A5125, false);
+            slot(g, cooking.getResultItem(minecraft.level.registryAccess()), x+62, y+22, mx,my);
+            label(g, Component.translatable("guide.pinkkicore.cooking_time", cooking.getCookingTime()/20, cooking.getExperience()), x, y+55);
         } else if (recipe instanceof GuabaConversionRecipe conversion) {
             label(g, Component.translatable("block.pinkkicore.guaba_workbench"), x, y);
             var input = sample(conversion.getIngredients().get(0)); input.setCount(conversion.inputCount());

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "pinkkicore:pink_nugget"
+    }
+  },
+  "result": {
+    "item": "pinkkicore:pink_ingot"
+  }
+}

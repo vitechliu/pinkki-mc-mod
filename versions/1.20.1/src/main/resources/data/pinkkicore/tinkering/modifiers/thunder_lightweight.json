@@ -1,0 +1,21 @@
+{
+  "level_display": "tconstruct:no_levels",
+  "modules": [
+    {
+      "type": "tconstruct:stat_boost",
+      "flat": 0.15,
+      "operation": "multiply_base",
+      "stat": "tconstruct:attack_speed"
+    },
+    {
+      "type": "tconstruct:attribute",
+      "unique": "pinkkicore.thunder_lightweight",
+      "attribute": "minecraft:generic.movement_speed",
+      "flat": 0.05,
+      "operation": "multiply_base",
+      "slots": [
+        "mainhand"
+      ]
+    }
+  ]
+}

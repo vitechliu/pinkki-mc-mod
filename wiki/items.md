@@ -6,9 +6,41 @@
 
 > 一切瓜巴的起源
 
-瓜巴是基础合成材料，可用于[酿造瓜巴药水](./guaba-potions.md)、[瓜巴工作台加工](./guaba-workbench.md)和[其他模组的装备制作](./compatibility.md#guaba)。不可食用，每组最多堆叠 64 个。
+瓜巴是本模组 **1 级基础材料**，可用于[酿造瓜巴药水](./guaba-potions.md)、[瓜巴工作台加工](./guaba-workbench.md)和[其他模组的装备制作](./compatibility.md#guaba)。不可食用，每组最多堆叠 64 个。
 
 获取方式：[西瓜片与泥巴合成](./recipes.md#guaba)。
+
+## 粉红矿 {#pink-ore}
+
+粉红矿与瓜巴同属本模组 **1 级基础材料**；材料等级不代表采掘所需的工具等级。
+
+### 矿石与获取 {#pink-ore-mining}
+
+![粉红矿石](/images/pink_ore.png)
+
+![深层粉红矿石](/images/deepslate_pink_ore.png)
+
+粉红矿石与深层粉红矿石生成于主世界地下，高度分布、矿脉大小与避开空气的规则沿用原版钻石矿，生成频率约高 25%，越靠近世界底部越常见。已有世界需要探索尚未生成的区块。
+
+使用铁镐或更好的镐挖掘，通常掉落 1 个粗粉红锭，时运可增加数量；精准采集获得矿石本身。
+
+### 粗粉红锭与粉红锭 {#pink-ingot}
+
+![粗粉红锭](/images/raw_pink.png)
+
+![粉红锭](/images/pink_ingot.png)
+
+粗粉红锭或两种粉红矿石均可用[熔炉或高炉](./recipes.md#pink-smelting)炼成粉红锭，每份原料产出 1 锭。
+
+### 粉红粒与储存块 {#pink-storage}
+
+![粉红粒](/images/pink_nugget.png)
+
+![粉红块](/images/pink_block.png)
+
+![粗粉红块](/images/raw_pink_block.png)
+
+9 个粉红粒可合成 1 个粉红锭；9 个粉红锭可合成 1 个粉红块；9 个粗粉红锭可合成 1 个粗粉红块。均可反向拆分，见[压缩与拆分](./recipes.md#pink-storage)。以上物品与方块物品每组最多 64 个。
 
 ## 雷霆瓜巴（Thunder Guaba） {#thunder-guaba}
 
@@ -22,7 +54,7 @@
 
 安装 JEI 后，在雷霆瓜巴上按 **R**，或在瓜巴上按 **U**，可查看“雷击转换”页面。
 
-雷霆瓜巴不可食用，每组最多 64 个。它天然耐火，也不会被后续雷击销毁；可用于[酿造雷霆瓜巴药水](./guaba-potions.md#thunder-guaba)。
+雷霆瓜巴不可食用，每组最多 64 个。它天然耐火，也不会被后续雷击销毁；可用于[酿造雷霆瓜巴药水](./guaba-potions.md#thunder-guaba)，或作为[二级装备材料](./compatibility.md#thunder-guaba)。
 
 ## 饼蛙刷怪蛋 {#bingwa-spawn-egg}
 
@@ -68,7 +100,7 @@
 
 用[避雷针、附魔台与雷霆瓜巴有序合成](./recipes.md#guaba-charging-station)。右键打开，左侧放原料、右侧取产物；每次消耗 1 个原料，约 1 秒完成，不需要额外瓜巴、燃料或能量。
 
-可把瓜巴转成雷霆瓜巴、苦力怕刷怪蛋转成闪电苦力怕刷怪蛋，查看[充能配方](./recipes.md#guaba-charging)。右上角提供与瓜巴工作台相同的四态红石控制；六面可设为输入、输出、双向或禁用，默认底面输出、其余面输入。输出满、产物不兼容或红石暂停时会等待，不吞材料。可用漏斗或物品管道自动化，并在 JEI 查询加工来源。
+可把瓜巴转成雷霆瓜巴、苦力怕刷怪蛋转成闪电苦力怕刷怪蛋；同时安装铁魔法还可加工[雷电瓶和雷霆符文](./recipes.md#irons-charging)，查看[充能配方](./recipes.md#guaba-charging)。右上角提供与瓜巴工作台相同的四态红石控制；六面可设为输入、输出、双向或禁用，默认底面输出、其余面输入。输出满、产物不兼容或红石暂停时会等待，不吞材料。可用漏斗或物品管道自动化，并在 JEI 查询加工来源。
 
 ## 闪电苦力怕刷怪蛋 {#charged-creeper-spawn-egg}
 
