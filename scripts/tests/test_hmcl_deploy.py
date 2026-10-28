@@ -54,6 +54,35 @@ class DeployTest(unittest.TestCase):
                 f'[[dependencies.{mod_id}]]\nmodId="forge"\nversionRange="[47.1,)"\n'
                 f'[[dependencies.{mod_id}]]\nmodId="minecraft"\nversionRange="[1.20.1,)"\n')
 
+    def curios_jar(self, path, version, minecraft="[1.20,1.21)", loader="forge", manifest=False):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with zipfile.ZipFile(path, "w") as archive:
+            archive.writestr("META-INF/mods.toml", '\n'.join([
+                '[[mods]]', 'modId="curios"',
+                'version="' + ("${file.jarVersion}" if manifest else version) + '"',
+                '[[dependencies.curios]]', 'modId="' + loader + '"', 'versionRange="[46,)"',
+                '[[dependencies.curios]]', 'modId="minecraft"', 'versionRange="' + minecraft + '"']))
+            if manifest:
+                archive.writestr("META-INF/MANIFEST.MF", "Manifest-Version: 1.0\r\nImplementation-Version: " + version + "\r\n")
+
+    def test_curios_manifest_preserved_and_duplicates_rejected(self):
+        jar = self.targets[0] / "mods/curios.jar"
+        self.curios_jar(jar, "5.14.1+1.20.1", manifest=True)
+        self.assertEqual(deploy.curios_plan(self.targets[0]), jar)
+        self.curios_jar(jar.with_name("second.jar"), "5.14.1+1.20.1")
+        with self.assertRaisesRegex(ValueError, "多份"):
+            deploy.curios_plan(self.targets[0])
+
+    def test_curios_wrong_version_and_loader_rejected(self):
+        jar = self.targets[0] / "mods/curios.jar"
+        for version, mc, loader in [("5.14.0", "[1.20,1.21)", "forge"),
+                                     ("6.0.0", "[1.20,1.21)", "forge"),
+                                     ("5.14.1", "[1.19.2]", "forge"),
+                                     ("5.14.1", "[1.20,1.21)", "neoforge")]:
+            self.curios_jar(jar, version, mc, loader)
+            with self.assertRaises(ValueError):
+                deploy.curios_plan(self.targets[0])
+
     def java_result(self):
         return subprocess.CompletedProcess([], 0, "", "java.version = 17.0.20.1\nos.arch = aarch64\n")
 

@@ -118,7 +118,7 @@ def runtime_jar(config):
             with urlopen(config["url"], timeout=60) as response, temporary.open("wb") as output:
                 shutil.copyfileobj(response, output)
         if digest(temporary, "sha512") != config["sha512"]:
-            raise ValueError("下载的 GeckoLib SHA512 不匹配，拒绝安装")
+            raise ValueError("下载的前置 SHA512 不匹配，拒绝安装")
         temporary.replace(destination)
     finally:
         temporary.unlink(missing_ok=True)
@@ -140,7 +140,33 @@ def install(source, target):
     return destination
 
 
-def deploy(profiles):
+def curios_plan(target):
+    found = []
+    for jar in sorted((target / "mods").glob("*.jar")):
+        hmcl.safe_file(jar, target)
+        data = mods_metadata(jar)
+        for mod in data.get("mods", []):
+            if mod.get("modId") == "curios":
+                version = str(mod.get("version", ""))
+                if version == "${file.jarVersion}":
+                    with zipfile.ZipFile(jar) as archive:
+                        manifest = archive.read("META-INF/MANIFEST.MF").decode()
+                    match = re.search(r"^Implementation-Version: (.+)$", manifest, re.M)
+                    version = match[1].strip() if match else ""
+                if not numeric("5.14.1") <= numeric(version.split("+")[0]) < numeric("6"):
+                    raise ValueError(f"{target.name} 的 Curios 不满足 [5.14.1,6)")
+                deps = data.get("dependencies", {}).get("curios", [])
+                if not any(d.get("modId") == "forge" for d in deps) or not any(
+                        d.get("modId") == "minecraft" and d.get("versionRange") in
+                        ("[1.20,1.21)", "[1.20,1.20.1]", "[1.20.1]", "[1.20.1,1.21)", "[1.20.1,1.20.2)") for d in deps):
+                    raise ValueError(f"无法确认 {jar.name} 支持 Forge 1.20.1")
+                found.append(jar)
+    if len(found) > 1:
+        raise ValueError(f"{target.name} 有多份 Curios，请先去重")
+    return found[0] if found else None
+
+
+def deploy(profiles, with_curios=False):
     output = hmcl.safe_file(hmcl.LOCAL / "deployments" / hmcl.stamp(), hmcl.ROOT)
     output.mkdir(parents=True)
     receipt = {"status": "started", "minecraft": "1.20.1", "instances": [], "started_at": hmcl.stamp()}
@@ -154,6 +180,11 @@ def deploy(profiles):
         if props["geckolib_version_range"] != f"[{configs['geckolib']['version']},5)":
             raise ValueError("GeckoLib 构建需求已变化，请先更新 config/hmcl-runtime.json")
         dependencies = [dependency_plan(t, numeric(configs["geckolib"]["version"])) for t in targets]
+        curios_dependencies = [curios_plan(t) for t in targets] if with_curios else []
+        if with_curios:
+            for target, existing in zip(targets, curios_dependencies):
+                if existing is None and (target / "mods" / configs["curios"]["filename"]).exists():
+                    raise ValueError(f"{target.name} 的 Curios 文件名冲突")
         source = hmcl.artifact("1.20.1")
         # Check destination conflicts for every selected instance before any installation.
         for target, existing in zip(targets, dependencies):
@@ -170,9 +201,13 @@ def deploy(profiles):
             subprocess.run([sys.executable, str(hmcl.ROOT / "scripts/verify-artifact.py"), "1.20.1"],
                            cwd=hmcl.ROOT, stdout=log, stderr=subprocess.STDOUT, check=True)
         dep_source = runtime_jar(configs["geckolib"]) if None in dependencies else None
+        curios_source = runtime_jar(configs["curios"]) if with_curios and None in curios_dependencies else None
         ensure_stopped(targets)
         receipt["artifact_sha256"] = digest(source)
         for profile, (target, details), existing in zip(profiles, checked, dependencies):
+            if with_curios:
+                curios = curios_dependencies[targets.index(target)] or install(curios_source, target)
+                details.update(curios=curios.name, curios_sha256=digest(curios))
             dependency = existing or install(dep_source, target)
             hmcl.sync("1.20.1", profile, verified=True)
             installed = target / "mods" / source.name
@@ -200,6 +235,7 @@ def deploy(profiles):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--profile", choices=["both", "clean", "compat"], default="both")
+    parser.add_argument("--with-curios", action="store_true", help="为选定实例补齐可选 Curios 饰品前置，保留满足版本的现有文件")
     args = parser.parse_args()
     # Prevent two concurrent deploy commands from competing over backup/removal.
     import fcntl
@@ -208,7 +244,7 @@ def main():
     with lock_path.open("w") as lock:
         try:
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            deploy(["clean", "compat"] if args.profile == "both" else [args.profile])
+            deploy(["clean", "compat"] if args.profile == "both" else [args.profile], args.with_curios)
         except (OSError, ValueError, subprocess.CalledProcessError) as error:
             parser.exit(1, f"部署失败：{error}\n")
 

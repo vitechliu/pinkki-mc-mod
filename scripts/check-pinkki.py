@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parent.parent
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--geckolib', type=Path, required=True)
+    parser.add_argument("--npc", choices=["pinkki", "guaba_yingrong"], default="pinkki")
     args = parser.parse_args()
     library_root = ROOT / '.local/package-test/1.20.1'
     eula = library_root / 'eula.txt'
@@ -30,7 +31,7 @@ def main():
     for path in (artifact, probe):
         if not path.is_file():
             raise SystemExit(f'先执行 ./scripts/mod.sh 1.20.1 build pinkkiProbeJar -PpinkkiProbe：缺少 {path.name}')
-    run = ROOT / '.local/pinkki-tests' / str(time.time_ns())
+    run = ROOT / f'.local/{args.npc}-tests' / str(time.time_ns())
     mods = run / 'mods'
     mods.mkdir(parents=True)
     (run / 'libraries').symlink_to(library_root / 'libraries', target_is_directory=True)
@@ -44,7 +45,7 @@ def main():
     java = ROOT / '.local/jdk-17/Contents/Home/bin/java'
     forge_args = run / 'libraries/net/minecraftforge/forge/1.20.1-47.4.28/unix_args.txt'
     process = subprocess.Popen([str(java), '-Xms256M', '-Xmx1536M', '-Djava.awt.headless=true',
-        '@' + str(forge_args), '--nogui'], cwd=run, stdin=subprocess.PIPE,
+        '-Dpinkkicore.test.npc=' + args.npc, '@' + str(forge_args), '--nogui'], cwd=run, stdin=subprocess.PIPE,
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1, start_new_session=True)
     lines = queue.Queue()
     def read():
@@ -53,6 +54,7 @@ def main():
         lines.put(None)
     threading.Thread(target=read, daemon=True).start()
     ready = passed = stopped = sent = errors = False
+    external_auth_unavailable = False
     deadline = time.monotonic() + 240
     try:
         with (run / 'console.log').open('w') as log:
@@ -68,7 +70,12 @@ def main():
                 ready |= 'Done (' in line
                 passed |= 'PINKKI_PROBE PASS' in line
                 stopped |= 'Stopping server' in line
-                errors |= '/ERROR]' in line or 'PINKKI_PROBE FAIL' in line
+                # This loopback/offline probe does not authenticate players. Keep the exact
+                # optional Mojang public-key fetch failure visible, separate from mod errors.
+                auth_error = ('[Yggdrasil Key Fetcher/ERROR] [mojang/YggdrasilServicesKeyInfo]: '
+                              'Failed to request yggdrasil public key') in line
+                external_auth_unavailable |= auth_error
+                errors |= ('/ERROR]' in line and not auth_error) or 'PINKKI_PROBE FAIL' in line
                 if 'PINKKI' in line:
                     print(line.strip(), flush=True)
                 if (passed or 'PINKKI_PROBE FAIL' in line) and not sent:
@@ -80,7 +87,7 @@ def main():
         code = process.wait(timeout=30)
         result = dict(passed=code == 0 and ready and passed and stopped and not errors,
             exit_code=code, ready=ready, probe_pass=passed, stopped=stopped, errors=errors,
-            geckolib=gecko.name, artifact_sha256=hashlib.sha256(artifact.read_bytes()).hexdigest())
+            npc=args.npc, external_auth_unavailable=external_auth_unavailable, geckolib=gecko.name, artifact_sha256=hashlib.sha256(artifact.read_bytes()).hexdigest())
         (run / 'result.json').write_text(json.dumps(result, indent=2) + '\n')
         print(json.dumps(result), run.relative_to(ROOT))
         if not result['passed']:

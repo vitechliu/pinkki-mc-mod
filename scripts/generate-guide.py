@@ -10,7 +10,7 @@ PAGES = ('handbook', 'items', 'guaba-workbench', 'guaba-potions', 'recipes', 'co
 ITEM_IMAGES = {'/images/guaba_charging_station.png': 'pinkkicore:guaba_charging_station', '/images/charged_creeper_spawn_egg.png': 'pinkkicore:charged_creeper_spawn_egg', '/images/thunder_guaba.png': 'pinkkicore:thunder_guaba', '/images/guaba_bow.png': 'pinkkicore:guaba_bow', '/images/guaba_sword.png': 'pinkkicore:guaba_sword', '/images/guaba.png': 'pinkkicore:guaba',
                '/images/guaba_workbench.svg': 'pinkkicore:guaba_workbench'}
 ITEM_IMAGES.update({f'/images/{name}.png': f'pinkkicore:{name}' for name in
-                    ('pink_ore', 'deepslate_pink_ore', 'raw_pink', 'pink_ingot', 'pink_nugget', 'pink_block', 'raw_pink_block')})
+                    ('guaba_hood', 'pink_blessing', 'pink_ore', 'deepslate_pink_ore', 'raw_pink', 'pink_ingot', 'pink_nugget', 'pink_block', 'raw_pink_block')})
 
 
 def compile_book(root=ROOT):

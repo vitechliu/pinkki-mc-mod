@@ -40,6 +40,14 @@ def main():
         assert deps["minecraft"]["versionRange"] == f"[{mc}]"
         assert loader in deps
         if mc == "1.20.1":
+            assert deps['curios']['mandatory'] is False and deps['curios']['side'] == 'BOTH'
+            assert deps['curios']['versionRange'] == '[5.14.1,6)'
+            assert not any(path.startswith('top/theillusivec4/curios/') for path in archive.namelist()), 'Curios must remain external'
+            for slot, item in [('head', 'guaba_hood'), ('charm', 'pink_blessing')]:
+                assert json.loads(archive.read(f'data/pinkkicore/curios/slots/{slot}.json')) == {'size': 1, 'operation': 'SET'}
+                assert json.loads(archive.read(f'data/curios/tags/items/{slot}.json')) == {'replace': False, 'values': ['pinkkicore:' + item]}
+                assert archive.read(f'assets/pinkkicore/textures/item/{item}.png').startswith(b'\x89PNG')
+                assert json.loads(archive.read(f'assets/pinkkicore/models/item/{item}.json'))['textures']['layer0'] == 'pinkkicore:item/' + item
             target_props = read_properties(ROOT / "versions" / mc / "gradle.properties")
             assert deps["geckolib"]["mandatory"] is True
             assert deps["geckolib"]["side"] == "BOTH"
@@ -132,6 +140,15 @@ def main():
                 assert strings["entity.pinkkicore.pinkki"] == entity_name
                 assert strings["item.pinkkicore.pinkki_spawn_egg"] == egg_name
             for path in ("entity/PinkkiEntity", "client/PinkkiRenderer"):
+                assert f"io/github/vitech/pinkkicore/forge/{path}.class" in archive.namelist()
+            assert archive.read("assets/pinkkicore/textures/entity/guaba_yingrong.png") == (ROOT / "designs/guaba_yingrong/guaba_yingrong.png").read_bytes()
+            assert json.loads(archive.read("assets/pinkkicore/models/item/guaba_yingrong_spawn_egg.json")) == {"parent": "minecraft:item/template_spawn_egg"}
+            assert json.loads(archive.read("data/pinkkicore/loot_tables/entities/guaba_yingrong.json")) == {"type": "minecraft:entity", "pools": []}
+            for lang, entity_name, egg_name in [("zh_cn", "瓜巴影融", "瓜巴影融刷怪蛋"), ("en_us", "Guaba Yingrong", "Guaba Yingrong Spawn Egg")]:
+                strings = json.loads(archive.read(f"assets/pinkkicore/lang/{lang}.json"))
+                assert strings["entity.pinkkicore.guaba_yingrong"] == entity_name
+                assert strings["item.pinkkicore.guaba_yingrong_spawn_egg"] == egg_name
+            for path in ("entity/HumanoidNpcEntity", "entity/GuabaYingrongEntity", "client/HumanoidNpcRenderer", "client/GuabaYingrongRenderer"):
                 assert f"io/github/vitech/pinkkicore/forge/{path}.class" in archive.namelist()
             assert not any("pinkkicore/test/" in name for name in archive.namelist()), "Test probe leaked into release JAR"
             silent = json.loads(archive.read("data/pinkkicore/silentgear_materials/guaba.json"))

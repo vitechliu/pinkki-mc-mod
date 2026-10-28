@@ -127,5 +127,12 @@
   "item.pinkkicore.pink_nugget": "Pink Nugget",
   "guide.pinkkicore.smelting": "Smelting",
   "guide.pinkkicore.blasting": "Blasting",
-  "guide.pinkkicore.cooking_time": "%s s · %s XP"
+  "guide.pinkkicore.cooking_time": "%s s · %s XP",
+  "entity.pinkkicore.guaba_yingrong": "Guaba Yingrong",
+  "item.pinkkicore.guaba_yingrong_spawn_egg": "Guaba Yingrong Spawn Egg",
+  "item.pinkkicore.guaba_hood": "Guaba Hood",
+  "item.pinkkicore.pink_blessing": "Pink Blessing",
+  "tooltip.pinkkicore.guaba_hood": "Head slot: immunity to all Guaba-family effects",
+  "tooltip.pinkkicore.pink_blessing": "Charm slot: +2 Armor, +2 Max Health (1 heart)",
+  "tooltip.pinkkicore.requires_curios": "Requires Curios to equip and activate"
 }

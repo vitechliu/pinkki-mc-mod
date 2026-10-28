@@ -29,6 +29,9 @@ public final class PinkkiCore {
     private void onCommonSetup(final FMLCommonSetupEvent event) {
         event.enqueueWork(GuabaPotions::registerBrewing);
         event.enqueueWork(io.github.vitech.pinkkicore.forge.item.ChargedCreeperEggItem::registerDispenser);
+        if (net.minecraftforge.fml.ModList.get().isLoaded("curios")) {
+            event.enqueueWork(io.github.vitech.pinkkicore.forge.compat.curios.CuriosIntegration::register);
+        }
         LogUtils.getLogger().info(ModInfo.startupMessage());
     }
 }

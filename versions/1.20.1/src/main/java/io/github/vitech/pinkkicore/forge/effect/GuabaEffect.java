@@ -10,7 +10,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
 /** Server-authoritative, independent rolls; transient modifiers never alter base attributes. */
-public class GuabaEffect extends MobEffect {
+public class GuabaEffect extends MobEffect implements GuabaEffectFamily {
     private static final UUID GUABA_SPEED = UUID.fromString("be04e213-58c6-463e-aad1-bbc1d078da60");
     private static final UUID GUABA_ARMOR = UUID.fromString("925328ed-cc88-47e1-87dc-28d29fe14e75");
     private final UUID speedId;

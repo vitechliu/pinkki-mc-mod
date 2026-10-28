@@ -2,7 +2,7 @@ package pinkkicore.test;
 
 import java.util.UUID;
 import com.mojang.authlib.GameProfile;
-import io.github.vitech.pinkkicore.forge.entity.PinkkiEntity;
+import io.github.vitech.pinkkicore.forge.entity.HumanoidNpcEntity;
 import io.github.vitech.pinkkicore.forge.entity.ModEntities;
 import io.github.vitech.pinkkicore.forge.item.ModItems;
 import net.minecraft.core.BlockPos;
@@ -28,8 +28,15 @@ import net.minecraftforge.fml.common.Mod;
 /** Runs only in an isolated dedicated server with the reobfuscated release JAR. */
 @Mod("pinkkicore_pinkki_probe")
 public final class PinkkiProbe {
+    private final String npcId = System.getProperty("pinkkicore.test.npc", "pinkki");
+    private EntityType<? extends HumanoidNpcEntity> npcType() {
+        return npcId.equals("guaba_yingrong") ? ModEntities.GUABA_YINGRONG.get() : ModEntities.PINKKI.get();
+    }
+    private Item spawnEgg() {
+        return npcId.equals("guaba_yingrong") ? ModItems.GUABA_YINGRONG_SPAWN_EGG.get() : ModItems.PINKKI_SPAWN_EGG.get();
+    }
     private ServerLevel level;
-    private PinkkiEntity npc, wanderer;
+    private HumanoidNpcEntity npc, wanderer;
     private Cow cow;
     private Vec3 start, roamStart;
     private ItemEntity blocked, delayed, trash;
@@ -45,7 +52,7 @@ public final class PinkkiProbe {
         entity.setNoPickUpDelay(); level.addFreshEntity(entity); return entity;
     }
     private void checkNames(ServerStartedEvent event) {
-        for (var type : new EntityType<?>[]{ModEntities.PINKKI.get(), ModEntities.BINGWA.get()}) {
+        for (var type : new EntityType<?>[]{ModEntities.PINKKI.get(), ModEntities.BINGWA.get(), ModEntities.GUABA_YINGRONG.get()}) {
             var fresh = type.create(level);
             require(fresh.hasCustomName() && fresh.isCustomNameVisible()
                 && fresh.getCustomName().equals(type.getDescription()), "default name missing " + type);
@@ -68,11 +75,12 @@ public final class PinkkiProbe {
             var renamed = type.create(level); renamed.load(fresh.saveWithoutId(new CompoundTag()));
             require(renamed.getCustomName().getString().equals("renamed") && renamed.isCustomNameVisible(), "renamed NBT lost");
         }
-        System.out.println("PINKKI both mobs default names + old NBT migration + visibility + real name tag rename PASS");
+        System.out.println("PINKKI all three mobs default names + old NBT migration + visibility + real name tag rename PASS");
     }
     private void started(ServerStartedEvent event) {
         try {
             level = event.getServer().overworld();
+            System.out.println("PINKKI testing NPC " + npcId);
             checkNames(event);
             level.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).set(false, event.getServer());
             level.setChunkForced(0, 0, true); level.setChunkForced(1, 0, true);
@@ -81,23 +89,23 @@ public final class PinkkiProbe {
                 for (int y = 100; y <= 105; y++) level.setBlockAndUpdate(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState());
             }
             event.getServer().getCommands().performPrefixedCommand(event.getServer().createCommandSourceStack(),
-                "summon pinkkicore:pinkki 1 100 1 {NoAI:1b,CustomName:'\"probe\"'}");
-            var list = level.getEntitiesOfClass(PinkkiEntity.class, new AABB(0, 99, 0, 3, 103, 3));
-            require(list.size() == 1 && list.get(0).hasCustomName() && list.get(0).isPersistenceRequired()
+                "summon pinkkicore:" + npcId + " 1 100 1 {NoAI:1b,CustomName:'\"probe\"'}");
+            var list = level.getEntitiesOfClass(HumanoidNpcEntity.class, new AABB(0, 99, 0, 3, 103, 3));
+            require(list.size() == 1 && list.get(0).getType() == npcType() && list.get(0).hasCustomName() && list.get(0).isPersistenceRequired()
                 && list.get(0).canPickUpLoot() && list.get(0).isCustomNameVisible(), "summon defaults failed");
             list.get(0).discard();
             var player = FakePlayerFactory.get(level, new GameProfile(UUID.fromString("868c947e-1c3b-49af-9fe3-d1b4b745319a"), "PinkkiProbe"));
             player.setPos(5, 100, 5);
-            player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.PINKKI_SPAWN_EGG.get()));
-            var result = ModItems.PINKKI_SPAWN_EGG.get().useOn(new UseOnContext(player, InteractionHand.MAIN_HAND,
+            player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(spawnEgg()));
+            var result = spawnEgg().useOn(new UseOnContext(player, InteractionHand.MAIN_HAND,
                 new BlockHitResult(new Vec3(5.5, 100, 5.5), Direction.UP, new BlockPos(5, 99, 5), false)));
-            var spawned = level.getEntitiesOfClass(PinkkiEntity.class, new AABB(4, 99, 4, 7, 103, 7));
-            require(result.consumesAction() && spawned.size() == 1, "actual egg use failed");
+            var spawned = level.getEntitiesOfClass(HumanoidNpcEntity.class, new AABB(4, 99, 4, 7, 103, 7));
+            require(result.consumesAction() && spawned.size() == 1 && spawned.get(0).getType() == npcType(), "actual egg use failed");
             npc = spawned.get(0); npc.getRandom().setSeed(12345); start = npc.position();
             require(npc.canPickUpLoot() && npc.isPersistenceRequired() && npc.getMaxHealth() == 20
                 && npc.hasCustomName() && npc.isCustomNameVisible(), "defaults failed");
             cow = EntityType.COW.create(level); cow.setNoAi(true); cow.setPos(6, 100, 5); level.addFreshEntity(cow);
-            wanderer = ModEntities.PINKKI.get().create(level); wanderer.setPos(24,100,8);
+            wanderer = npcType().create(level); wanderer.setPos(24,100,8);
             wanderer.getRandom().setSeed(12345); level.addFreshEntity(wanderer); roamStart = wanderer.position();
             System.out.println("PINKKI summon + egg + attributes PASS");
         } catch (Throwable e) { fail(e); }
@@ -127,7 +135,7 @@ public final class PinkkiProbe {
                 require(npc.getArmorValue() >= 15, "worn armor has no defense");
                 require(npc.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE) > 2,
                     "weapon did not contribute attack damage");
-                var tag = npc.saveWithoutId(new CompoundTag()); var restored = ModEntities.PINKKI.get().create(level); restored.load(tag);
+                var tag = npc.saveWithoutId(new CompoundTag()); var restored = npcType().create(level); restored.load(tag);
                 require(restored.canPickUpLoot() && restored.isPersistenceRequired(), "persistence flags lost");
                 for (EquipmentSlot slot : EquipmentSlot.values()) require(ItemStack.matches(npc.getItemBySlot(slot),restored.getItemBySlot(slot)), "NBT equipment lost " + slot);
                 drop(Items.DIAMOND_SWORD,0);

@@ -27,6 +27,7 @@ public final class ClientEvents {
         });
     }
     @SubscribeEvent public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(ModEntities.GUABA_YINGRONG.get(), GuabaYingrongRenderer::new);
         event.registerEntityRenderer(ModEntities.PINKKI.get(), PinkkiRenderer::new);
         event.registerEntityRenderer(ModEntities.BINGWA.get(), BingwaRenderer::new);
     }

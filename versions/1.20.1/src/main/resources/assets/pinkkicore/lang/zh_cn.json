@@ -127,5 +127,12 @@
   "item.pinkkicore.pink_nugget": "粉红粒",
   "guide.pinkkicore.smelting": "熔炼",
   "guide.pinkkicore.blasting": "高炉熔炼",
-  "guide.pinkkicore.cooking_time": "%s 秒 · %s 经验"
+  "guide.pinkkicore.cooking_time": "%s 秒 · %s 经验",
+  "entity.pinkkicore.guaba_yingrong": "瓜巴影融",
+  "item.pinkkicore.guaba_yingrong_spawn_egg": "瓜巴影融刷怪蛋",
+  "item.pinkkicore.guaba_hood": "瓜巴头套",
+  "item.pinkkicore.pink_blessing": "粉红之祝",
+  "tooltip.pinkkicore.guaba_hood": "佩戴于头饰槽：免疫所有瓜巴类效果",
+  "tooltip.pinkkicore.pink_blessing": "佩戴于护符槽：护甲 +2，最大生命值 +2（1 颗心）",
+  "tooltip.pinkkicore.requires_curios": "需要安装 Curios 才能佩戴并生效"
 }

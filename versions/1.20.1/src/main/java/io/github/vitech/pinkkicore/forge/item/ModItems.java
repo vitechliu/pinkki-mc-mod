@@ -28,6 +28,12 @@ public final class ModItems {
     public static final RegistryObject<Item> PINKKI_SPAWN_EGG = ITEMS.register("pinkki_spawn_egg", () ->
         new ForgeSpawnEggItem(ModEntities.PINKKI, 0xF4BFD0, 0xCFF4EB, new Item.Properties()));
 
+    public static final RegistryObject<Item> GUABA_YINGRONG_SPAWN_EGG = ITEMS.register("guaba_yingrong_spawn_egg", () ->
+        new ForgeSpawnEggItem(ModEntities.GUABA_YINGRONG, 0x302C21, 0xCBA45A, new Item.Properties()));
+
+    public static final RegistryObject<Item> GUABA_HOOD = ITEMS.register("guaba_hood", () -> new AccessoryItem("guaba_hood"));
+    public static final RegistryObject<Item> PINK_BLESSING = ITEMS.register("pink_blessing", () -> new AccessoryItem("pink_blessing"));
+
     private ModItems() {}
 
     public static void register(IEventBus bus) {
@@ -40,9 +46,10 @@ public final class ModItems {
             event.accept(BINGWA_SPAWN_EGG);
             event.accept(CHARGED_CREEPER_EGG);
             event.accept(PINKKI_SPAWN_EGG);
+            event.accept(GUABA_YINGRONG_SPAWN_EGG);
         }
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) event.accept(GUIDE_BOOK);
-        if (event.getTabKey() == CreativeModeTabs.COMBAT) { event.accept(GUABA_SWORD); event.accept(GUABA_BOW); }
+        if (event.getTabKey() == CreativeModeTabs.COMBAT) { event.accept(GUABA_HOOD); event.accept(PINK_BLESSING); event.accept(GUABA_SWORD); event.accept(GUABA_BOW); }
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(GUABA);
             event.accept(THUNDER_GUABA);

@@ -6,6 +6,7 @@ plugins {
 apply from: '../../gradle/forge.gradle'
 
 repositories {
+    maven { url = "https://maven.theillusivec4.top/"; content { includeGroup "top.theillusivec4.curios" } }
     maven {
         name = 'JEI'
         url = 'https://maven.blamejared.com/'
@@ -22,6 +23,7 @@ repositories {
 }
 
 dependencies {
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.14.1+1.20.1:api")
     // Compile against the compatibility floor; modpacks may keep a newer 4.x.
     implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
     // GeckoLib embeds this in its release JAR; development runs need it explicitly.
@@ -170,4 +172,20 @@ if (project.hasProperty('pinkOreProbe')) {
         pinkOreProbeJar { classpath.from(sourceSets.pinkOreProbe.compileClasspath) }
     }
     tasks.named('pinkOreProbeJar').configure { finalizedBy 'reobfPinkOreProbeJar' }
+}
+
+if (project.hasProperty('accessoryProbe')) {
+    sourceSets {
+        accessoryProbe {
+            java.srcDir '../../scripts/tests/accessory_probe'
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        }
+    }
+    tasks.register('accessoryProbeJar', Jar) {
+        archiveFileName = 'accessory-probe.jar'
+        from sourceSets.accessoryProbe.output
+        from('../../scripts/tests/accessory_probe/mods.toml') { into 'META-INF' }
+    }
+    reobf { accessoryProbeJar { classpath.from(sourceSets.accessoryProbe.compileClasspath) } }
+    tasks.named('accessoryProbeJar').configure { finalizedBy 'reobfAccessoryProbeJar' }
 }

@@ -1,6 +1,6 @@
 # PinkkiCore
 
-面向 Minecraft Java 版的多版本 mod，MIT 许可证。1.20.1 已实装 1 级材料[瓜巴](wiki/items.md#guaba)和[粉红矿](wiki/items.md#pink-ore)及其获取/加工配方，中立生物[饼蛙和刷怪蛋](wiki/bosses.md#bingwa)、可拾取装备的人形 NPC [粉红妹](wiki/bosses.md#pinkki)，以及支持转换加工与自动化设置的[瓜巴工作台](wiki/guaba-workbench.md)（0.1.0 开发中，尚未发布）；次要目标尚未适配。
+面向 Minecraft Java 版的多版本 mod，MIT 许可证。1.20.1 已实装 1 级材料[瓜巴](wiki/items.md#guaba)和[粉红矿](wiki/items.md#pink-ore)及其获取/加工配方，中立生物[饼蛙和刷怪蛋](wiki/bosses.md#bingwa)、可拾取装备的人形 NPC [粉红妹](wiki/bosses.md#pinkki)和[瓜巴影融](wiki/bosses.md#guaba-yingrong)，以及支持转换加工与自动化设置的[瓜巴工作台](wiki/guaba-workbench.md)（0.1.0 开发中，尚未发布）；次要目标尚未适配。
 
 | 优先级 | Minecraft | 加载器 | Java | 构建工具 |
 | --- | --- | --- | --- | --- |
@@ -19,6 +19,10 @@ Minecraft、加载器、Gradle 和构建插件版本固定在仓库配置中。�
 ## 玩家 Wiki
 
 [在线 Wiki](https://vitechliu.github.io/pinkki-mc-mod/)（首次 Pages 部署成功后可访问），源文件位于 `wiki/`。道具、合成、结构、多方块和 Boss 等玩法变更必须与 Wiki 同步提交。开发资料继续保留在 `docs/`；本地预览和发布方式见 [Wiki 维护说明](docs/wiki.md)。
+
+## Curios 饰品
+
+1.20.1 可选安装 Curios 5.14.1+（5.x），使用[瓜巴头套与粉红之祝](wiki/items.md#guaba-hood)。客户端和服务端均需安装才能佩戴；未安装时物品保留且提示需要 Curios。头饰、护符各提供 1 格，细节见[接入约定](docs/curios-integration.md)。本地两个 HMCL 测试实例可通过 `python3 scripts/deploy-local.py --with-curios` 补齐前置，不启动游戏。
 
 ## GeckoLib 前置与整合包兼容
 
@@ -148,7 +152,8 @@ python3 scripts/smoke-server.py 1.20.1
 
 ## 参考资料
 
-- [Mod 源码参考库](docs/reference-mods.md)：十二个 Mod 的 1.20.1 本地源码、分支及检索方法。
+- [Curios 饰品槽位接入约定](docs/curios-integration.md)：官方预设槽位与专属“粉饰（pinkki）”设计。
+- [Mod 源码参考库](docs/reference-mods.md)：十三个 Mod 的 1.20.1 本地源码、分支及检索方法。
 
 - [Forge 1.20.1 开发入门](https://docs.minecraftforge.net/en/1.20.1/gettingstarted/)
 - [Forge 1.19.1 官方下载](https://files.minecraftforge.net/net/minecraftforge/forge/index_1.19.1.html)

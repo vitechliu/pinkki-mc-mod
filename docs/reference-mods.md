@@ -4,7 +4,7 @@
 
 ## 当前索引
 
-2026-10-23 下载并检查。以下均为独立 Git 浅克隆（`--depth 1 --single-branch`），包含所选提交的完整工作树，未下载完整历史或其他分支。仓库根目录保留上游许可证。
+首批于 2026-10-23 下载并检查；Curios API 于 2026-10-28 补充。以下均为独立 Git 浅克隆（`--depth 1 --single-branch`），包含所选提交的完整工作树，未下载完整历史或其他分支。仓库根目录保留上游许可证。
 
 | Mod | 本地子目录 | 上游仓库 | 分支 | 下载时提交 |
 | --- | --- | --- | --- | --- |
@@ -20,6 +20,7 @@
 | 匠魂3 | `TinkersConstruct/` | [SlimeKnights/TinkersConstruct](https://github.com/SlimeKnights/TinkersConstruct) | `1.20.1` | [f4e77d43f39b](https://github.com/SlimeKnights/TinkersConstruct/commit/f4e77d43f39ba1047bf93ae816b7e1beaab514c2) |
 | JEI（Just Enough Items） | `JustEnoughItems/` | [mezz/JustEnoughItems](https://github.com/mezz/JustEnoughItems) | `1.20.1` | [f1b7b7bd0d8a](https://github.com/mezz/JustEnoughItems/commit/f1b7b7bd0d8a0f55d90d1426cb84cb1a267d2a36) |
 | JER（Just Enough Resources） | `JustEnoughResources/` | [way2muchnoise/JustEnoughResources](https://github.com/way2muchnoise/JustEnoughResources) | `1.20.1` | [62cbeaf4375e](https://github.com/way2muchnoise/JustEnoughResources/commit/62cbeaf4375e11701e2533f9f4fffc4040570351) |
+| Curios API（饰品栏） | `Curios/` | [TheIllusiveC4/Curios](https://github.com/TheIllusiveC4/Curios) | `1.20.x` | [a91da6ba2396](https://github.com/TheIllusiveC4/Curios/commit/a91da6ba2396f6ed9042c8a47a471ca5efc97da8) |
 
 以上分支的构建配置均已核对为 1.20.1。铁魔法使用 `1.20.1-legacy`，其配置版本为 `1.20.1-3.4.0.11`；另一个 `1.20.1-dragon` 分支配置版本为 `1.20.1-3.1.7.1`。应用能源 2 选用 Forge 分支。这里的源码快照不代表对应发行包已经构建或运行验证。
 
@@ -32,6 +33,8 @@
 JEI 为多模块项目，优先查看 `JustEnoughItems/Forge/`、`ForgeApi/`、`Common/`、`CommonApi/`、`Gui/` 和 `Library/` 下的 `src/main/java/`，分别参考 Forge 适配、公共 API、界面和配方展示实现。
 
 JER 同样采用多模块结构，Forge 适配与 API 位于 `JustEnoughResources/Forge/`、`ForgeApi/`，共享实现与 API 位于 `Common/`、`CommonApi/`，可从这些模块的 `src/main/java/` 查找资源分布与掉落展示实现。
+
+Curios API 对应饰品栏扩展，当前参考版本为 `5.14.1+1.20.1`（Forge）。后续饰品开发可优先查看 `Curios/src/main/java/top/theillusivec4/curios/api/` 下的 `CuriosApi`、`type/capability/ICurioItem`、`ICurio`，以及 `client/ICurioRenderer`、`CuriosRendererRegistry`。本次仅下载参考源码，未将 Curios 加入 PinkkiCore 依赖。官方槽位清单与专属粉饰设计见 [Curios 接入约定](curios-integration.md)。
 
 从 PinkkiCore 根目录搜索；由于 `.local/` 被忽略，`rg` 需要显式加 `--no-ignore`：
 

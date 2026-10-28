@@ -1,0 +1,84 @@
+{
+  "meta": {
+    "format_version": "5.0",
+    "model_format": "skin",
+    "box_uv": true
+  },
+  "name": "guaba_yingrong",
+  "visible_box": [
+    1,
+    1,
+    0
+  ],
+  "variable_placeholders": "",
+  "multi_file_ruleset": "",
+  "variable_placeholder_buttons": [],
+  "skin_model": "alex.java",
+  "skin_pose": "natural",
+  "unhandled_root_fields": {},
+  "resolution": {
+    "width": 64,
+    "height": 64
+  },
+  "skin_pose_data": {
+    "Head": [
+      6,
+      -5,
+      0
+    ],
+    "Right Arm": [
+      10,
+      0,
+      0
+    ],
+    "Left Arm": [
+      -12,
+      0,
+      0
+    ],
+    "Right Leg": [
+      -11,
+      0,
+      2
+    ],
+    "Left Leg": [
+      10,
+      0,
+      -2
+    ]
+  },
+  "textures": [
+    {
+      "name": "guaba_yingrong.png",
+      "folder": "",
+      "namespace": "",
+      "id": "0",
+      "group": "",
+      "scope": 0,
+      "width": 64,
+      "height": 64,
+      "uv_width": 64,
+      "uv_height": 64,
+      "particle": false,
+      "use_as_default": false,
+      "layers_enabled": false,
+      "sync_to_project": "",
+      "file_format": "png",
+      "render_mode": "default",
+      "render_sides": "auto",
+      "wrap_mode": "limited",
+      "pbr_channel": "color",
+      "fps": 7,
+      "force_translucent": false,
+      "frame_time": 1,
+      "frame_order_type": "loop",
+      "frame_order": "",
+      "frame_interpolate": false,
+      "visible": true,
+      "internal": true,
+      "saved": true,
+      "uuid": "ba7d6fc3-f23d-a49d-78e9-00244a63345c",
+      "source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAFA0lEQVR42u1aMYsVMRB+/0RBEAQLERTFQpsDBaurhLPQysLORsHyKrGysNDOQhALbRT8AdpYKIgoWNhY2QhyWD/5lvse3/ucbJLdffvuvF0YyGSy2cy3k5lkktks8xw5c34OOr25tSDWldCs53P40NE5aOPC2SVi/WzVjyq/uX2/GoQhAKDS169cakhBGA2AnV8/FjQmAKr8owd3GlIQRgHg44f3awWAyt++tdWQgjA6ACgfaADG9gF7YgoQhNq//984QY0ENcrvizDoYW771etQUfUBkaJ4B+8yVEbyaC2hCqqZY65H5u9TAES/oDL26xaENksWxMFR+QiAkiigADgIbQCnlCcAqH9x7/L86+ub851vDxtCGXVUVp2jg5D1IQ5ANM9LokAOgBTADoAqT+Voqfy+O0gHwQFojSI6QJAryDp+/PeXtw05CEMA4MpDRgD0BygA+pf5fmcAMDgo9/nl0yUA8GEqPv/5aVFWAPAO6iI/oP27LAUAFETbtlAHGdqwPAgAUEQBgFJ/PtxYAgHld48vLoFQAkC0l3AAqDD7yTlxjltB6OUD3LShFJwOOiMAKKPOraAtEqjyKQBc+ZIwyr4VBI8EresIHWAEAP9sRGopDkIqDHq9DtCVLwUgAiEVCrPriFTD0oUH3mlCloRNEOq874hy/Xu/pMFWfn0BUOXpT2pA2PcAUFGfLgTmQADgIKhV7DkAThw/OQe514S3pEzlLJNXs0aZytL8NXRSru1zYUrB0/7Jp2SjAaBzmwPguv3usVMNcf0etc0tVHQF6EvyNtmoAER/4M25jfn3a1cbQjnVLmcBqqAuyb3sVAUAd1cEgLsvKq9y8CiT1z+ryuHPQ3FQYwVBGy6w2hYqbEvFoinggKC+lwWQT1mA8jT3JdPGtnXXChZ/P2jj00JJp4hbTEqmfY0GQGOmu8o4Tx9AhR00nePuHFnPb9FylHcZ+0B9VdiLvHMp3/gBAUAVdCfocgLq04MAKNjql7zs06cKAAyCL3OAtTwH7QouzDwAQHmd6+ob3OlSuajsbUYFgAo4r9TWtq09HTAdM3ktR7K1W0A0uK7tORUiPlWuPnnR8FPDa+jUPwqeA4pkbgGp9tx266rSy5GsOu/el/wPaRRhOWqba880nKbiUKaiKdlgm6Ha930uO/XdrA3Z1wTABMAEwL9ZVF2QwBtHWVZd4upAcgOL2q89H9AVAGxydDOj+cBcPkDbrv0CRAoAbCtLANA8oPJRPkCtgPzaL0BEAHB/XQpAZN6eD0i1K8kH+DSKyqk2nQF48ux5uQXsmrgPgABEA8c7bQNuU7RUVuxVPcNDnutylXPZ6puOaCDqLHODzP3ZyIGOFhq7PgSgNsTNpmcfPiUmXDNvNVyuNB8wlPKRUqm5WdN+5fmA6ZmeYTdDQx2udj387B0SJwAmAA4YAH5LC3HUDyhUrktcPU3WY7TolpaGKD3AKN3fe3lpX9Hj/U4AcIc3BAC15/6DX4mJAOCHxgQgd/bv/MoB4Dl7CQBt9wlcrrtJtwA3U5exLmUBueV26BciAJALqAEgOkrXpWtkAeT9eNzLqaPzofIHM9/fey7A5VF+oA8Afq7vZeX1PkBNnqBXxmjV9ws0Bab+Q8sOAOr3zNK57+ly6dm/X5b4bwDou99fe75giPsFqT19G5/KF9S+P1havev9gpWf/48xBfqQn/FDQT/vj2RDjf8vHLPc32d6GSMAAAAASUVORK5CYII="
+    }
+  ]
+}

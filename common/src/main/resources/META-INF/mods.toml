@@ -20,6 +20,8 @@ ${geckolib_dependency}
 
 ${jei_dependency}
 
+${curios_dependency}
+
 [[dependencies.${mod_id}]]
 modId="minecraft"
 mandatory=true

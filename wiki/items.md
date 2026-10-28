@@ -107,3 +107,19 @@
 ![闪电苦力怕刷怪蛋](/images/charged_creeper_spawn_egg.png)
 
 由[瓜巴充电桩](./recipes.md#guaba-charging)加工苦力怕刷怪蛋获得。对方块使用或由发射器发射，生成带电的苦力怕；不改变原版苦力怕刷怪蛋。对着刷怪笼使用时生成苦力怕，不修改刷怪笼。
+
+## 瓜巴影融刷怪蛋 {#guaba-yingrong-spawn-egg}
+
+注册 ID：`pinkkicore:guaba_yingrong_spawn_egg`。使用后生成[瓜巴影融](./bosses.md#guaba-yingrong)，位于创造模式的刷怪蛋分类。
+
+## 瓜巴头套 {#guaba-hood}
+
+![瓜巴头套](/images/guaba_hood.png)
+
+用粉红锭与瓜巴[有序合成](./recipes.md#guaba-hood)。安装 Curios 后，放入**头饰（head）**槽生效：免疫瓜巴、雷霆瓜巴及其他瓜巴类效果，佩戴时也会清除已有的此类效果。不占用原版头盔栏，每组 1 个。
+
+## 粉红之祝 {#pink-blessing}
+
+![粉红之祝](/images/pink_blessing.png)
+
+用粉红锭[有序合成](./recipes.md#pink-blessing)。安装 Curios 后，放入**护符（charm）**槽，获得 **+2 护甲、+2 最大生命值（1 颗心）**；卸下后移除加成，不直接回复生命。每组 1 个。整合包增加槽位后，多件的属性可叠加。

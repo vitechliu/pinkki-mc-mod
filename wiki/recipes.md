@@ -1,4 +1,6 @@
 <script setup>
+import guabaHood from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_hood.json'
+import pinkBlessing from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/pink_blessing.json'
 import pinkBlockFromIngots from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/pink_block_from_pink_ingot.json'
 import blastDeepslatePinkOre from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/pink_ingot_from_blasting_deepslate_pink_ore.json'
 import blastPinkOre from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/pink_ingot_from_blasting_pink_ore.json'
@@ -23,6 +25,8 @@ import guabaRecipe from '../versions/1.20.1/src/main/resources/data/pinkkicore/r
 import dirtToMud from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_conversion/dirt_to_mud.json'
 
 const items = {
+  'pinkkicore:guaba_hood': { name: '瓜巴头套', image: '/images/guaba_hood.png', link: '/items#guaba-hood' },
+  'pinkkicore:pink_blessing': { name: '粉红之祝', image: '/images/pink_blessing.png', link: '/items#pink-blessing' },
   'pinkkicore:pink_ore': { name: '粉红矿石', image: '/images/pink_ore.png' },
   'pinkkicore:deepslate_pink_ore': { name: '深层粉红矿石', image: '/images/deepslate_pink_ore.png' },
   'pinkkicore:raw_pink': { name: '粗粉红锭', image: '/images/raw_pink.png' },
@@ -143,3 +147,11 @@ const items = {
 <CraftingRecipe :recipe="rawPinkBlockFromRaw" :items="items" />
 
 <CraftingRecipe :recipe="rawPinkFromBlock" :items="items" />
+
+## 瓜巴头套 {#guaba-hood}
+
+<CraftingRecipe :recipe="guabaHood" :items="items" />
+
+## 粉红之祝 {#pink-blessing}
+
+<CraftingRecipe :recipe="pinkBlessing" :items="items" />
