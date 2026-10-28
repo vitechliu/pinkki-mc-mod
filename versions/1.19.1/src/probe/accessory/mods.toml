@@ -1,0 +1,7 @@
+modLoader="javafml"
+loaderVersion="[42,43)"
+license="MIT"
+[[mods]]
+modId="pinkkicore_accessory_probe"
+version="1.0.0"
+displayName="Accessory headless probe"

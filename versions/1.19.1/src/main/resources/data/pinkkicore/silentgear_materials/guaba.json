@@ -1,0 +1,85 @@
+{
+  "type": "silentgear:standard",
+  "simple": true,
+  "harvest_tier": "minecraft:wood",
+  "availability": {
+    "tier": 0,
+    "categories": [
+      "organic"
+    ],
+    "visible": true,
+    "gear_blacklist": [],
+    "can_salvage": true
+  },
+  "crafting_items": {
+    "main": {
+      "item": "pinkkicore:guaba"
+    }
+  },
+  "name": {
+    "translate": "material.pinkkicore.guaba"
+  },
+  "stats": {
+    "main": {
+      "durability": 60.0,
+      "armor_durability": 5.0,
+      "enchantment_value": 5.0,
+      "rarity": 1.0,
+      "charging_value": 0.5,
+      "repair_value": 0.25,
+      "harvest_speed": 2.0,
+      "melee_damage": 0.0,
+      "attack_speed": 0.0,
+      "ranged_damage": 0.0,
+      "ranged_speed": 0.0,
+      "projectile_speed": 1.0,
+      "projectile_accuracy": 0.9,
+      "armor": 5.0,
+      "armor/helmet": 1.0,
+      "armor/chestplate": 2.0,
+      "armor/leggings": 1.0,
+      "armor/boots": 1.0
+    },
+    "rod": {}
+  },
+  "traits": {
+    "main": [
+      {
+        "name": "pinkkicore:guaba_touch",
+        "level": 1
+      }
+    ],
+    "rod": [
+      {
+        "name": "pinkkicore:guaba_touch",
+        "level": 1
+      }
+    ]
+  },
+  "model": {
+    "main/all": [
+      {
+        "texture": "silentgear:main_generic_lc",
+        "color": "#C87945"
+      }
+    ],
+    "main/fragment": [
+      {
+        "texture": "silentgear:wood",
+        "color": "#C87945"
+      }
+    ],
+    "rod/all": [
+      {
+        "texture": "silentgear:rod_generic_lc",
+        "color": "#C87945"
+      }
+    ],
+    "rod/part": [
+      {
+        "texture": "silentgear:rod",
+        "color": "#C87945"
+      }
+    ]
+  }
+}

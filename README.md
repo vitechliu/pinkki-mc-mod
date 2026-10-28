@@ -1,6 +1,6 @@
 # PinkkiCore
 
-面向 Minecraft Java 版的多版本 mod，MIT 许可证。1.20.1 已实装 1 级材料[瓜巴](wiki/items.md#guaba)和[粉红矿](wiki/items.md#pink-ore)及其获取/加工配方，中立生物[饼蛙和刷怪蛋](wiki/bosses.md#bingwa)、可拾取装备的人形 NPC [粉红妹](wiki/bosses.md#pinkki)和[瓜巴影融](wiki/bosses.md#guaba-yingrong)，以及支持转换加工与自动化设置的[瓜巴工作台](wiki/guaba-workbench.md)（0.1.0 开发中，尚未发布）；次要目标尚未适配。
+面向 Minecraft Java 版的多版本 mod，MIT 许可证。1.20.1 已实装 1 级材料[瓜巴](wiki/items.md#guaba)和[粉红矿](wiki/items.md#pink-ore)及其获取/加工配方，中立生物[饼蛙和刷怪蛋](wiki/bosses.md#bingwa)、可拾取装备的人形 NPC [粉红妹](wiki/bosses.md#pinkki)和[瓜巴影融](wiki/bosses.md#guaba-yingrong)，以及支持转换加工与自动化设置的[瓜巴工作台](wiki/guaba-workbench.md)（0.1.0 开发中，尚未发布）；1.19.1 Forge 已补齐当前玩法（无头验证），1.21.1 尚待适配。
 
 | 优先级 | Minecraft | 加载器 | Java | 构建工具 |
 | --- | --- | --- | --- | --- |
@@ -25,6 +25,8 @@ Minecraft、加载器、Gradle 和构建插件版本固定在仓库配置中。�
 1.20.1 可选安装 Curios 5.14.1+（5.x），使用[瓜巴头套与粉红之祝](wiki/items.md#guaba-hood)。客户端和服务端均需安装才能佩戴；未安装时物品保留且提示需要 Curios。头饰、护符各提供 1 格，细节见[接入约定](docs/curios-integration.md)。本地两个 HMCL 测试实例可通过 `python3 scripts/deploy-local.py --with-curios` 补齐前置，不启动游戏。
 
 ## GeckoLib 前置与整合包兼容
+
+1.19.1 Forge 使用 GeckoLib **3.1.30**（mod ID `geckolib3`），与 1.20.1 的 4.x API 分开适配。该目标的可选依赖为 JEI 11.2.0.244、Curios 1.19.2-5.1.6.4、Tetra 5.6.0 + Mutil 5.2.0；发布方均明确支持 1.19.1，文件名中的 1.19.2 不改变本项目的精确游戏目标。范围与验证见 [1.19.1 适配记录](docs/changes/2026-10-28-port-1.19.1.md)。
 
 1.20.1 Forge 已接入 GeckoLib：使用 **4.4.9 作为编译 API 基线**，运行时允许 **`[4.4.9,5)`**。客户端与服务端都需要安装匹配 **1.20.1 Forge** 的 GeckoLib；整合包已有满足范围的版本时保留原版本，不额外放入第二份，也不因本项目开发而默认升级它。独立新实例可选 4.8.4，具体整合包仍需验证。
 

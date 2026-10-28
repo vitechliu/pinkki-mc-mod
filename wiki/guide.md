@@ -1,6 +1,6 @@
 # 项目与版本
 
-适用 Minecraft Java **1.20.1 / Forge**。安装对应版本的 PinkkiCore 后，可使用[瓜巴手册](./handbook.md)在游戏内离线阅读。
+适用 Minecraft Java **1.20.1、1.19.1 / Forge**。安装对应版本的 PinkkiCore 后，可使用[瓜巴手册](./handbook.md)在游戏内离线阅读。
 
 ## 阅读目录
 

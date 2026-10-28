@@ -10,6 +10,10 @@
 | 目标 | 状态 | 说明 / 验证证据 |
 | --- | --- | --- |
 | 1.21.1 NeoForge | 待适配/验证 | 后续按需补齐 |
-| 1.19.1 Forge | 待适配/验证 | 后续按需补齐 |
+| 1.19.1 Forge | 已验证 | 已补齐并通过适用无头检查，见 [完整适配记录](2026-10-28-port-1.19.1.md)；客户端未验 |
 
 验证结果：1.20.1 构建、发行包校验、Wiki 构建与 4 项手册内容检查通过。发行检查核对中英文名称、模型引用、32×32 纹理及 Wiki 图片字节一致。图标使用 imagegen 制作并缩至游戏纹理，采用透明背景；未启动客户端。日志 `.local/handbook-icon-build.log`、`handbook-icon-wiki.log`、`handbook-icon-tests.log`。完整部署回执 `.local/hmcl/deployments/20261026-215835-036363/receipt.json` 为 installed，clean、compat 安装 SHA256 均为 `e0afe364d3f0c7126a1b93e41bca4eeaa71c0a47d131bcce777ae1738043da27`；热同步已完成，记录 `.local/handbook-icon-hot-sync.log`，需玩家 F3+T、/reload。
+
+## 2026-10-28：1.19.1 按需适配
+
+本项对应源码/资源已纳入 1.19.1 Forge 适配。构建、发行 JAR 校验、相关独立无头场景、实际日志及证明边界统一记录于 [1.19.1 适配与验收清单](2026-10-28-port-1.19.1.md)。不从无头通过推断 GUI、真实多人或其他目标兼容。。

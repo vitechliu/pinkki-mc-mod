@@ -1,0 +1,104 @@
+{
+  "type": "silentgear:standard",
+  "simple": true,
+  "harvest_tier": "minecraft:netherite",
+  "availability": {
+    "tier": 4,
+    "categories": [
+      "organic"
+    ],
+    "visible": true,
+    "gear_blacklist": [],
+    "can_salvage": true
+  },
+  "crafting_items": {
+    "main": {
+      "item": "pinkkicore:thunder_guaba"
+    }
+  },
+  "name": {
+    "translate": "material.pinkkicore.thunder_guaba"
+  },
+  "stats": {
+    "main": {
+      "durability": 1200,
+      "armor_durability": 25,
+      "enchantment_value": 15,
+      "rarity": 85,
+      "charging_value": 1,
+      "repair_value": 0.25,
+      "harvest_speed": 10,
+      "melee_damage": 4,
+      "attack_speed": 0.4,
+      "ranged_damage": 2,
+      "ranged_speed": 0.1,
+      "projectile_speed": 1.1,
+      "projectile_accuracy": 1.1,
+      "armor": 20,
+      "armor/helmet": 3,
+      "armor/chestplate": 8,
+      "armor/leggings": 6,
+      "armor/boots": 3,
+      "armor_toughness": 8
+    },
+    "rod": {
+      "durability": {
+        "mul2": -0.1
+      },
+      "harvest_speed": {
+        "mul2": 0.1
+      },
+      "attack_speed": {
+        "add": 0.2
+      }
+    }
+  },
+  "traits": {
+    "main": [
+      {
+        "name": "pinkkicore:thunder_guaba_touch",
+        "level": 1
+      },
+      {
+        "name": "pinkkicore:thunder_lightweight",
+        "level": 1
+      }
+    ],
+    "rod": [
+      {
+        "name": "pinkkicore:thunder_guaba_touch",
+        "level": 1
+      },
+      {
+        "name": "pinkkicore:thunder_lightweight",
+        "level": 1
+      }
+    ]
+  },
+  "model": {
+    "main/all": [
+      {
+        "texture": "silentgear:main_generic_lc",
+        "color": "#92D7F4"
+      }
+    ],
+    "main/fragment": [
+      {
+        "texture": "silentgear:wood",
+        "color": "#92D7F4"
+      }
+    ],
+    "rod/all": [
+      {
+        "texture": "silentgear:rod_generic_lc",
+        "color": "#92D7F4"
+      }
+    ],
+    "rod/part": [
+      {
+        "texture": "silentgear:rod",
+        "color": "#92D7F4"
+      }
+    ]
+  }
+}

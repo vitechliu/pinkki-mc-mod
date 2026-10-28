@@ -1,0 +1,189 @@
+package pinkkicore.test;
+
+import io.github.vitech.pinkkicore.forge.effect.GuabaPotions;
+import io.github.vitech.pinkkicore.forge.item.ModItems;
+import java.util.UUID;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.Cow;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.*;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import net.minecraftforge.common.brewing.BrewingRecipe;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
+
+@Mod("pinkkicore_guaba_effect_probe")
+public final class GuabaEffectProbe {
+    private ServerLevel level;
+    private Cow cow;
+    private int ticks;
+    private boolean done;
+    private double lastSpeed, lastArmor, baseSpeed;
+    private long rollTime;
+    private static final double[][] BOUNDS = {{.5,1.5,-8,8},{.35,1.65,-16,16},{.2,1.8,-24,24},{.05,1.95,-32,32}};
+    public GuabaEffectProbe() {
+        new ThunderGuabaProbe();
+        MinecraftForge.EVENT_BUS.addListener(this::started);
+        MinecraftForge.EVENT_BUS.addListener(this::tick);
+    }
+    private static void check(boolean ok, String message) { if (!ok) throw new AssertionError(message); }
+    private static Potion potion(String id) { return ForgeRegistries.POTIONS.getValue(new ResourceLocation("pinkkicore",id)); }
+    private static ItemStack bottle(Item item, Potion potion) { return PotionUtils.setPotion(new ItemStack(item),potion); }
+    private static ItemStack brew(ItemStack input, Item reagent) { return BrewingRecipeRegistry.getOutput(input,new ItemStack(reagent)); }
+    private static void result(ItemStack stack, Item item, Potion potion) {
+        check(stack.is(item) && PotionUtils.getPotion(stack)==potion,"unexpected brewing result "+stack);
+    }
+    private void started(ServerStartedEvent event) {
+        try {
+            level=event.getServer().overworld(); level.setChunkForced(0,0,true);
+            var normal=potion("guaba"); var extended=potion("long_guaba"); var strong=potion("strong_guaba");
+            check(normal.getEffects().get(0).getDuration()==3600 && extended.getEffects().get(0).getDuration()==9600
+                && strong.getEffects().get(0).getDuration()==1800 && strong.getEffects().get(0).getAmplifier()==1,"potion definitions");
+            int visibleRecipes = 0;
+            for (var recipe : BrewingRecipeRegistry.getRecipes()) {
+                if (!(recipe instanceof BrewingRecipe standard)) continue;
+                if (!ForgeRegistries.POTIONS.getKey(PotionUtils.getPotion(standard.getOutput())).getNamespace().equals("pinkkicore")) continue;
+                var inputs = standard.getInput().getItems();
+                var reagents = standard.getIngredient().getItems();
+                check(inputs.length == 1 && reagents.length == 1, "JEI recipe has no concrete inputs");
+                check(ItemStack.isSameItemSameTags(brew(inputs[0], reagents[0].getItem()), standard.getOutput()), "JEI output differs from actual brewing");
+                var named = inputs[0].copy(); named.setHoverName(net.minecraft.network.chat.Component.literal("Probe bottle"));
+                var namedOutput = brew(named, reagents[0].getItem());
+                check(namedOutput.hasCustomHoverName(), "brewing lost existing bottle NBT");
+                check(PotionUtils.getPotion(namedOutput) == PotionUtils.getPotion(standard.getOutput()), "named bottle failed brewing");
+                check(!standard.isInput(bottle(inputs[0].getItem(), Potions.WATER)), "potion NBT ignored");
+                visibleRecipes++;
+            }
+            check(visibleRecipes == 18, "JEI standard brewing recipes: expected 18, got " + visibleRecipes);
+            System.out.println("GUABA_EFFECT JEI-readable 18 recipes + concrete potion NBT + exact outputs + named bottle preservation PASS");
+            for (Item container : new Item[]{Items.POTION,Items.SPLASH_POTION,Items.LINGERING_POTION}) {
+                var basic=brew(bottle(container,Potions.AWKWARD),ModItems.GUABA.get()); result(basic,container,normal);
+                result(brew(basic,Items.REDSTONE),container,extended); result(brew(basic,Items.GLOWSTONE_DUST),container,strong);
+                for (Potion capped : new Potion[]{extended,strong}) for (Item reagent : new Item[]{Items.REDSTONE,Items.GLOWSTONE_DUST,ModItems.GUABA.get()})
+                    check(brew(bottle(container,capped),reagent).isEmpty(),"forbidden extension/upgrade");
+                check(brew(bottle(container,Potions.WATER),ModItems.GUABA.get()).isEmpty(),"water accepted as awkward");
+            }
+            for (Potion type : new Potion[]{normal,extended,strong}) {
+                result(brew(bottle(Items.POTION,type),Items.GUNPOWDER),Items.SPLASH_POTION,type);
+                result(brew(bottle(Items.SPLASH_POTION,type),Items.DRAGON_BREATH),Items.LINGERING_POTION,type);
+            }
+            result(brew(bottle(Items.POTION,Potions.AWKWARD),Items.SUGAR),Items.POTION,Potions.SWIFTNESS);
+            System.out.println("GUABA_EFFECT potion definitions + 3 container brewing matrix + vanilla conversions + no III/IV upgrade PASS");
+            // Actual vanilla stand: three bottles, one reagent, blaze fuel and 400 brewing ticks.
+            BlockPos pos=new BlockPos(4,100,4); level.setBlockAndUpdate(pos,Blocks.BREWING_STAND.defaultBlockState());
+            var stand=(BrewingStandBlockEntity)level.getBlockEntity(pos);
+            for(int i=0;i<3;i++) stand.setItem(i,bottle(Items.POTION,Potions.AWKWARD));
+            stand.setItem(3,new ItemStack(ModItems.GUABA.get())); stand.setItem(4,new ItemStack(Items.BLAZE_POWDER));
+            for(int i=0;i<401;i++) BrewingStandBlockEntity.serverTick(level,pos,stand.getBlockState(),stand);
+            for(int i=0;i<3;i++)result(stand.getItem(i),Items.POTION,normal);
+            check(stand.getItem(3).isEmpty() && stand.getItem(4).isEmpty(),"stand did not consume reagent/fuel");
+            System.out.println("GUABA_EFFECT actual brewing stand 3 bottles + reagent/fuel consumption PASS");
+            cow=EntityType.COW.create(level); cow.setNoAi(true); cow.setInvulnerable(true); cow.setNoGravity(true); cow.setPos(8,100,8);
+            level.addFreshEntity(cow); baseSpeed=cow.getAttributeBaseValue(Attributes.MOVEMENT_SPEED);
+            check(GuabaPotions.GUABA.get().getCategory() == net.minecraft.world.effect.MobEffectCategory.NEUTRAL, "effect category");
+            cow.getRandom().setSeed(20261026L);
+            for(int amplifier=0;amplifier<4;amplifier++) {
+                int slower=0, faster=0, negativeArmor=0, positiveArmor=0;
+                cow.addEffect(new MobEffectInstance(GuabaPotions.GUABA.get(),600,amplifier));
+                for(int sample=0;sample<400;sample++) {
+                    GuabaPotions.GUABA.get().addAttributeModifiers(cow,cow.getAttributes(),amplifier);
+                    bounds(amplifier);
+                    double ratio=cow.getAttributeValue(Attributes.MOVEMENT_SPEED)/baseSpeed;
+                    if(ratio<1) slower++; else if(ratio>1) faster++;
+                    if(armorAmount()<0) negativeArmor++; else if(armorAmount()>0) positiveArmor++;
+                    check(cow.getAttribute(Attributes.MOVEMENT_SPEED).getModifiers().size()==1,"stacking modifiers");
+                }
+                check(slower>100 && faster>100 && negativeArmor>100 && positiveArmor>100, "one-sided rolls at level " + amplifier);
+                cow.removeAllEffects(); restored();
+            }
+            // A negative armor roll must reduce existing armor, while vanilla still clamps naked armor to zero.
+            cow.getAttribute(Attributes.ARMOR).setBaseValue(20);
+            cow.addEffect(new MobEffectInstance(GuabaPotions.GUABA.get(),600,0));
+            boolean reduced=false;
+            for(int i=0;i<100;i++) {
+                GuabaPotions.GUABA.get().addAttributeModifiers(cow,cow.getAttributes(),0);
+                if(armorAmount()<0) {
+                    check(Math.abs(cow.getAttributeValue(Attributes.ARMOR)-(20+armorAmount()))<1e-9, "negative armor did not reduce equipped defense");
+                    reduced=true;
+                }
+            }
+            check(reduced, "no negative armor roll");
+            cow.removeAllEffects();
+            check(cow.getAttributeValue(Attributes.ARMOR)==20, "equipped defense not restored");
+            cow.getAttribute(Attributes.ARMOR).setBaseValue(0);
+            System.out.println("GUABA_EFFECT symmetric I-IV positive/negative rolls + armor reduction/clamp + neutral category PASS");
+            cow.addEffect(new MobEffectInstance(GuabaPotions.GUABA.get(),600,255)); bounds(3); cow.removeAllEffects();
+            // Save/load while active: transient modifiers are recreated and never double-counted.
+            cow.addEffect(new MobEffectInstance(GuabaPotions.GUABA.get(),600,1));
+            CompoundTag saved=new CompoundTag(); cow.saveWithoutId(saved);
+            Cow loaded=EntityType.COW.create(level); loaded.load(saved);
+            GuabaPotions.GUABA.get().applyEffectTick(loaded,1);
+            check(loaded.hasEffect(GuabaPotions.GUABA.get()) && loaded.getAttribute(Attributes.MOVEMENT_SPEED).getModifiers().size()==1,"load modifiers");
+            loaded.removeAllEffects(); check(Math.abs(loaded.getAttributeValue(Attributes.MOVEMENT_SPEED)-baseSpeed)<1e-9,"load cleanup");
+            cow.removeAllEffects(); restored();
+            // Preserve unrelated effects and permanent equipment-like modifiers.
+            UUID extra=UUID.fromString("7ae3ed63-0e53-49a1-b40c-c4bfce43b83d");
+            cow.getAttribute(Attributes.ARMOR).addPermanentModifier(new AttributeModifier(extra,"probe armor",7,AttributeModifier.Operation.ADDITION));
+            cow.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,600,0));
+            double otherSpeed=cow.getAttributeValue(Attributes.MOVEMENT_SPEED);
+            cow.addEffect(new MobEffectInstance(GuabaPotions.GUABA.get(),600,1)); cow.removeEffect(GuabaPotions.GUABA.get());
+            check(Math.abs(cow.getAttributeValue(Attributes.ARMOR)-7)<1e-9 && Math.abs(cow.getAttributeValue(Attributes.MOVEMENT_SPEED)-otherSpeed)<1e-9,"other modifiers damaged");
+            cow.removeAllEffects(); cow.getAttribute(Attributes.ARMOR).removeModifier(extra); restored();
+            System.out.println("GUABA_EFFECT I-IV 1600 rolls + clamp + no stacking + save/load + removal + other modifiers PASS");
+            cow.addEffect(new MobEffectInstance(GuabaPotions.GUABA.get(),100,0));
+            remember();
+        } catch(Throwable error) { fail(error); }
+    }
+    private double armorAmount() {
+        return cow.getAttribute(Attributes.ARMOR).getModifier(UUID.fromString("925328ed-cc88-47e1-87dc-28d29fe14e75")).getAmount();
+    }
+    private void bounds(int amplifier) {
+        double speed=cow.getAttributeValue(Attributes.MOVEMENT_SPEED)/baseSpeed, armor=armorAmount();
+        if(armor<0) check(cow.getAttributeValue(Attributes.ARMOR)==0, "vanilla armor floor bypassed");
+        double[] b=BOUNDS[amplifier];check(speed>=b[0] && speed<=b[1] && armor>=b[2] && armor<=b[3],"bounds "+amplifier+" "+speed+"/"+armor);
+    }
+    private void restored() {
+        check(Math.abs(cow.getAttributeValue(Attributes.MOVEMENT_SPEED)-baseSpeed)<1e-9 && cow.getAttributeValue(Attributes.ARMOR)==0,"base attributes not restored");
+    }
+    private void remember() {
+        lastSpeed=cow.getAttributeValue(Attributes.MOVEMENT_SPEED);lastArmor=armorAmount();
+        rollTime=cow.getPersistentData().getLong("pinkkicore:guaba_next_roll")-20;
+    }
+    private void tick(TickEvent.ServerTickEvent event) {
+        if(event.phase!=TickEvent.Phase.END || cow==null || done)return;
+        try {
+            ticks++;
+            if(cow.hasEffect(GuabaPotions.GUABA.get())) {
+                long time=cow.getPersistentData().getLong("pinkkicore:guaba_next_roll")-20;
+                if(time!=rollTime) {
+                    check(time-rollTime==20,"roll interval "+(time-rollTime));
+                    check(cow.getAttributeValue(Attributes.MOVEMENT_SPEED)!=lastSpeed && armorAmount()!=lastArmor,"no reroll");
+                    remember();
+                } else check(cow.getAttributeValue(Attributes.MOVEMENT_SPEED)==lastSpeed && armorAmount()==lastArmor,"changed before 20 ticks");
+            } else if(ticks>=99) {
+                restored();
+                if(!ThunderGuabaProbe.passed) return;
+                cow.discard(); done=true;
+                System.out.println("GUABA_EFFECT real server ticks: 20-tick cadence + stable between rolls + natural expiry PASS");
+                System.out.println("GUABA_EFFECT_PROBE PASS");
+            }
+            check(ticks<1000,"effect never expired");
+        }catch(Throwable error){fail(error);}
+    }
+    private void fail(Throwable error) { done=true;System.out.println("GUABA_EFFECT_PROBE FAIL "+error);error.printStackTrace(); }
+}

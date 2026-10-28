@@ -1,0 +1,13 @@
+{
+  "default": [
+    {
+      "name": "pinkkicore:thunder_guaba_touch",
+      "level": 1
+    },
+    {
+      "name": "pinkkicore:thunder_lightweight",
+      "level": 1
+    }
+  ],
+  "perStat": {}
+}

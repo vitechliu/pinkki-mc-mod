@@ -1,0 +1,43 @@
+{
+  "key": "pinkkicore_thunder_guaba",
+  "category": "pinkkicore_thunder_guaba",
+  "primary": 7.2,
+  "secondary": 2.0,
+  "tertiary": 3.5,
+  "durability": 1200,
+  "integrityCost": 2,
+  "integrityGain": 8,
+  "magicCapacity": 90,
+  "toolLevel": "minecraft:netherite",
+  "toolEfficiency": 10,
+  "effects": {
+    "pinkkicore_thunder_guaba_touch": 1
+  },
+  "tints": {
+    "glyph": "92D7F4",
+    "texture": "92D7F4"
+  },
+  "textures": [
+    "shiny",
+    "metal",
+    "default",
+    "crude",
+    "wooden"
+  ],
+  "material": {
+    "items": [
+      "pinkkicore:thunder_guaba"
+    ],
+    "count": 1
+  },
+  "requiredTools": {
+    "axe_dig": "minecraft:diamond"
+  },
+  "features": [
+    "pinkkicore_thunder_guaba_touch"
+  ],
+  "attributes": {
+    "generic.attack_speed": 0.2,
+    "**generic.movement_speed": 0.05
+  }
+}

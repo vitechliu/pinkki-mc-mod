@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "pinkkicore:pink_ingot"
+    }
+  ],
+  "result": {
+    "item": "pinkkicore:pink_nugget",
+    "count": 9
+  }
+}

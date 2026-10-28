@@ -4,3 +4,208 @@ plugins {
     id 'net.minecraftforge.gradle' version '5.1.77'
 }
 apply from: '../../gradle/forge.gradle'
+
+repositories {
+    maven { url = "https://api.modrinth.com/maven"; content { includeGroup "maven.modrinth" } }
+    maven { url = "https://maven.theillusivec4.top/"; content { includeGroup "top.theillusivec4.curios" } }
+    maven {
+        name = 'JEI'
+        url = 'https://maven.blamejared.com/'
+        content { includeGroup 'mezz.jei' }
+    }
+    maven {
+        name = 'GeckoLib'
+        url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+        content {
+            includeGroup 'software.bernie.geckolib'
+            includeGroup 'com.eliotlash.mclib'
+        }
+    }
+}
+
+dependencies {
+    // Publisher versions: Tetra 5.6.0 and Mutil 5.2.0 explicitly include 1.19.1.
+    compileOnly fg.deobf("maven.modrinth:tetra:tj9wtOla")
+    compileOnly fg.deobf("maven.modrinth:mutil:1cVegazl")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.2-5.1.6.4:api")
+    // GeckoLib 3 is a different API and mod ID from the main target's GeckoLib 4.
+    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-1.19:${geckolib_version}")
+    // GeckoLib embeds this in its release JAR; development runs need it explicitly.
+    implementation 'com.eliotlash.mclib:mclib:20'
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
+    // Explicit development opt-in. Normal builds/servers do not install JEI.
+    if (project.hasProperty('jeiRuntime')) {
+        runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    }
+}
+
+// Opt-in headless release-JAR probe. This source set is never packaged in the mod.
+if (project.hasProperty('bingwaProbe')) {
+    sourceSets {
+        bingwaProbe {
+            java.srcDir 'src/probe/bingwa'
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        }
+    }
+    tasks.register('bingwaProbeJar', Jar) {
+        archiveFileName = 'bingwa-probe.jar'
+        from sourceSets.bingwaProbe.output
+        from('src/probe/bingwa/mods.toml') { into 'META-INF' }
+    }
+    reobf {
+        bingwaProbeJar { classpath.from(sourceSets.bingwaProbe.compileClasspath) }
+    }
+    tasks.named('bingwaProbeJar').configure { finalizedBy 'reobfBingwaProbeJar' }
+}
+
+if (project.hasProperty('workbenchProbe')) {
+    sourceSets {
+        workbenchProbe {
+            java.srcDir 'src/probe/workbench'
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        }
+    }
+    tasks.register('workbenchProbeJar', Jar) {
+        archiveFileName = 'workbench-probe.jar'
+        from sourceSets.workbenchProbe.output
+        from('src/probe/workbench/mods.toml') { into 'META-INF' }
+    }
+    reobf {
+        workbenchProbeJar { classpath.from(sourceSets.workbenchProbe.compileClasspath) }
+    }
+    tasks.named('workbenchProbeJar').configure { finalizedBy 'reobfWorkbenchProbeJar' }
+}
+
+if (project.hasProperty('guabaEffectProbe')) {
+    sourceSets {
+        guabaEffectProbe {
+            java.srcDir 'src/probe/guaba_effect'
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        }
+    }
+    tasks.register('guabaEffectProbeJar', Jar) {
+        archiveFileName = 'guaba-effect-probe.jar'
+        from sourceSets.guabaEffectProbe.output
+        from('src/probe/guaba_effect/mods.toml') { into 'META-INF' }
+    }
+    reobf {
+        guabaEffectProbeJar { classpath.from(sourceSets.guabaEffectProbe.compileClasspath) }
+    }
+    tasks.named('guabaEffectProbeJar').configure { finalizedBy 'reobfGuabaEffectProbeJar' }
+}
+
+if (project.hasProperty('pinkkiProbe')) {
+    sourceSets {
+        pinkkiProbe {
+            java.srcDir 'src/probe/pinkki'
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        }
+    }
+    tasks.register('pinkkiProbeJar', Jar) {
+        archiveFileName = 'pinkki-probe.jar'
+        from sourceSets.pinkkiProbe.output
+        from('src/probe/pinkki/mods.toml') { into 'META-INF' }
+    }
+    reobf {
+        pinkkiProbeJar { classpath.from(sourceSets.pinkkiProbe.compileClasspath) }
+    }
+    tasks.named('pinkkiProbeJar').configure { finalizedBy 'reobfPinkkiProbeJar' }
+}
+
+// Wiki is the authoritative player prose. Generated guide JSON stays in build/.
+def guideOutput = layout.buildDirectory.dir('generated/guide')
+tasks.register('generateGuide', Exec) {
+    workingDir rootProject.file('../..')
+    commandLine 'python3', 'scripts/generate-guide.py', '--output', guideOutput.get().asFile.absolutePath
+    inputs.files(fileTree('../../wiki') { include '*.md' }, '../../scripts/generate-guide.py')
+    outputs.dir guideOutput
+}
+sourceSets.main.resources.srcDir guideOutput
+tasks.named('processResources').configure { dependsOn 'generateGuide' }
+
+if (project.hasProperty('guideProbe')) {
+    sourceSets {
+        guideProbe {
+            java.srcDir 'src/probe/guide'
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        }
+    }
+    tasks.register('guideProbeJar', Jar) {
+        archiveFileName = 'guide-probe.jar'
+        from sourceSets.guideProbe.output
+        from('src/probe/guide/mods.toml') { into 'META-INF' }
+    }
+    reobf {
+        guideProbeJar { classpath.from(sourceSets.guideProbe.compileClasspath) }
+    }
+    tasks.named('guideProbeJar').configure { finalizedBy 'reobfGuideProbeJar' }
+}
+
+if (project.hasProperty('thunderGuabaProbe')) {
+    sourceSets {
+        thunderGuabaProbe {
+            java.srcDir 'src/probe/thunder_guaba'
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        }
+    }
+    tasks.register('thunderGuabaProbeJar', Jar) {
+        archiveFileName = 'thunder-guaba-probe.jar'
+        from sourceSets.thunderGuabaProbe.output
+        from('src/probe/thunder_guaba/mods.toml') { into 'META-INF' }
+    }
+    reobf {
+        thunderGuabaProbeJar { classpath.from(sourceSets.thunderGuabaProbe.compileClasspath) }
+    }
+    tasks.named('thunderGuabaProbeJar').configure { finalizedBy 'reobfThunderGuabaProbeJar' }
+}
+
+if (project.hasProperty('pinkOreProbe')) {
+    sourceSets {
+        pinkOreProbe {
+            java.srcDir 'src/probe/pink_ore'
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        }
+    }
+    tasks.register('pinkOreProbeJar', Jar) {
+        archiveFileName = 'pink-ore-probe.jar'
+        from sourceSets.pinkOreProbe.output
+        from('src/probe/pink_ore/mods.toml') { into 'META-INF' }
+    }
+    reobf {
+        pinkOreProbeJar { classpath.from(sourceSets.pinkOreProbe.compileClasspath) }
+    }
+    tasks.named('pinkOreProbeJar').configure { finalizedBy 'reobfPinkOreProbeJar' }
+}
+
+if (project.hasProperty('accessoryProbe')) {
+    sourceSets {
+        accessoryProbe {
+            java.srcDir 'src/probe/accessory'
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        }
+    }
+    tasks.register('accessoryProbeJar', Jar) {
+        archiveFileName = 'accessory-probe.jar'
+        from sourceSets.accessoryProbe.output
+        from('src/probe/accessory/mods.toml') { into 'META-INF' }
+    }
+    reobf { accessoryProbeJar { classpath.from(sourceSets.accessoryProbe.compileClasspath) } }
+    tasks.named('accessoryProbeJar').configure { finalizedBy 'reobfAccessoryProbeJar' }
+}
+
+if (project.hasProperty('tetraProbe')) {
+    sourceSets {
+        tetraProbe {
+            java.srcDir 'src/probe/tetra'
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        }
+    }
+    tasks.register('tetraProbeJar', Jar) {
+        archiveFileName = 'tetra-probe.jar'
+        from sourceSets.tetraProbe.output
+        from('src/probe/tetra/mods.toml') { into 'META-INF' }
+    }
+    reobf { tetraProbeJar { classpath.from(sourceSets.tetraProbe.compileClasspath) } }
+    tasks.named('tetraProbeJar').configure { finalizedBy 'reobfTetraProbeJar' }
+}

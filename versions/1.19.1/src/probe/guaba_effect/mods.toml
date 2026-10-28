@@ -1,0 +1,7 @@
+modLoader="javafml"
+loaderVersion="[42,43)"
+license="MIT"
+[[mods]]
+modId="pinkkicore_guaba_effect_probe"
+version="1.0.0"
+displayName="Guaba effect headless probe"

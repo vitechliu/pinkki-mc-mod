@@ -13,7 +13,7 @@
 | 目标 | 状态 | 说明 / 验证证据 |
 | --- | --- | --- |
 | 1.21.1 NeoForge | 待适配/验证 | 后续按需补齐 |
-| 1.19.1 Forge | 待适配/验证 | 后续按需补齐 |
+| 1.19.1 Forge | 已验证 | 已补齐并通过适用无头检查，见 [完整适配记录](2026-10-28-port-1.19.1.md)；客户端未验 |
 
 ## 本轮执行记录
 
@@ -23,3 +23,7 @@
 - Wiki：`npm ci --cache .local/npm-cache --offline`、`npm run wiki:build` 通过；日志 `.local/guaba-symmetric-npm-ci.log`、`.local/guaba-symmetric-wiki.log`；`git diff --check` 通过。
 - 完整部署：`python3 scripts/deploy-local.py` 成功；本次 `.local/hmcl/deployments/20261026-163822-295367/receipt.json` 状态 installed，两个实例均有安装回执。另行重新计算 clean、compat 的 mods 内 PinkkiCore SHA256，两者与本次测试发行 JAR 完全一致，均为上述 SHA256。其他 mod、配置与存档保留，未启动游戏。
 - 热同步：首次与部署锁冲突而未执行；部署结束后重新执行 `python3 scripts/hot-sync.py` 成功，日志 `.local/guaba-symmetric-hot-sync.log`。同步两个实例与已有测试世界的受管覆盖资源/数据。已有游戏内资源可按 F3+T、`/reload` 重载；效果分类与启动读取的范围定义需从新 JAR 启动生效，热重载不能替代重新启动。正式 JAR 单独验收前移除受管覆盖包。
+
+## 2026-10-28：1.19.1 按需适配
+
+本项对应源码/资源已纳入 1.19.1 Forge 适配。构建、发行 JAR 校验、相关独立无头场景、实际日志及证明边界统一记录于 [1.19.1 适配与验收清单](2026-10-28-port-1.19.1.md)。不从无头通过推断 GUI、真实多人或其他目标兼容。。

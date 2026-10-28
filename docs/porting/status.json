@@ -8,11 +8,11 @@
       "recorded_at": "2026-10-22T11:52:32.770779+08:00"
     },
     "1.19.1": {
-      "source_fingerprint": "4ea967a0c17f5a61066ad78c03edf73e7e754563108050b396e8ef39222c5bc6",
-      "target_fingerprint": "939c6eead6cb551b938dc33fcb19c738dd3f5473070f4f2e618e0ac6247662fc",
-      "source_ref": "2dc4d71aabac20b35b0e1346998c1773a9973994",
-      "evidence": "docs/verification.md",
-      "recorded_at": "2026-10-22T11:52:32.814360+08:00"
+      "source_fingerprint": "e3f7a1922d464080b413ba94f4ba1548987b0207f3fe02531bef457a04608bab",
+      "target_fingerprint": "d7fec61e233bc8b73b6125772c2698eb945015617b9bd7127b8a75b32bd57eca",
+      "source_ref": "a68ec979e30823068dd3d48cafe7f11a2bc8714a",
+      "evidence": ".local/porting-1.19.1-verification.log",
+      "recorded_at": "2026-10-28T18:52:39.314620+08:00"
     }
   }
 }

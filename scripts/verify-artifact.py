@@ -21,6 +21,38 @@ def read_properties(path):
     )
 
 
+def verify_legacy(archive, deps):
+    """Check the complete 1.19.1 resource port, including explicit legacy exceptions."""
+    target = ROOT / 'versions/1.19.1'
+    properties = read_properties(target / 'gradle.properties')
+    assert deps['geckolib3']['mandatory'] is True
+    assert deps['geckolib3']['versionRange'] == properties['geckolib_version_range']
+    assert 'geckolib' not in deps
+    assert deps['forge']['versionRange'] == '[42.0.9,43)'
+    assert deps['curios']['mandatory'] is False and deps['curios']['versionRange'] == '[1.19.2-5.1.6.4,1.19.3)'
+    assert deps['jei']['mandatory'] is False and deps['jei']['versionRange'] == properties['jei_version_range']
+    assert json.loads(archive.read('pack.mcmeta'))['pack']['pack_format'] == 9
+    assert not any(name.startswith(('software/bernie/', 'top/theillusivec4/', 'se/mickelus/', 'mezz/jei/',
+                                    'com/eliotlash/', 'pinkkicore/test/', 'META-INF/jarjar/')) for name in archive.namelist())
+    for path in (target / 'src/main/resources').rglob('*'):
+        if path.is_file():
+            relative = path.relative_to(target / 'src/main/resources').as_posix()
+            assert archive.read(relative) == path.read_bytes(), f'Resource mismatch: {relative}'
+    # Registration coverage must follow the current main target, rather than an old ID list.
+    main = ROOT / 'versions/1.20.1/src/main/java'
+    for path in main.rglob('*.java'):
+        relative = path.relative_to(main).with_suffix('.class').as_posix()
+        assert relative in archive.namelist(), f'Missing ported class: {relative}'
+    import runpy
+    generator = runpy.run_path(str(ROOT / 'scripts/generate-guide.py'))
+    assert json.loads(archive.read('assets/pinkkicore/guide/zh_cn.json')) == generator['compile_book']()
+    runpy.run_path(str(ROOT / 'scripts/check-pink-ore-data.py'))['verify'](archive)
+    for path in archive.namelist():
+        if path.endswith('.class'):
+            assert struct.unpack('>H', archive.read(path)[6:8])[0] <= 61, f'Java >17: {path}'
+    print('OK 1.19.1 full resource/class coverage, legacy dependency IDs, Java 17, guide and ore data')
+
+
 def main():
     mc = sys.argv[1]
     loader, major = TARGETS[mc]
@@ -39,6 +71,8 @@ def main():
         deps = {item["modId"]: item for item in metadata["dependencies"][props["mod_id"]]}
         assert deps["minecraft"]["versionRange"] == f"[{mc}]"
         assert loader in deps
+        if mc == "1.19.1":
+            verify_legacy(archive, deps)
         if mc == "1.20.1":
             assert deps['curios']['mandatory'] is False and deps['curios']['side'] == 'BOTH'
             assert deps['curios']['versionRange'] == '[5.14.1,6)'

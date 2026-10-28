@@ -1,0 +1,101 @@
+{
+  "levels": [
+    {
+      "speed_min": 0.5,
+      "speed_max": 1.5,
+      "armor_min": -8,
+      "armor_max": 8
+    },
+    {
+      "speed_min": 0.35,
+      "speed_max": 1.65,
+      "armor_min": -16,
+      "armor_max": 16
+    },
+    {
+      "speed_min": 0.2,
+      "speed_max": 1.8,
+      "armor_min": -24,
+      "armor_max": 24
+    },
+    {
+      "speed_min": 0.05,
+      "speed_max": 1.95,
+      "armor_min": -32,
+      "armor_max": 32
+    }
+  ],
+  "potions": [
+    {
+      "id": "guaba",
+      "amplifier": 0,
+      "duration": 3600
+    },
+    {
+      "id": "long_guaba",
+      "amplifier": 0,
+      "duration": 9600
+    },
+    {
+      "id": "strong_guaba",
+      "amplifier": 1,
+      "duration": 1800
+    }
+  ],
+  "brewing": [
+    {
+      "input": "minecraft:awkward",
+      "ingredient": "pinkkicore:guaba",
+      "output": "pinkkicore:guaba"
+    },
+    {
+      "input": "pinkkicore:guaba",
+      "ingredient": "minecraft:redstone",
+      "output": "pinkkicore:long_guaba"
+    },
+    {
+      "input": "pinkkicore:guaba",
+      "ingredient": "minecraft:glowstone_dust",
+      "output": "pinkkicore:strong_guaba"
+    }
+  ],
+  "thunder": {
+    "amplitude_multiplier": 1.5,
+    "lightning_min_ticks": 100,
+    "lightning_max_ticks": 200,
+    "potions": [
+      {
+        "id": "thunder_guaba",
+        "amplifier": 0,
+        "duration": 3600
+      },
+      {
+        "id": "long_thunder_guaba",
+        "amplifier": 0,
+        "duration": 9600
+      },
+      {
+        "id": "strong_thunder_guaba",
+        "amplifier": 1,
+        "duration": 1800
+      }
+    ],
+    "brewing": [
+      {
+        "input": "minecraft:awkward",
+        "ingredient": "pinkkicore:thunder_guaba",
+        "output": "pinkkicore:thunder_guaba"
+      },
+      {
+        "input": "pinkkicore:thunder_guaba",
+        "ingredient": "minecraft:redstone",
+        "output": "pinkkicore:long_thunder_guaba"
+      },
+      {
+        "input": "pinkkicore:thunder_guaba",
+        "ingredient": "minecraft:glowstone_dust",
+        "output": "pinkkicore:strong_thunder_guaba"
+      }
+    ]
+  }
+}

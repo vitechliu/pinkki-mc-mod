@@ -1,0 +1,7 @@
+modLoader="javafml"
+loaderVersion="[42,43)"
+license="MIT"
+[[mods]]
+modId="pinkkicore_tetra_probe"
+version="1.0.0"
+displayName="Tetra 1.19.1 headless probe"

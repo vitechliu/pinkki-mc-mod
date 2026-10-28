@@ -55,7 +55,7 @@ def forgeMajor = forge_version.tokenize('.')[0] as int
 def forgeMinimum = project.findProperty('forge_min_version') ?: forge_version
 def geckoDependency = project.hasProperty('geckolib_version_range') ? """
 [[dependencies.${mod_id}]]
-modId="geckolib"
+modId="${minecraft_version == '1.19.1' ? 'geckolib3' : 'geckolib'}"
 mandatory=true
 versionRange="${geckolib_version_range}"
 ordering="NONE"
@@ -69,13 +69,22 @@ versionRange="${jei_version_range}"
 ordering="AFTER"
 side="CLIENT"
 """ : ''
+def curiosRange = minecraft_version == '1.19.1' ? '[1.19.2-5.1.6.4,1.19.3)' : '[5.14.1,6)'
+def curiosDependency = minecraft_version in ['1.19.1', '1.20.1'] ? """
+[[dependencies.${mod_id}]]
+modId="curios"
+mandatory=false
+versionRange="${curiosRange}"
+ordering="AFTER"
+side="BOTH"
+""" : ''
 def replacements = metadata.collectEntries { key, value -> [(key.toString()): value] } + [
     minecraft_version: minecraft_version,
     pack_format: pack_format,
     loader_range: "[${forgeMajor},${forgeMajor + 1})",
     forge_range: "[${forgeMinimum},${forgeMajor + 1})",
     geckolib_dependency: geckoDependency,
-    curios_dependency: minecraft_version == "1.20.1" ? '\n[[dependencies.pinkkicore]]\nmodId="curios"\nmandatory=false\nversionRange="[5.14.1,6)"\nordering="AFTER"\nside="BOTH"\n' : '',
+    curios_dependency: curiosDependency,
     jei_dependency: jeiDependency
 ]
 tasks.named('processResources', ProcessResources).configure {

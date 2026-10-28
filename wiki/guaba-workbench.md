@@ -1,6 +1,6 @@
 # 瓜巴工作台
 
-1.20.1 Forge · PinkkiCore 0.1.0
+1.20.1 / 1.19.1 Forge · PinkkiCore 0.1.0
 
 ![瓜巴工作台](/images/guaba_workbench.svg)
 

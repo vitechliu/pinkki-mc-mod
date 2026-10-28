@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " L ",
+    "LEL",
+    "TTT"
+  ],
+  "key": {
+    "L": {
+      "item": "minecraft:lightning_rod"
+    },
+    "E": {
+      "item": "minecraft:enchanting_table"
+    },
+    "T": {
+      "item": "pinkkicore:thunder_guaba"
+    }
+  },
+  "result": {
+    "item": "pinkkicore:guaba_charging_station",
+    "count": 1
+  }
+}

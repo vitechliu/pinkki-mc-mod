@@ -1,0 +1,10 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": [
+    "pinkkicore:ore_pink",
+    "pinkkicore:ore_pink_large",
+    "pinkkicore:ore_pink_buried"
+  ],
+  "step": "underground_ores"
+}

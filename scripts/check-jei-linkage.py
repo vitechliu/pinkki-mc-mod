@@ -56,9 +56,10 @@ def read_class(raw):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--api', type=Path, action='append', required=True, help='JEI release/API JAR; repeat for common + Forge APIs')
+    parser.add_argument("--minecraft", choices=["1.20.1", "1.19.1"], default="1.20.1")
     args = parser.parse_args()
     props = dict(line.split('=', 1) for line in (ROOT/'mod.properties').read_text().splitlines() if '=' in line)
-    jar = ROOT/f"versions/1.20.1/build/libs/pinkkicore-forge-1.20.1-{props['mod_version']}.jar"
+    jar = ROOT/f"versions/{args.minecraft}/build/libs/pinkkicore-forge-{args.minecraft}-{props['mod_version']}.jar"
     api = {}
     for path in args.api:
         with zipfile.ZipFile(path) as archive:

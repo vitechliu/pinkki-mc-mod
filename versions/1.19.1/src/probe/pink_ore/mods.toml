@@ -1,0 +1,7 @@
+modLoader="javafml"
+loaderVersion="[42,43)"
+license="MIT"
+[[mods]]
+modId="pinkkicore_pink_ore_probe"
+version="1.0.0"
+displayName="PinkkiCore Pink Ore headless probe"

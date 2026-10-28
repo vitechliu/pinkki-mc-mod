@@ -18,7 +18,7 @@
 | 目标 | 状态 | 说明 / 验证证据 |
 | --- | --- | --- |
 | 1.21.1 NeoForge | 待适配/验证 | 实体、AI、装备、渲染层和资源需按目标 API 移植 |
-| 1.19.1 Forge | 待适配/验证 | 实体、AI、装备、渲染层和资源需按目标 API 移植 |
+| 1.19.1 Forge | 已验证 | 已补齐并通过适用无头检查，见 [完整适配记录](2026-10-28-port-1.19.1.md)；客户端未验 |
 
 ## 本次实际验证结果
 
@@ -27,3 +27,7 @@
 - 皮肤 PNG、两份可编辑工程内嵌纹理和运行纹理一致性通过；Python AST 语法检查、`git diff --check`、`npm ci --cache .local/npm-cache` 与 `npm run wiki:build` 通过。Wiki 提示 mcfunction 语法高亮回退为纯文本，不影响页面生成。
 - 完整部署：`python3 scripts/deploy-local.py` 成功，回执 `.local/hmcl/deployments/20261025-172645-933861/receipt.json` 为 `installed`，两个实例的 PinkkiCore JAR SHA256 均与上述最终测试发行 JAR 一致。构建/校验日志和旧 JAR 备份由部署脚本保留。未启动游戏。
 - 已执行 `python3 scripts/hot-sync.py`，同步 clean、compat 的当前受管资源覆盖包及所有已发现测试世界数据包，避免旧覆盖资源遮住新 JAR；记录 `.local/pinkki-hot-sync.log`。新注册与 Java 代码仍需启动新游戏进程，F3+T / `/reload` 仅重载资源/数据；正式纯 JAR 客户端验收前需 `python3 scripts/hot-sync.py remove` 并重新加载。
+
+## 2026-10-28：1.19.1 按需适配
+
+本项对应源码/资源已纳入 1.19.1 Forge 适配。构建、发行 JAR 校验、相关独立无头场景、实际日志及证明边界统一记录于 [1.19.1 适配与验收清单](2026-10-28-port-1.19.1.md)。不从无头通过推断 GUI、真实多人或其他目标兼容。。

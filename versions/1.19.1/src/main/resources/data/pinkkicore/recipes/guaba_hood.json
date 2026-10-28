@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PGP",
+    "P P"
+  ],
+  "key": {
+    "P": {
+      "item": "pinkkicore:pink_ingot"
+    },
+    "G": {
+      "item": "pinkkicore:guaba"
+    }
+  },
+  "result": {
+    "item": "pinkkicore:guaba_hood",
+    "count": 1
+  }
+}

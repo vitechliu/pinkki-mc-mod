@@ -1,0 +1,15 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "type": "tconstruct:material",
+  "ingredient": {
+    "item": "pinkkicore:thunder_guaba"
+  },
+  "material": "pinkkicore:thunder_guaba",
+  "needed": 1,
+  "value": 1
+}
