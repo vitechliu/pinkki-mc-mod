@@ -1,0 +1,7 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="MIT"
+[[mods]]
+modId="pinkkicore_wildlife_probe"
+version="1.0.0"
+displayName="Wildlife spawn and loot headless probe"

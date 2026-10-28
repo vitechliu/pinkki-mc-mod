@@ -66,7 +66,7 @@
 
 ![瓜巴工作台](/images/guaba_workbench.svg)
 
-消耗瓜巴转换原料的工作方块，支持红石与六面输入输出控制。从创造模式“功能方块”获取，没有生存合成配方。
+消耗瓜巴转换原料的工作方块，支持红石与六面输入输出控制。用 [8 个瓜巴围绕 1 个工作台合成](./recipes.md#guaba-workbench)，也可从创造模式“功能方块”获取。
 
 查看[操作与自动化说明](./guaba-workbench.md)和[加工配方](./recipes.md#guaba-conversion)。
 

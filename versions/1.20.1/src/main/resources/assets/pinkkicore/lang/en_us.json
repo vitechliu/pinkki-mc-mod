@@ -134,5 +134,8 @@
   "item.pinkkicore.pink_blessing": "Pink Blessing",
   "tooltip.pinkkicore.guaba_hood": "Head slot: immunity to all Guaba-family effects",
   "tooltip.pinkkicore.pink_blessing": "Charm slot: +2 Armor, +2 Max Health (1 heart)",
-  "tooltip.pinkkicore.requires_curios": "Requires Curios to equip and activate"
+  "tooltip.pinkkicore.requires_curios": "Requires Curios to equip and activate",
+  "tetra.material.pinkkicore_guaba.prefix": "Guaba",
+  "tetra.material.pinkkicore_thunder_guaba.prefix": "Thunder Guaba",
+  "tetra.variant_category.pinkkicore_thunder_guaba.label": "Thunder Guaba"
 }

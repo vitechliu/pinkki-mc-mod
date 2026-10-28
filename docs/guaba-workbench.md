@@ -4,7 +4,7 @@
 
 ## 内容与边界
 
-- 方块、方块物品、方块实体与菜单：`pinkkicore:guaba_workbench`。创造模式“功能方块”获取，或 `/give @s pinkkicore:guaba_workbench`；用户尚未指定生存合成配方，本次未自行添加。
+- 方块、方块物品、方块实体与菜单：`pinkkicore:guaba_workbench`。可用 8 个瓜巴环绕中央的 1 个原版工作台有序合成 1 个；也可从创造模式“功能方块”获取或用 `/give @s pinkkicore:guaba_workbench`。
 - 使用用户确认的第三稿 Java 模型：1×1 占地，12.8/16 高度；四向放置和同高碰撞形状。设计源保留在 `designs/guaba-workbench/`。
 - 三槽：0 瓜巴、1 原料、2 产物。Shift 点击瓜巴进槽 0、其他原料进槽 1；槽 2 拒绝放入。仅服务端进行处理与扣料，菜单使用原版容器槽同步、ContainerData 和按钮协议，没有另外开放任意坐标配置网络包。
 - 每次固定 20 个服务端刻，正常 20 TPS 下约 1 秒。完成时同时消耗并产出；原料不匹配、瓜巴不足、输出不兼容/满、红石不允许时均不扣料。输出堵塞及红石暂停保留进度；原料或瓜巴发生存取时重新计时。服务器/区块卸载期间不离线加工，已保存进度在加载后继续。
@@ -51,7 +51,7 @@ Java 在 `versions/1.20.1/src/main/java/io/github/vitech/pinkkicore/forge/workbe
 
 ## 验证
 
-JEI 加工预览的实现、依赖和验证边界见 [JEI 兼容记录](changes/2026-10-23-guaba-workbench-jei.md)。工作台本体仍未添加生存合成配方。
+JEI 加工预览的实现、依赖和验证边界见 [JEI 兼容记录](changes/2026-10-23-guaba-workbench-jei.md)。工作台本体使用标准 `minecraft:crafting_shaped` 配方，见 `recipes/guaba_workbench.json`，由 JEI 原版合成分类展示。
 
 ```bash
 ./scripts/mod.sh 1.20.1 build workbenchProbeJar -PworkbenchProbe --console=plain
@@ -66,6 +66,6 @@ npm run wiki:build
 
 已验证记录见 [变更记录](changes/2026-10-23-guaba-workbench.md)。客户端界面、真实网络多人同步与第三方管道仍待人工验收；没有启动 Minecraft 图形客户端。手工步骤：取得并放置工作台，打开后按 Wiki 配方加工；检查 Shift 点击、红石按钮及信号提示、六面面板、漏斗；两名玩家同时查看时核对进度和配置同步；拆除时确认界面失效和物品掉落。
 
-## 手册同步缺口
+## 手册同步
 
-本项目自研手册系统尚未实现，本次没有用第三方手册库替代。Wiki、加工图和玩家更新已同步，但不能声称游戏内手册已同步可读，JEI 也不能替代本项目手册。待手册基础能力就绪，以稳定条目 ID `guaba_workbench` 接入获取、三槽使用、四种红石与六面端口说明及可选 JEI 预览入口；关联当前 `guaba_conversion` 配方，以实际 RecipeManager 的物品图标与结果展示加工示意。该缺口同时记录在本次变更中。
+现有独立手册系统从 Wiki 的工作台操作页和配方页生成离线正文，实际配方图由当前 RecipeManager 查询。新增本体合成时同步这两个来源，重新构建并部署 JAR；仅热同步数据包不会更新已安装 JAR 中的生成正文。系统格式与验证见 [手册开发文档](guidebook.md)。

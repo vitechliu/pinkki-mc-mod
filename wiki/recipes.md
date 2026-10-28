@@ -1,4 +1,5 @@
 <script setup>
+import workbenchRecipe from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_workbench.json'
 import guabaHood from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_hood.json'
 import pinkBlessing from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/pink_blessing.json'
 import pinkBlockFromIngots from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/pink_block_from_pink_ingot.json'
@@ -25,6 +26,8 @@ import guabaRecipe from '../versions/1.20.1/src/main/resources/data/pinkkicore/r
 import dirtToMud from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_conversion/dirt_to_mud.json'
 
 const items = {
+  'minecraft:crafting_table': { name: '工作台', image: '/images/minecraft/crafting_table.svg' },
+  'pinkkicore:guaba_workbench': { name: '瓜巴工作台', image: '/images/guaba_workbench.svg', link: '/guaba-workbench' },
   'pinkkicore:guaba_hood': { name: '瓜巴头套', image: '/images/guaba_hood.png', link: '/items#guaba-hood' },
   'pinkkicore:pink_blessing': { name: '粉红之祝', image: '/images/pink_blessing.png', link: '/items#pink-blessing' },
   'pinkkicore:pink_ore': { name: '粉红矿石', image: '/images/pink_ore.png' },
@@ -65,6 +68,12 @@ const items = {
 <CraftingRecipe :recipe="guabaRecipe" :items="items" />
 
 查看[瓜巴的用途](./items.md#guaba)。
+
+## 瓜巴工作台 {#guaba-workbench}
+
+<CraftingRecipe :recipe="workbenchRecipe" :items="items" />
+
+在工作台的九宫格中，中央放工作台，周围八格各放 1 个瓜巴，得到 1 个瓜巴工作台。查看[使用方法](./guaba-workbench.md)。
 
 ## 瓜巴工作台加工 {#guaba-conversion}
 

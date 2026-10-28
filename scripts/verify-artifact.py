@@ -158,8 +158,17 @@ def main():
             assert set(animations) == {f"animation.bingwa.{name}" for name in ("idle", "walk", "jump", "swim", "float", "croak", "tongue")}
             egg = json.loads(archive.read("assets/pinkkicore/models/item/bingwa_spawn_egg.json"))
             assert egg == {"parent": "minecraft:item/template_spawn_egg"}
+            wildlife_loot = {"type": "minecraft:entity", "pools": [{"rolls": 1, "entries": [
+                {"type": "minecraft:item", "name": "pinkkicore:" + item, "weight": weight,
+                 "functions": [{"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": maximum}}]}
+                for item, weight, maximum in [("guaba", 7, 3), ("thunder_guaba", 2, 2), ("pink_ingot", 1, 2)]]}]}
+            wildlife_spawns = json.loads(archive.read("data/pinkkicore/forge/biome_modifier/add_wildlife.json"))
+            assert wildlife_spawns == {"type": "forge:add_spawns", "biomes": "#minecraft:is_overworld", "spawners": [
+                {"type": "pinkkicore:" + entity, "weight": 1, "minCount": 1, "maxCount": 1}
+                for entity in ["pinkki", "guaba_yingrong", "bingwa"]]}
+            assert "io/github/vitech/pinkkicore/forge/entity/WildlifeSpawns.class" in archive.namelist()
             loot = json.loads(archive.read("data/pinkkicore/loot_tables/entities/bingwa.json"))
-            assert loot == {"type": "minecraft:entity", "pools": []}
+            assert loot == wildlife_loot
             for language, entity_name, egg_name in [("zh_cn", "饼蛙", "饼蛙刷怪蛋"), ("en_us", "Bingwa", "Bingwa Spawn Egg")]:
                 strings = json.loads(archive.read(f"assets/pinkkicore/lang/{language}.json"))
                 assert strings["entity.pinkkicore.bingwa"] == entity_name
@@ -168,7 +177,7 @@ def main():
                 assert f"io/github/vitech/pinkkicore/forge/{path}.class" in archive.namelist()
             assert archive.read("assets/pinkkicore/textures/entity/pinkki.png") == (ROOT / "designs/pinkki-skin/pinkki-alex.png").read_bytes(), "Pinkki skin/source mismatch"
             assert json.loads(archive.read("assets/pinkkicore/models/item/pinkki_spawn_egg.json")) == {"parent": "minecraft:item/template_spawn_egg"}
-            assert json.loads(archive.read("data/pinkkicore/loot_tables/entities/pinkki.json")) == {"type": "minecraft:entity", "pools": []}
+            assert json.loads(archive.read("data/pinkkicore/loot_tables/entities/pinkki.json")) == wildlife_loot
             for language, entity_name, egg_name in [("zh_cn", "粉红妹", "粉红妹刷怪蛋"), ("en_us", "Pinkki", "Pinkki Spawn Egg")]:
                 strings = json.loads(archive.read(f"assets/pinkkicore/lang/{language}.json"))
                 assert strings["entity.pinkkicore.pinkki"] == entity_name
@@ -177,7 +186,7 @@ def main():
                 assert f"io/github/vitech/pinkkicore/forge/{path}.class" in archive.namelist()
             assert archive.read("assets/pinkkicore/textures/entity/guaba_yingrong.png") == (ROOT / "designs/guaba_yingrong/guaba_yingrong.png").read_bytes()
             assert json.loads(archive.read("assets/pinkkicore/models/item/guaba_yingrong_spawn_egg.json")) == {"parent": "minecraft:item/template_spawn_egg"}
-            assert json.loads(archive.read("data/pinkkicore/loot_tables/entities/guaba_yingrong.json")) == {"type": "minecraft:entity", "pools": []}
+            assert json.loads(archive.read("data/pinkkicore/loot_tables/entities/guaba_yingrong.json")) == wildlife_loot
             for lang, entity_name, egg_name in [("zh_cn", "瓜巴影融", "瓜巴影融刷怪蛋"), ("en_us", "Guaba Yingrong", "Guaba Yingrong Spawn Egg")]:
                 strings = json.loads(archive.read(f"assets/pinkkicore/lang/{lang}.json"))
                 assert strings["entity.pinkkicore.guaba_yingrong"] == entity_name
@@ -281,6 +290,15 @@ def main():
                 assert icon == (ROOT / f'designs/guaba-bow/guaba_bow{suffix}.png').read_bytes()
                 if not suffix: assert icon == (ROOT / 'wiki/public/images/guaba_bow.png').read_bytes()
             assert 'io/github/vitech/pinkkicore/forge/item/GuabaBowItem.class' in archive.namelist()
+            workbench_craft = json.loads(archive.read('data/pinkkicore/recipes/guaba_workbench.json'))
+            assert workbench_craft == {'type': 'minecraft:crafting_shaped', 'category': 'misc',
+                'pattern': ['GGG', 'GWG', 'GGG'],
+                'key': {'G': {'item': 'pinkkicore:guaba'}, 'W': {'item': 'minecraft:crafting_table'}},
+                'result': {'item': 'pinkkicore:guaba_workbench', 'count': 1}}
+            workbench_unlock = json.loads(archive.read('data/pinkkicore/advancements/recipes/misc/guaba_workbench.json'))
+            assert workbench_unlock['rewards']['recipes'] == ['pinkkicore:guaba_workbench']
+            assert workbench_unlock['criteria']['has_guaba']['conditions']['items'] == [{'items': ['pinkkicore:guaba']}]
+            assert workbench_unlock['requirements'] == [['has_guaba', 'has_crafting_table', 'has_the_recipe']]
             workbench_item = json.loads(archive.read("assets/pinkkicore/models/item/guaba_workbench.json"))
             assert workbench_item == {"parent": "pinkkicore:block/guaba_workbench"}
             workbench_loot = json.loads(archive.read("data/pinkkicore/loot_tables/blocks/guaba_workbench.json"))

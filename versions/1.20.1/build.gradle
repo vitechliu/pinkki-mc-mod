@@ -189,3 +189,21 @@ if (project.hasProperty('accessoryProbe')) {
     reobf { accessoryProbeJar { classpath.from(sourceSets.accessoryProbe.compileClasspath) } }
     tasks.named('accessoryProbeJar').configure { finalizedBy 'reobfAccessoryProbeJar' }
 }
+
+if (project.hasProperty('wildlifeProbe')) {
+    sourceSets {
+        wildlifeProbe {
+            java.srcDir '../../scripts/tests/wildlife_probe'
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        }
+    }
+    tasks.register('wildlifeProbeJar', Jar) {
+        archiveFileName = 'wildlife-probe.jar'
+        from sourceSets.wildlifeProbe.output
+        from('../../scripts/tests/wildlife_probe/mods.toml') { into 'META-INF' }
+    }
+    reobf {
+        wildlifeProbeJar { classpath.from(sourceSets.wildlifeProbe.compileClasspath) }
+    }
+    tasks.named('wildlifeProbeJar').configure { finalizedBy 'reobfWildlifeProbeJar' }
+}

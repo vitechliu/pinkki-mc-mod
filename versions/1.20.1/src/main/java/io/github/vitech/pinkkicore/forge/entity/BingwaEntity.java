@@ -32,7 +32,7 @@ import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-/** Neutral amphibian. Only HurtByTargetGoal acquires enemies; no natural spawn registration. */
+/** Neutral amphibian. Only HurtByTargetGoal acquires enemies; wildlife spawn rules are registered separately. */
 public class BingwaEntity extends PathfinderMob implements GeoEntity {
     private static final double TONGUE_REACH_SQR = 6.25;
     private static final RawAnimation IDLE = loop("idle"), WALK = loop("walk"),

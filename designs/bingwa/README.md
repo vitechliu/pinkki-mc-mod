@@ -1,6 +1,6 @@
 # 饼蛙：第一版造型与动作审阅
 
-造型和动作已获确认，并接入 1.20.1 Forge / GeckoLib。此目录保留可编辑源工程与审阅器，运行资源位于该目标的 `assets/pinkkicore/`。实体 ID 为 `pinkkicore:bingwa`，刷怪蛋为 `pinkkicore:bingwa_spawn_egg`；不自然生成，中立受击反击。详见 [玩家条目](../../wiki/bosses.md#bingwa)。
+造型和动作已获确认，并接入 1.20.1 Forge / GeckoLib。此目录保留可编辑源工程与审阅器，运行资源位于该目标的 `assets/pinkkicore/`。实体 ID 为 `pinkkicore:bingwa`，刷怪蛋为 `pinkkicore:bingwa_spawn_egg`；主世界草地稀有自然生成，中立受击反击。详见 [玩家条目](../../wiki/bosses.md#bingwa)。
 
 ## 参考与造型取舍
 

@@ -28,6 +28,7 @@ public final class ModEntities {
     public static void register(IEventBus bus) {
         ENTITIES.register(bus);
         bus.addListener(ModEntities::attributes);
+        bus.addListener(WildlifeSpawns::register);
     }
 
     private static void attributes(EntityAttributeCreationEvent event) {
