@@ -140,7 +140,7 @@ def install(source, target):
     return destination
 
 
-def curios_plan(target):
+def curios_plan(target, minimum="5.3.5"):
     found = []
     for jar in sorted((target / "mods").glob("*.jar")):
         hmcl.safe_file(jar, target)
@@ -153,8 +153,8 @@ def curios_plan(target):
                         manifest = archive.read("META-INF/MANIFEST.MF").decode()
                     match = re.search(r"^Implementation-Version: (.+)$", manifest, re.M)
                     version = match[1].strip() if match else ""
-                if not numeric("5.14.1") <= numeric(version.split("+")[0]) < numeric("6"):
-                    raise ValueError(f"{target.name} 的 Curios 不满足 [5.14.1,6)")
+                if not numeric(minimum) <= numeric(version.split("+")[0]) < numeric("6"):
+                    raise ValueError(f"{target.name} 的 Curios 不满足 [{minimum},6)")
                 deps = data.get("dependencies", {}).get("curios", [])
                 if not any(d.get("modId") == "forge" for d in deps) or not any(
                         d.get("modId") == "minecraft" and d.get("versionRange") in
@@ -180,7 +180,7 @@ def deploy(profiles, with_curios=False):
         if props["geckolib_version_range"] != f"[{configs['geckolib']['version']},5)":
             raise ValueError("GeckoLib 构建需求已变化，请先更新 config/hmcl-runtime.json")
         dependencies = [dependency_plan(t, numeric(configs["geckolib"]["version"])) for t in targets]
-        curios_dependencies = [curios_plan(t) for t in targets] if with_curios else []
+        curios_dependencies = [curios_plan(t, props["curios_version"].split("+")[0]) for t in targets] if with_curios else []
         if with_curios:
             for target, existing in zip(targets, curios_dependencies):
                 if existing is None and (target / "mods" / configs["curios"]["filename"]).exists():

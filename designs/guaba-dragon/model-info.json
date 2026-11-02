@@ -1,0 +1,14 @@
+{
+  "bones": 24,
+  "cubes": 101,
+  "animations": [
+    "animation.guaba_dragon.idle",
+    "animation.guaba_dragon.breath_pose"
+  ],
+  "atlas_size": [
+    512,
+    512
+  ],
+  "used_atlas_rows": 77,
+  "texture_sha256": "e2ee6471193f183f635502dd468af4d4f64e7d29bd8e62f50c65a1b2ba0692be"
+}

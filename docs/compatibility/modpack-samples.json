@@ -1,0 +1,589 @@
+{
+  "captured_at": "2026-10-30",
+  "selection": "Download-sorted Modrinth target searches; FTB popular installs; CurseForge popular target packs. Fixed latest/early release snapshots, not exhaustive rankings.",
+  "boundary": "Numeric dependency gates only. Does not certify complete modpacks.",
+  "samples": [
+    {
+      "id": "modrinth-VlqeLjfG",
+      "platform": "Modrinth",
+      "name": "Distant Horizons & Iris Shaders 0.3.0+1.21.1.neoforge",
+      "pack_version": "0.3.0+1.21.1.neoforge",
+      "minecraft": "1.21.1",
+      "loader": "neoforge",
+      "loader_version": "21.1.216",
+      "mods": {},
+      "source": "https://cdn.modrinth.com/data/yiYYuulE/versions/VlqeLjfG/Distant%20Horizons%20%26%20Iris%20Shaders%200.3.0%2B1.21.1.neoforge.mrpack",
+      "release_url": "https://modrinth.com/modpack/yiYYuulE/version/VlqeLjfG",
+      "manifest_sha256": "fca6ef1cb52f47c9df827cd7fd5fc285d58e74f27af3f4b40a11b87e71899012"
+    },
+    {
+      "id": "modrinth-yJMEAttb",
+      "platform": "Modrinth",
+      "name": "Distant Horizons & Iris Shader NeoForge",
+      "pack_version": "0.1.0-OUTDATED+1.21.1.neoforge",
+      "minecraft": "1.21.1",
+      "loader": "neoforge",
+      "loader_version": "21.1.74",
+      "mods": {},
+      "source": "https://cdn.modrinth.com/data/yiYYuulE/versions/yJMEAttb/Distant%20Horizons%20%26%20Iris%20Shader%20NeoForge.mrpack",
+      "release_url": "https://modrinth.com/modpack/yiYYuulE/version/yJMEAttb",
+      "manifest_sha256": "1675287ec9d388edd6c86de3767f12b181b36cc112e045482ad8abe26c1e735b"
+    },
+    {
+      "id": "modrinth-nRZoft5B",
+      "platform": "Modrinth",
+      "name": "命运齿轮FOM 航空学",
+      "pack_version": "2.49",
+      "minecraft": "1.21.1",
+      "loader": "neoforge",
+      "loader_version": "21.1.248",
+      "mods": {
+        "curios": "9.5.1+1.21.1",
+        "jei": "19.43.0.392"
+      },
+      "source": "https://cdn.modrinth.com/data/fom4Ovsz/versions/nRZoft5B/%E5%91%BD%E8%BF%90%E9%BD%BF%E8%BD%AEFOM%20%E8%88%AA%E7%A9%BA%E5%AD%A6%202.49.mrpack",
+      "release_url": "https://modrinth.com/modpack/fom4Ovsz/version/nRZoft5B",
+      "manifest_sha256": "fb4e99af7f604720bfc514fc6008265aad04a8677ab82f32d50714232105cddc"
+    },
+    {
+      "id": "modrinth-ZY9AP5zN",
+      "platform": "Modrinth",
+      "name": "命运齿轮FOM",
+      "pack_version": "1.0.4",
+      "minecraft": "1.21.1",
+      "loader": "neoforge",
+      "loader_version": "21.1.139",
+      "mods": {
+        "curios": "9.4.0+1.21.1",
+        "jei": "19.21.0.247"
+      },
+      "source": "https://cdn.modrinth.com/data/fom4Ovsz/versions/ZY9AP5zN/%E5%91%BD%E8%BF%90%E9%BD%BF%E8%BD%AEFOM%201.0.4.mrpack",
+      "release_url": "https://modrinth.com/modpack/fom4Ovsz/version/ZY9AP5zN",
+      "manifest_sha256": "37f370a73d564f3165d506367c3415f82465c48b842c258df271530d5d53244e"
+    },
+    {
+      "id": "modrinth-yR0Djyc9",
+      "platform": "Modrinth",
+      "name": "the horrors in the fog",
+      "pack_version": "1.0.4",
+      "minecraft": "1.20.1",
+      "loader": "forge",
+      "loader_version": "47.2.17",
+      "mods": {
+        "geckolib": "4.4.2",
+        "jei": "15.3.0.4"
+      },
+      "source": "https://cdn.modrinth.com/data/uPkIzDYf/versions/yR0Djyc9/the%20horrors%20in%20the%20fog%201.0.4.mrpack",
+      "release_url": "https://modrinth.com/modpack/uPkIzDYf/version/yR0Djyc9",
+      "manifest_sha256": "bcaaa0a1c25f5523357b88321f335061a12bf06c7746a58f3eb395ff3f809f3d"
+    },
+    {
+      "id": "modrinth-5EZPwiAq",
+      "platform": "Modrinth",
+      "name": "the horrors in the fog",
+      "pack_version": "1.0.0",
+      "minecraft": "1.20.1",
+      "loader": "forge",
+      "loader_version": "47.2.17",
+      "mods": {
+        "geckolib": "4.3.1",
+        "jei": "15.2.0.27"
+      },
+      "source": "https://cdn.modrinth.com/data/uPkIzDYf/versions/5EZPwiAq/the%20horrors%20in%20the%20fog%201.0.0.mrpack",
+      "release_url": "https://modrinth.com/modpack/uPkIzDYf/version/5EZPwiAq",
+      "manifest_sha256": "dabcb886a2999e325a66de6d65872c62645003398dc53edae0a684241d0ffd84"
+    },
+    {
+      "id": "modrinth-8xoAevJv",
+      "platform": "Modrinth",
+      "name": "Optimized fps 1.21.1",
+      "pack_version": "3.1.23",
+      "minecraft": "1.21.1",
+      "loader": "neoforge",
+      "loader_version": "21.1.230",
+      "mods": {},
+      "source": "https://cdn.modrinth.com/data/aOOJ2mte/versions/8xoAevJv/Optimized%20fps%201.21.1%203.1.23.mrpack",
+      "release_url": "https://modrinth.com/modpack/aOOJ2mte/version/8xoAevJv",
+      "manifest_sha256": "25409c56294999a9b8f9edd4a3309d5b1dfc2e7d6594490d789b9f0254122e9e"
+    },
+    {
+      "id": "modrinth-cElSvGL2",
+      "platform": "Modrinth",
+      "name": "Optimized fps 1.21.1",
+      "pack_version": "3.1.0",
+      "minecraft": "1.21.1",
+      "loader": "neoforge",
+      "loader_version": "21.1.72",
+      "mods": {},
+      "source": "https://cdn.modrinth.com/data/aOOJ2mte/versions/cElSvGL2/Optimized%20fps%201.21.1%203.1.0.mrpack",
+      "release_url": "https://modrinth.com/modpack/aOOJ2mte/version/cElSvGL2",
+      "manifest_sha256": "28b2202766fc0cc5898d8e5551f587a6d2f7654dca35b7f3f657aabb16e8c0c0"
+    },
+    {
+      "id": "modrinth-HKWduR7O",
+      "platform": "Modrinth",
+      "name": "Better MC [FORGE] 1.20.1",
+      "pack_version": "v1",
+      "minecraft": "1.20.1",
+      "loader": "forge",
+      "loader_version": "47.2.0",
+      "mods": {
+        "geckolib": "4.2.4",
+        "curios": "5.4.2+1.20.1",
+        "jei": "15.2.0.27"
+      },
+      "source": "https://cdn.modrinth.com/data/4BV47HRn/versions/HKWduR7O/Better%20MC%20%5BFORGE%5D%201.20.1%20v1.mrpack",
+      "release_url": "https://modrinth.com/modpack/4BV47HRn/version/HKWduR7O",
+      "manifest_sha256": "a12601b10087442f7223382d8f4509b95b963c44e12fd8a8d863c3df2f9de22e"
+    },
+    {
+      "id": "modrinth-bf2aWUzR",
+      "platform": "Modrinth",
+      "name": "Optimized fps 1.20.1",
+      "pack_version": "2.4.10",
+      "minecraft": "1.20.1",
+      "loader": "forge",
+      "loader_version": "47.4.3",
+      "mods": {},
+      "source": "https://cdn.modrinth.com/data/aOOJ2mte/versions/bf2aWUzR/Optimized%20fps%201.20.1.mrpack",
+      "release_url": "https://modrinth.com/modpack/aOOJ2mte/version/bf2aWUzR",
+      "manifest_sha256": "3a0c5df6daa7f38f0a463a6fd13abfc22b2d3c4dfd82971a5fad4b669d0f5376"
+    },
+    {
+      "id": "modrinth-TLCtPeM4",
+      "platform": "Modrinth",
+      "name": "1.20.1",
+      "pack_version": "2.4.1",
+      "minecraft": "1.20.1",
+      "loader": "forge",
+      "loader_version": "47.2.0",
+      "mods": {},
+      "source": "https://cdn.modrinth.com/data/aOOJ2mte/versions/TLCtPeM4/Optimized%20fps%201.20.1%202.4.1.mrpack",
+      "release_url": "https://modrinth.com/modpack/aOOJ2mte/version/TLCtPeM4",
+      "manifest_sha256": "c4668a42b885ffddd661470dcdbad143801815c65b00adbd7c14adb9a2031742"
+    },
+    {
+      "id": "modrinth-VjT88DbG",
+      "platform": "Modrinth",
+      "name": "Pixelmon Mod",
+      "pack_version": "9.3.9",
+      "minecraft": "1.21.1",
+      "loader": "neoforge",
+      "loader_version": "21.1.172",
+      "mods": {
+        "jei": "19.21.2.313"
+      },
+      "source": "https://cdn.modrinth.com/data/vwgtbO0y/versions/VjT88DbG/The%20Pixelmon%20Modpack%209.3.9.mrpack",
+      "release_url": "https://modrinth.com/modpack/vwgtbO0y/version/VjT88DbG",
+      "manifest_sha256": "4bf708ae68a8717a321fb4ad221c2758f05efe880977f9e2873c0a23e1cfc082"
+    },
+    {
+      "id": "modrinth-IyLHiIBF",
+      "platform": "Modrinth",
+      "name": "Zombie Invade 100 Days",
+      "pack_version": "2.0",
+      "minecraft": "1.20.1",
+      "loader": "forge",
+      "loader_version": "47.3.12",
+      "mods": {
+        "geckolib": "4.4.9",
+        "curios": "5.11.0+1.20.1"
+      },
+      "source": "https://cdn.modrinth.com/data/l9m9tuPN/versions/IyLHiIBF/Zombie%20Invade%20100%20Days%202.0.mrpack",
+      "release_url": "https://modrinth.com/modpack/l9m9tuPN/version/IyLHiIBF",
+      "manifest_sha256": "5877c2d47273d3b1af76342d70d8a3dfcea059eb97cad69f86c10f1587611dee"
+    },
+    {
+      "id": "modrinth-xKY728HR",
+      "platform": "Modrinth",
+      "name": "BattleArmory TACZ",
+      "pack_version": "1.6.4-hotfix.2",
+      "minecraft": "1.20.1",
+      "loader": "forge",
+      "loader_version": "47.4.20",
+      "mods": {
+        "jei": "15.20.0.130"
+      },
+      "source": "https://cdn.modrinth.com/data/rQiXwLhB/versions/xKY728HR/BattleArmory%20TACZ%201.6.4-hotfix.2.mrpack",
+      "release_url": "https://modrinth.com/modpack/rQiXwLhB/version/xKY728HR",
+      "manifest_sha256": "b4223ef6591de410b9e0b49e78f4746ea04a07250a9ab4d6a20dee576e67d529"
+    },
+    {
+      "id": "modrinth-GsR4XI0n",
+      "platform": "Modrinth",
+      "name": "枪战",
+      "pack_version": "1.0.0",
+      "minecraft": "1.20.1",
+      "loader": "forge",
+      "loader_version": "47.3.5",
+      "mods": {
+        "curios": "5.12.1+1.20.1",
+        "jei": "15.20.0.106"
+      },
+      "source": "https://cdn.modrinth.com/data/rQiXwLhB/versions/GsR4XI0n/%E6%9E%AA%E6%88%98.mrpack",
+      "release_url": "https://modrinth.com/modpack/rQiXwLhB/version/GsR4XI0n",
+      "manifest_sha256": "32d4f006d225477f4ce650faf955e569986a746e349a9f69f305c05252e5548d"
+    },
+    {
+      "id": "modrinth-tXUvCYTq",
+      "platform": "Modrinth",
+      "name": "UO+ 1.19.1 Forge",
+      "pack_version": "2.2.5",
+      "minecraft": "1.19.1",
+      "loader": "forge",
+      "loader_version": "42.0.9",
+      "mods": {},
+      "source": "https://cdn.modrinth.com/data/JEa64spL/versions/tXUvCYTq/UO%2B%201.19.1%20Forge%201.0.0.mrpack",
+      "release_url": "https://modrinth.com/modpack/JEa64spL/version/tXUvCYTq",
+      "manifest_sha256": "7afd560db1577da5a17c12b72527f60d762213161313eca2b04defa8cbcb3aa4"
+    },
+    {
+      "id": "modrinth-fF4SbfGc",
+      "platform": "Modrinth",
+      "name": "Cobblemon Official Modpack [NeoForge]",
+      "pack_version": "1.8.4",
+      "minecraft": "1.21.1",
+      "loader": "neoforge",
+      "loader_version": "21.1.264",
+      "mods": {
+        "jei": "19.70.0.460"
+      },
+      "source": "https://cdn.modrinth.com/data/mHMxXbIu/versions/fF4SbfGc/Cobblemon%20Official%20Modpack%20%5BNeoForge%5D%201.8.4.mrpack",
+      "release_url": "https://modrinth.com/modpack/mHMxXbIu/version/fF4SbfGc",
+      "manifest_sha256": "9fabb73b0998853c8d31af4586a6844af6f177f6765b6d80ce9228be6b79e0ba"
+    },
+    {
+      "id": "modrinth-jQdH6yBZ",
+      "platform": "Modrinth",
+      "name": "Cobblemon Official [NeoForge]",
+      "pack_version": "1.6",
+      "minecraft": "1.21.1",
+      "loader": "neoforge",
+      "loader_version": "21.1.90",
+      "mods": {},
+      "source": "https://cdn.modrinth.com/data/mHMxXbIu/versions/jQdH6yBZ/Cobblemon%20Modpack%20%5BNeoForge%5D%201.6.mrpack",
+      "release_url": "https://modrinth.com/modpack/mHMxXbIu/version/jQdH6yBZ",
+      "manifest_sha256": "31d4317bc6ada106d8f712263d6cf296f949bc635504f1975d947dbb55bb37f7"
+    },
+    {
+      "id": "modrinth-VaiuEdQN",
+      "platform": "Modrinth",
+      "name": "Fresh and smooth 1.21.1 NeoForge",
+      "pack_version": "1.5.0",
+      "minecraft": "1.21.1",
+      "loader": "neoforge",
+      "loader_version": "21.1.169",
+      "mods": {
+        "geckolib": "4.7.5.1"
+      },
+      "source": "https://cdn.modrinth.com/data/ICQPO4fX/versions/VaiuEdQN/Fresh%20and%20Smooth%201.21.1%20NeoForge%201.0.0.mrpack",
+      "release_url": "https://modrinth.com/modpack/ICQPO4fX/version/VaiuEdQN",
+      "manifest_sha256": "0f50955c130a2d7455d77a0ffe1e4cc379b59029698e0c93018582af58426985"
+    },
+    {
+      "id": "modrinth-tWsGhCpO",
+      "platform": "Modrinth",
+      "name": "Essentials",
+      "pack_version": "1.0.0",
+      "minecraft": "1.19.1",
+      "loader": "forge",
+      "loader_version": "42.0.9",
+      "mods": {
+        "jei": "11.2.0.244"
+      },
+      "source": "https://cdn.modrinth.com/data/PVbuz0gb/versions/tWsGhCpO/Essentials%201.0.0.mrpack",
+      "release_url": "https://modrinth.com/modpack/PVbuz0gb/version/tWsGhCpO",
+      "manifest_sha256": "d91d7598879ecf475064039d7c64a8421641712441294c1015511630d20b3bce"
+    },
+    {
+      "id": "ftb-125-100560",
+      "platform": "FTB",
+      "name": "FTB Evolution",
+      "pack_version": "1.45.1",
+      "minecraft": "1.21.1",
+      "loader": "neoforge",
+      "loader_version": "21.1.250",
+      "mods": {
+        "jei": "19.57.0.450",
+        "curios": "9.5.1+1.21.1",
+        "geckolib": "4.9.3"
+      },
+      "source": "https://api.feed-the-beast.com/v1/modpacks/public/modpack/125/100560",
+      "manifest_sha256": "6c691333e0c7146d44767046fd5a55cb4167a4bf6c99c91f90a14c6b92cd5661"
+    },
+    {
+      "id": "ftb-125-12575",
+      "platform": "FTB",
+      "name": "FTB Evolution",
+      "pack_version": "1.0.0",
+      "minecraft": "1.21.1",
+      "loader": "neoforge",
+      "loader_version": "21.1.72",
+      "mods": {
+        "geckolib": "4.6.6",
+        "jei": "19.21.0.247"
+      },
+      "source": "https://api.feed-the-beast.com/v1/modpacks/public/modpack/125/12575",
+      "manifest_sha256": "64d9be449b8e583ad98deb525b184ef9bb9057e523fae2fa6c82b7cc23a7d16c",
+      "excluded_reason": "Manifest lists two different forks with mod ID curios (9.0.14 and 9.1.4); not an official Curios baseline or installable reference combination.",
+      "curios_files": [
+        "curios-neoforge-9.0.14+1.21.1.jar",
+        "curios-neoforge-9.1.4+1.21.0.jar"
+      ]
+    },
+    {
+      "id": "ftb-128-100482",
+      "platform": "FTB",
+      "name": "FTB OceanBlock 2",
+      "pack_version": "1.21.1",
+      "minecraft": "1.21.1",
+      "loader": "neoforge",
+      "loader_version": "21.1.248",
+      "mods": {
+        "curios": "9.5.1+1.21.1",
+        "jei": "19.39.0.369",
+        "geckolib": "4.9.2"
+      },
+      "source": "https://api.feed-the-beast.com/v1/modpacks/public/modpack/128/100482",
+      "manifest_sha256": "357b1a628022d1557385b2f7f13fe65ab24b6c3bdb221f4b2b17855e1e11b18a"
+    },
+    {
+      "id": "ftb-128-100028",
+      "platform": "FTB",
+      "name": "FTB OceanBlock 2",
+      "pack_version": "1.0.0",
+      "minecraft": "1.21.1",
+      "loader": "neoforge",
+      "loader_version": "21.1.115",
+      "mods": {
+        "curios": "9.2.2+1.21.1",
+        "jei": "19.21.0.247",
+        "geckolib": "4.7.3"
+      },
+      "source": "https://api.feed-the-beast.com/v1/modpacks/public/modpack/128/100028",
+      "manifest_sha256": "eb6faa47c9a24c1e5124351db5bef6e41042a34c3194f13fc045eebb58ae113a"
+    },
+    {
+      "id": "ftb-119-100051",
+      "platform": "FTB",
+      "name": "FTB Presents Direwolf20 1.20",
+      "pack_version": "1.16.1",
+      "minecraft": "1.20.1",
+      "loader": "neoforge",
+      "loader_version": "47.1.84",
+      "mods": {
+        "curios": "5.9.1+1.20.1",
+        "jei": "15.3.0.8",
+        "geckolib": "4.4.6"
+      },
+      "source": "https://api.feed-the-beast.com/v1/modpacks/public/modpack/119/100051",
+      "manifest_sha256": "eda0ce50e98283e6bf219161c4bf7f9f46342a13e544484865969f33c8c718cb",
+      "excluded_reason": "Minecraft 1.20.1 early NeoForge loader is outside the supported Forge target. Forge library files inform isolated API tests only."
+    },
+    {
+      "id": "ftb-119-6935",
+      "platform": "FTB",
+      "name": "FTB Presents Direwolf20 1.20",
+      "pack_version": "1.0.0",
+      "minecraft": "1.20.1",
+      "loader": "neoforge",
+      "loader_version": "47.1.76",
+      "mods": {
+        "geckolib": "4.2.3",
+        "jei": "15.2.0.27",
+        "curios": "5.3.5+1.20.1"
+      },
+      "source": "https://api.feed-the-beast.com/v1/modpacks/public/modpack/119/6935",
+      "manifest_sha256": "87cc43913fe7b17a548520c449687c67958bbe51bfc7255031319df1a36a0ee1",
+      "excluded_reason": "Minecraft 1.20.1 early NeoForge loader is outside the supported Forge target. Forge library files inform isolated API tests only."
+    },
+    {
+      "id": "ftb-130-100574",
+      "platform": "FTB",
+      "name": "FTB StoneBlock 4",
+      "pack_version": "1.24.1",
+      "minecraft": "1.21.1",
+      "loader": "neoforge",
+      "loader_version": "21.1.262",
+      "mods": {
+        "geckolib": "4.9.3",
+        "jei": "19.69.0.456",
+        "curios": "9.5.1+1.21.1"
+      },
+      "source": "https://api.feed-the-beast.com/v1/modpacks/public/modpack/130/100574",
+      "manifest_sha256": "ffd62a2c90cae031ab35b31a7db296685aca937df7692c4ac284524d566b4e7e"
+    },
+    {
+      "id": "ftb-130-100140",
+      "platform": "FTB",
+      "name": "FTB StoneBlock 4",
+      "pack_version": "1.0.0",
+      "minecraft": "1.21.1",
+      "loader": "neoforge",
+      "loader_version": "21.1.209",
+      "mods": {
+        "jei": "19.25.0.323",
+        "geckolib": "4.8.2",
+        "curios": "9.5.1+1.21.1"
+      },
+      "source": "https://api.feed-the-beast.com/v1/modpacks/public/modpack/130/100140",
+      "manifest_sha256": "228fb4fd3ae5d6bf08eb49c16724b40fe0bdb0ea887d226035ea62c0b11f54f4"
+    },
+    {
+      "id": "curseforge-9366926",
+      "platform": "CurseForge",
+      "name": "All the Mods 10",
+      "pack_version": "8.4",
+      "minecraft": "1.21.1",
+      "loader": "neoforge",
+      "loader_version": "21.1.265",
+      "mods": {
+        "geckolib": "4.9.3",
+        "curios": "9.5.1+1.21.1"
+      },
+      "source": "https://www.curseforge.com/minecraft/modpacks/all-the-mods-10/files/9366926",
+      "manifest_sha256": "fffb76d287ab17100672c846bfda574dcad0a6ac7182cac69578374f691cd2d7",
+      "dependency_files": [
+        {
+          "required": true,
+          "projectID": 388172,
+          "fileID": 8893490,
+          "isLocked": false
+        },
+        {
+          "required": true,
+          "projectID": 238222,
+          "fileID": 9353559,
+          "isLocked": false
+        },
+        {
+          "required": true,
+          "projectID": 309927,
+          "fileID": 6529130,
+          "isLocked": false
+        }
+      ],
+      "unresolved": [
+        "JEI fileID 9353559: retain file identity; version page unavailable, not included in numeric gate audit."
+      ],
+      "dependency_version_sources": [
+        "https://www.curseforge.com/minecraft/mc-mods/geckolib/files/8893490",
+        "https://www.curseforge.com/minecraft/mc-mods/curios/files/6529130"
+      ]
+    },
+    {
+      "id": "curseforge-7097953",
+      "platform": "CurseForge",
+      "name": "All the Mods 9",
+      "pack_version": "1.1.1",
+      "minecraft": "1.20.1",
+      "loader": "forge",
+      "loader_version": "47.4.0",
+      "mods": {
+        "geckolib": "4.8.2",
+        "curios": "5.14.1+1.20.1",
+        "jei": "15.20.0.116"
+      },
+      "source": "https://www.curseforge.com/minecraft/modpacks/all-the-mods-9/files/7097953",
+      "manifest_sha256": "91c9d6dd2cbb888ce37741051c5d8711a7da2a5a8f5ec270e2db776fe08b83cb",
+      "dependency_files": [
+        {
+          "projectID": 388172,
+          "fileID": 7025129,
+          "required": true
+        },
+        {
+          "projectID": 238222,
+          "fileID": 7037120,
+          "required": true
+        },
+        {
+          "projectID": 309927,
+          "fileID": 6418456,
+          "required": true
+        }
+      ],
+      "dependency_version_sources": [
+        "https://www.curseforge.com/minecraft/mc-mods/geckolib/files/7025129",
+        "https://www.curseforge.com/minecraft/mc-mods/jei/files/7037120",
+        "https://www.curseforge.com/minecraft/mc-mods/curios/files/6418456",
+        "https://www.curseforge.com/minecraft/modpacks/all-the-mods-9/files/7097953 (release changelog)"
+      ]
+    },
+    {
+      "id": "curseforge-9104992",
+      "platform": "CurseForge",
+      "name": "Better MC BMC4",
+      "pack_version": "v62hf",
+      "minecraft": "1.20.1",
+      "loader": "forge",
+      "loader_version": "47.4.20",
+      "mods": {
+        "geckolib": "4.8.4",
+        "curios": "5.14.1+1.20.1",
+        "jei": "15.21.0.138"
+      },
+      "source": "https://www.curseforge.com/minecraft/modpacks/better-mc-forge-bmc4/files/9104992",
+      "manifest_sha256": "bfc36491e1985614715dcb0bb287124e91a783244d22cc03a0884dd47f37b972",
+      "dependency_files": [
+        {
+          "projectID": 309927,
+          "fileID": 6418456,
+          "required": true,
+          "isLocked": false
+        },
+        {
+          "projectID": 238222,
+          "fileID": 8500005,
+          "required": true,
+          "isLocked": false
+        },
+        {
+          "projectID": 388172,
+          "fileID": 8285794,
+          "required": true,
+          "isLocked": false
+        }
+      ],
+      "dependency_version_sources": [
+        "https://www.curseforge.com/minecraft/mc-mods/curios/files/6418456",
+        "https://www.curseforge.com/minecraft/mc-mods/jei/files/8500005",
+        "https://www.curseforge.com/minecraft/mc-mods/geckolib/files/8285794"
+      ]
+    }
+  ],
+  "failed_or_unavailable": [
+    {
+      "source": "mrversions-1.19.1-smoothserver.json",
+      "excluded": "no exact release/loader"
+    },
+    {
+      "source": "mrversions-1.21.1-create_plus.json",
+      "excluded": "no exact release/loader"
+    },
+    {
+      "source": "https://cdn.modrinth.com/data/7ZMkIL76/versions/312pp1t5/Sqrilizz%20Optimization%20forge%201.19.1.mrpack",
+      "error": "<urlopen error timed out>",
+      "release_id": "312pp1t5"
+    },
+    {
+      "source": "mrversions-1.20.1-the-pixelmon-modpack.json",
+      "excluded": "no exact release/loader"
+    },
+    {
+      "source": "https://cdn.modrinth.com/data/4BV47HRn/versions/bdRIjRgs/Better%20MC%20%5BFORGE%5D%201.20.1%201.20.1%20v59.mrpack",
+      "error": "File is not a zip file",
+      "release_id": "bdRIjRgs"
+    },
+    {
+      "source": "https://cdn.modrinth.com/data/vwgtbO0y/versions/3WCE8Wj3/The%20Pixelmon%20Modpack%209.4.2.mrpack",
+      "error": "<urlopen error timed out>",
+      "release_id": "3WCE8Wj3"
+    },
+    {
+      "source": "https://cdn.modrinth.com/data/l9m9tuPN/versions/M8j2mfGj/Zombie%20Invade%20100%20Days%202.3.mrpack",
+      "error": "<urlopen error timed out>",
+      "release_id": "M8j2mfGj"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "pinkkicore:block/guaba_charging_station",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "pinkkicore:block/guaba_charging_station",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "pinkkicore:block/guaba_charging_station",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "pinkkicore:block/guaba_charging_station",
+      "y": 270
+    }
+  }
+}

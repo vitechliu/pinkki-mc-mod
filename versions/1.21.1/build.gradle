@@ -35,7 +35,7 @@ neoForge {
 }
 
 def replacements = metadata.collectEntries { key, value -> [(key.toString()): value] } + [
-    minecraft_version: minecraft_version, neo_version: neo_version, pack_format: pack_format
+    minecraft_version: minecraft_version, neo_version: neo_version, neo_min_version: neo_min_version, geckolib_version_range: geckolib_version_range, jei_version_range: jei_version_range, curios_version_range: curios_version_range, pack_format: pack_format
 ]
 def generateMetadata = tasks.register('generateModMetadata', ProcessResources) {
     inputs.properties replacements
@@ -57,3 +57,42 @@ tasks.named('jar', Jar).configure {
 }
 tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
 tasks.withType(JavaExec).configureEach { standardInput = System.in }
+
+repositories {
+    maven { url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+    maven { url = 'https://maven.blamejared.com/' }
+    maven { url = 'https://maven.theillusivec4.top/' }
+}
+dependencies {
+    implementation "software.bernie.geckolib:geckolib-neoforge-1.21.1:${geckolib_version}"
+    compileOnly "mezz.jei:jei-1.21.1-common-api:${jei_version}"
+    compileOnly "mezz.jei:jei-1.21.1-neoforge-api:${jei_version}"
+    compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
+}
+def guideOutput = layout.buildDirectory.dir('generated/guide')
+tasks.register('generateGuide', Exec) {
+    workingDir rootProject.file('../..')
+    commandLine 'python3', 'scripts/generate-guide.py', '--output', guideOutput.get().asFile.absolutePath
+    inputs.files(fileTree('../../wiki') { include '*.md' }, '../../scripts/generate-guide.py')
+    outputs.dir guideOutput
+}
+sourceSets.main.resources.srcDir guideOutput
+tasks.named('processResources').configure { dependsOn 'generateGuide' }
+
+// Explicit test mod, kept outside the distributable source set.
+if (project.hasProperty('portProbe')) {
+    sourceSets {
+        portProbe {
+            java.srcDir '../../scripts/tests/port_1_21_1_probe'
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        }
+    }
+    dependencies {
+        portProbeCompileOnly files(fileTree('../../.local/porting-1.21.1/downloads') { include 'silent-gear-*.jar', 'silent-lib-*.jar' })
+    }
+    tasks.register('portProbeJar', Jar) {
+        archiveFileName = 'port-1.21.1-probe.jar'
+        from sourceSets.portProbe.output
+        from('../../scripts/tests/port_1_21_1_probe/neoforge.mods.toml') { into 'META-INF' }
+    }
+}

@@ -85,7 +85,12 @@ public final class BingwaProbe {
             if (ticks == 40) {
                 require(frog.getTarget() == null && cow.getHealth() == cow.getMaxHealth(), "frog attacked unprovoked");
                 cow.setPos(frog.getX() + 1.6, frog.getY(), frog.getZ());
+                // Keep provocation in tongue range; knockback/pathfinding is not this fixture's contract.
+                var knockback = frog.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.KNOCKBACK_RESISTANCE);
+                double previousResistance = knockback.getBaseValue();
+                knockback.setBaseValue(1);
                 require(frog.hurt(level.damageSources().mobAttack(cow), 1), "provocation was rejected");
+                knockback.setBaseValue(previousResistance);
                 System.out.println("BINGWA neutral before damage PASS");
             }
             if (ticks > 40 && frog.getTarget() == cow) retaliationSeen = true;

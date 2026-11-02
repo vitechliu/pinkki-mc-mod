@@ -29,7 +29,7 @@ def verify_legacy(archive, deps):
     assert deps['geckolib3']['versionRange'] == properties['geckolib_version_range']
     assert 'geckolib' not in deps
     assert deps['forge']['versionRange'] == '[42.0.9,43)'
-    assert deps['curios']['mandatory'] is False and deps['curios']['versionRange'] == '[1.19.2-5.1.6.4,1.19.3)'
+    assert deps['curios']['mandatory'] is False and deps['curios']['versionRange'] == properties['curios_version_range']
     assert deps['jei']['mandatory'] is False and deps['jei']['versionRange'] == properties['jei_version_range']
     assert json.loads(archive.read('pack.mcmeta'))['pack']['pack_format'] == 9
     assert not any(name.startswith(('software/bernie/', 'top/theillusivec4/', 'se/mickelus/', 'mezz/jei/',
@@ -53,6 +53,62 @@ def verify_legacy(archive, deps):
     print('OK 1.19.1 full resource/class coverage, legacy dependency IDs, Java 17, guide and ore data')
 
 
+def verify_neoforge(archive, deps):
+    """Check native 1.21.1 schemas, complete gameplay coverage and optional boundaries."""
+    target = ROOT / 'versions/1.21.1'
+    names = archive.namelist()
+    properties = read_properties(target / 'gradle.properties')
+    assert deps['neoforge']['versionRange'] == f"[{properties['neo_min_version']},21.2)"
+    assert deps['geckolib']['type'] == 'required' and deps['geckolib']['versionRange'] == properties['geckolib_version_range']
+    assert deps['curios']['type'] == 'optional' and deps['curios']['versionRange'] == properties['curios_version_range']
+    assert deps['jei']['type'] == 'optional' and deps['jei']['side'] == 'CLIENT'
+    assert deps['jei']['versionRange'] == properties['jei_version_range']
+    assert not {'silentgear', 'irons_spellbooks', 'tconstruct', 'tetra', 'patchouli', 'guideme', 'mantle'} & set(deps)
+    assert json.loads(archive.read('pack.mcmeta'))['pack']['pack_format'] == 34
+    assert not any(n.startswith(('software/bernie/', 'top/theillusivec4/', 'mezz/jei/', 'net/silentchaos512/',
+                                 'pinkkicore/test/', 'META-INF/jarjar/')) for n in names)
+    for path in (target / 'src/main/resources').rglob('*'):
+        if path.is_file():
+            relative = path.relative_to(target / 'src/main/resources').as_posix()
+            assert archive.read(relative) == path.read_bytes(), f'Resource mismatch: {relative}'
+    main = ROOT / 'versions/1.20.1/src/main/java'
+    for path in main.rglob('*.java'):
+        relative = path.relative_to(main).with_suffix('.class').as_posix().replace('/forge/', '/neoforge/')
+        assert relative in names, f'Missing ported class: {relative}'
+    for name in names:
+        if name.endswith('.class'):
+            raw = archive.read(name)
+            assert struct.unpack('>H', raw[6:8])[0] <= 65, f'Java >21: {name}'
+            assert b'net/minecraftforge/' not in raw, f'Forge API leaked: {name}'
+            if '/client/' not in name:
+                assert b'net/minecraft/client/' not in raw, f'Client API leaked: {name}'
+    assert not any(len(n.split('/')) > 2 and n.split('/')[2] in ('recipes', 'loot_tables', 'advancements') for n in names if n.startswith('data/'))
+    assert not any(n.startswith(('data/forge/', 'data/tetra/', 'data/pinkkicore/tinkering/')) for n in names)
+    for name in names:
+        if name.startswith('data/') and name.endswith('.json'):
+            value = json.loads(archive.read(name))
+            assert '"forge:' not in json.dumps(value) and '#forge:' not in json.dumps(value), f'Legacy namespace: {name}'
+            if name.startswith('data/pinkkicore/recipe/'):
+                assert 'id' in value['result'] and 'item' not in value['result'], f'Legacy result: {name}'
+    for source in (main.parent / 'resources/assets/pinkkicore').rglob('*'):
+        if source.is_file() and (source.suffix == '.png' or source.parent.name in ('geo', 'animations')):
+            name = source.relative_to(main.parent / 'resources').as_posix()
+            assert archive.read(name) == source.read_bytes(), f'Artwork drift: {name}'
+    for resource in ('data/pinkkicore/neoforge/biome_modifier/add_pink_ore.json',
+                     'data/pinkkicore/neoforge/biome_modifier/add_wildlife.json'):
+        assert json.loads(archive.read(resource))['type'].startswith('neoforge:')
+    for name in ('glass_bottle_to_lightning_bottle', 'blank_rune_to_lightning_rune'):
+        recipe = json.loads(archive.read(f'data/pinkkicore/recipe/guaba_charging/compat/irons_spellbooks/{name}.json'))
+        assert recipe['neoforge:conditions'] == [{'type': 'neoforge:mod_loaded', 'modid': 'irons_spellbooks'}]
+    for item in ('guaba', 'thunder_guaba'):
+        material = json.loads(archive.read(f'data/pinkkicore/silentgear_materials/{item}.json'))
+        assert material['type'] == 'silentgear:simple' and 'silentgear:main' in material['properties'] and 'silentgear:rod' in material['properties']
+    import runpy
+    generator = runpy.run_path(str(ROOT / 'scripts/generate-guide.py'))
+    assert json.loads(archive.read('assets/pinkkicore/guide/zh_cn.json')) == generator['compile_book']()
+    print('OK 1.21.1 complete classes/resources, native recipe/loot/tag/condition schemas, Java 21, external dependencies and offline guide')
+
+
 def main():
     mc = sys.argv[1]
     loader, major = TARGETS[mc]
@@ -71,11 +127,13 @@ def main():
         deps = {item["modId"]: item for item in metadata["dependencies"][props["mod_id"]]}
         assert deps["minecraft"]["versionRange"] == f"[{mc}]"
         assert loader in deps
+        if mc == "1.21.1":
+            verify_neoforge(archive, deps)
         if mc == "1.19.1":
             verify_legacy(archive, deps)
         if mc == "1.20.1":
             assert deps['curios']['mandatory'] is False and deps['curios']['side'] == 'BOTH'
-            assert deps['curios']['versionRange'] == '[5.14.1,6)'
+            assert deps['curios']['versionRange'] == read_properties(ROOT / 'versions/1.20.1/gradle.properties')['curios_version_range']
             assert not any(path.startswith('top/theillusivec4/curios/') for path in archive.namelist()), 'Curios must remain external'
             for slot, item in [('head', 'guaba_hood'), ('charm', 'pink_blessing')]:
                 assert json.loads(archive.read(f'data/pinkkicore/curios/slots/{slot}.json')) == {'size': 1, 'operation': 'SET'}

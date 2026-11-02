@@ -1,11 +1,11 @@
 {
   "targets": {
     "1.21.1": {
-      "source_fingerprint": "4ea967a0c17f5a61066ad78c03edf73e7e754563108050b396e8ef39222c5bc6",
-      "target_fingerprint": "224026c9338e9d5c2fac239c6fd5ec8e390f122bf30299c420e19dafa52b920b",
-      "source_ref": "2dc4d71aabac20b35b0e1346998c1773a9973994",
-      "evidence": "docs/verification.md",
-      "recorded_at": "2026-10-22T11:52:32.770779+08:00"
+      "source_fingerprint": "e3bffa774dcc5e6eb69e4d32cd9d8a93bc4786ebd39aae297da991b71f00d35a",
+      "target_fingerprint": "d85cae3167525bba80b777c97620ab38b7e7bde7763416c1136a6f431d6352b7",
+      "source_ref": "d6b904154d8c64b1241a1b1f837cd0ec1a9d224b",
+      "evidence": ".local/porting-1.21.1-compatibility-verification.log",
+      "recorded_at": "2026-10-29T00:02:41.529027+08:00"
     },
     "1.19.1": {
       "source_fingerprint": "e3f7a1922d464080b413ba94f4ba1548987b0207f3fe02531bef457a04608bab",

@@ -1,5 +1,18 @@
 # 更新记录
 
+## 2026-10-30 · 整合包依赖范围
+
+- 降低 1.20.1 的 GeckoLib、Curios 下限，以及 1.21.1 的 NeoForge、GeckoLib、JEI、Curios 下限，支持更多整合包现有前置。具体版本见[模组兼容](./compatibility.md)。
+
+## 2026-10-28 · 1.21.1 整合包依赖兼容
+
+- 1.21.1 支持 NeoForge 21.1.249、GeckoLib 4.9.2 和 JEI 19.56.0.438，无需为安装 PinkkiCore 升级到原先要求的较新版本。
+
+## 2026-10-28 · Minecraft 1.21.1 NeoForge
+
+- 加入瓜巴系列道具与药水、工作台、充电桩、粉红矿、饼蛙、两种 NPC、野外生成与掉落、饰品和独立瓜巴手册。
+- 可选搭配对应版本的 JEI、Curios、Silent Gear 和 Iron’s Spells；安装版本见[模组兼容](./compatibility.md)。
+
 ## 2026-10-28 · 瓜巴工作台合成
 
 - 新增[瓜巴工作台合成配方](./recipes.md#guaba-workbench)：8 个瓜巴围绕 1 个工作台，产出 1 个瓜巴工作台。

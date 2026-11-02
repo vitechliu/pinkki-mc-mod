@@ -1,0 +1,32 @@
+{
+  "max_level": 1,
+  "conditions": [
+    {
+      "type": "silentgear:gear_type",
+      "gear_type": "silentgear:tool"
+    }
+  ],
+  "name": {
+    "translate": "trait.pinkkicore.guaba_touch"
+  },
+  "description": {
+    "translate": "trait.pinkkicore.guaba_touch.desc"
+  },
+  "effects": [
+    {
+      "type": "silentgear:target_effect",
+      "effects_by_level": {
+        "silentgear:tool": {
+          "1": [
+            {
+              "id": "pinkkicore:guaba",
+              "amplifier": 0,
+              "duration": 200,
+              "show_icon": true
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -2,6 +2,34 @@
 
 仓库为 [vitechliu/pinkki-mc-mod](https://github.com/vitechliu/pinkki-mc-mod)，主线为 `main`。
 
+## 手动获取三版本包
+
+当前已有三目标工作流，不需要额外建立三套发布配置：
+
+| 操作 | 手动入口 | 参数 | 下载位置 |
+| --- | --- | --- | --- |
+| 只打包，不发布 | Actions → Build Minecraft targets → Run workflow | `targets=all` | 该运行的三个 artifacts，保留 14 天 |
+| 发布或补齐三个版本 | Actions → Release Minecraft targets → Run workflow | `tag=已存在且通过验证的标签`，`targets=all` | 同一个 GitHub Release 的三个 JAR 及三个 SHA256 文件 |
+
+对应 1.20.1 Forge / JDK 17、1.21.1 NeoForge / JDK 21、1.19.1 Forge / JDK 17。手动发布不是自动移植：次要目标必须在标签对应源码上通过适配检查点，且所有选定构建成功，才上传附件。
+
+项目 skill 为 [package-minecraft-release](../.agents/skills/package-minecraft-release/SKILL.md)。例如：
+
+```text
+使用 $package-minecraft-release，只打三个版本的包，不发布 Release。
+使用 $package-minecraft-release，将已验证的指定版本发布到 GitHub Release，包含三个 Minecraft 版本。
+```
+
+发布时需给定或确认实际标签；上述示例不指定一个尚不存在的标签。准备/调研不触发工作流。推送 `v*` 标签仍会自动发布 1.20.1；手动多版本是在此基础上补齐附件，现有逻辑并非完全只有手动触发。若要完全停用标签自动发布，应单独调整触发配置。
+
+### 2026-10-30 核对结果
+
+通过 GitHub 连接器读取远端工作流、通过 `gh api` 只读读取运行/标签/Release 列表，确认远端 main 为 `d6b904154d8c64b1241a1b1f837cd0ec1a9d224b`，Build、Release、Wiki 三个工作流均启用。最近 [Build 运行](https://github.com/vitechliu/pinkki-mc-mod/actions/runs/40690714421) 是成功的 push 事件，只能证明默认 1.20.1 构建；当前没有标签或 GitHub Release，不能宣称已有三版本可下载附件。
+
+在该提交的独立源码快照执行 `targets.py status --targets all --check`，1.21.1、1.19.1 均未匹配当前源码；远端 1.21.1 记录仍是空骨架检查点。本地工作区已有未提交的 1.21.1 适配等修改，但当前本地两个次要目标检查点也不匹配。必须完成差异审查与适用验证、按证据更新检查点，再提交推送后选择相应标签；不能直接刷新检查点来绕过门禁。本次没有移植、构建游戏、触发远端工作流、推标签或发布。
+
+本地 Build 另有尚未推送的整合包依赖门禁修改，远端尚无该步骤，核对时已区分两者。现有本地 Build/Release 通过 actionlint 静态检查；这不等于远端手动三版本流程已执行成功。本次仅新增操作 skill 和文档，不改触发策略或游戏内容，无需同步玩家手册/Wiki 或本地 HMCL。
+
 ## 默认只处理 1.20.1
 
 - `build.yml` 在分支 push / PR 时只构建 1.20.1，验证发行 JAR 并上传 JAR 与 SHA256，Actions artifacts 保留 14 天。

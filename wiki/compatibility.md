@@ -1,16 +1,20 @@
 # 模组兼容
 
-1.19.1 Forge 使用 GeckoLib 3.1.30；可选安装 JEI 11.2.0.244、Curios 5.1.6.4 和 Tetra 5.6.0（需要 Mutil 5.2.0）。以下 Silent Gear、匠魂和 Iron’s Spells 联动适用于 1.20.1。
+1.20.1 Forge 需要 GeckoLib 4.2.3 或更高的 4.x；可选 Curios 5.3.5 或更高的 5.x。1.21.1 的 NeoForge 最低版本为 21.1.72。整合包已有满足范围的前置时可直接复用，同一前置只安装一份。
+
+1.19.1 Forge 使用 GeckoLib 3.1.30；可选安装 JEI 11.2.0.244、Curios 5.1.6.4 和 Tetra 5.6.0（需要 Mutil 5.2.0）。Silent Gear 和 Iron’s Spells 联动适用于 1.20.1 Forge 与 1.21.1 NeoForge；匠魂联动适用于 1.20.1 Forge，Tetra 联动适用于 1.20.1 / 1.19.1 Forge。
+
+1.21.1 NeoForge 使用 GeckoLib 4.6.6 或更高的 4.x；可选安装 JEI 19.21.0.247 或更高的 19.x、Curios 9.2.2 或更高的 9.x、Silent Gear 4.2.1.1（需要 Silent Lib 10.6.0）和 Iron’s Spells ’n Spellbooks 3.16.3。
 
 ## JEI 配方预览 {#jei}
 
-1.20.1 客户端安装 JEI 15.2.0.27 或更高的 15.x，1.19.1 客户端安装 JEI 11.2.0.244 后，可在“瓜巴工作台”分类查看[加工配方](./guaba-workbench.md#游戏内配方预览)。还可在“雷击转换”分类查询[雷霆瓜巴](./items.md#thunder-guaba)的获取方式：在雷霆瓜巴上按 **R**，或在瓜巴上按 **U**。
+1.20.1 客户端安装 JEI 15.2.0.27 或更高的 15.x，1.19.1 客户端安装 JEI 11.2.0.244，1.21.1 客户端安装 JEI 19.21.0.247 或更高的 19.x 后，可在“瓜巴工作台”分类查看[加工配方](./guaba-workbench.md#游戏内配方预览)。还可在“雷击转换”分类查询[雷霆瓜巴](./items.md#thunder-guaba)的获取方式：在雷霆瓜巴上按 **R**，或在瓜巴上按 **U**。
 
 JEI 为可选安装，不安装也能使用工作台和雷击转换。
 
 ## 瓜巴材料兼容 {#guaba}
 
-安装以下模组后，[瓜巴](./items.md#guaba)还可作为装备材料，无需额外安装瓜巴兼容插件。
+在上方列出的适用版本中安装以下模组后，[瓜巴](./items.md#guaba)还可作为装备材料，无需额外安装瓜巴兼容插件。
 
 | 模组 | 使用方式 |
 | --- | --- |

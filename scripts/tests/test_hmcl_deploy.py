@@ -67,7 +67,7 @@ class DeployTest(unittest.TestCase):
 
     def test_curios_manifest_preserved_and_duplicates_rejected(self):
         jar = self.targets[0] / "mods/curios.jar"
-        self.curios_jar(jar, "5.14.1+1.20.1", manifest=True)
+        self.curios_jar(jar, "5.3.5+1.20.1", manifest=True)
         self.assertEqual(deploy.curios_plan(self.targets[0]), jar)
         self.curios_jar(jar.with_name("second.jar"), "5.14.1+1.20.1")
         with self.assertRaisesRegex(ValueError, "多份"):
@@ -75,7 +75,7 @@ class DeployTest(unittest.TestCase):
 
     def test_curios_wrong_version_and_loader_rejected(self):
         jar = self.targets[0] / "mods/curios.jar"
-        for version, mc, loader in [("5.14.0", "[1.20,1.21)", "forge"),
+        for version, mc, loader in [("5.3.4", "[1.20,1.21)", "forge"),
                                      ("6.0.0", "[1.20,1.21)", "forge"),
                                      ("5.14.1", "[1.19.2]", "forge"),
                                      ("5.14.1", "[1.20,1.21)", "neoforge")]:

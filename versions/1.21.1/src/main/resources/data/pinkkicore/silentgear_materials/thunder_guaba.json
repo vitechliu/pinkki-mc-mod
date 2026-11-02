@@ -1,0 +1,89 @@
+{
+  "type": "silentgear:simple",
+  "parent": "silentgear:empty",
+  "crafting": {
+    "can_salvage": true,
+    "categories": [
+      "organic"
+    ],
+    "gear_type_blacklist": [],
+    "ingredient": {
+      "item": "pinkkicore:thunder_guaba"
+    },
+    "part_substitutes": {}
+  },
+  "display": {
+    "color": "#FF92D7F4",
+    "main_texture_type": "LOW_CONTRAST",
+    "name": {
+      "translate": "material.pinkkicore.thunder_guaba"
+    },
+    "name_prefix": ""
+  },
+  "properties": {
+    "silentgear:main": {
+      "durability": 1200,
+      "armor_durability": 25,
+      "enchantment_value": 15,
+      "rarity": 85,
+      "charging_value": 1,
+      "repair_value": 0.25,
+      "harvest_speed": 10,
+      "attack_damage": 4,
+      "attack_speed": 0.4,
+      "ranged_damage": 2,
+      "draw_speed": 0.1,
+      "projectile_speed": 1.1,
+      "projectile_accuracy": 1.1,
+      "armor": 20,
+      "armor/helmet": 3,
+      "armor/chestplate": 8,
+      "armor/leggings": 6,
+      "armor/boots": 3,
+      "armor_toughness": 8,
+      "harvest_tier": {
+        "incorrect_blocks_for_tool": "minecraft:incorrect_for_netherite_tool",
+        "level_hint": "4",
+        "name": "netherite"
+      },
+      "traits": [
+        {
+          "trait": "pinkkicore:thunder_guaba_touch",
+          "level": 1,
+          "conditions": []
+        },
+        {
+          "trait": "pinkkicore:thunder_lightweight",
+          "level": 1,
+          "conditions": []
+        }
+      ]
+    },
+    "silentgear:rod": {
+      "durability": {
+        "operation": "MULTIPLY_TOTAL",
+        "value": -0.1
+      },
+      "harvest_speed": {
+        "operation": "MULTIPLY_TOTAL",
+        "value": 0.1
+      },
+      "attack_speed": {
+        "operation": "ADD",
+        "value": 0.2
+      },
+      "traits": [
+        {
+          "trait": "pinkkicore:thunder_guaba_touch",
+          "level": 1,
+          "conditions": []
+        },
+        {
+          "trait": "pinkkicore:thunder_lightweight",
+          "level": 1,
+          "conditions": []
+        }
+      ]
+    }
+  }
+}

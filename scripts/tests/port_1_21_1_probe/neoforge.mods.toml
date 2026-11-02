@@ -1,0 +1,13 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="MIT"
+[[mods]]
+modId="pinkkicore_port_probe"
+version="1"
+displayName="PinkkiCore isolated 1.21.1 probe"
+[[dependencies.pinkkicore_port_probe]]
+modId="pinkkicore"
+type="required"
+versionRange="*"
+ordering="AFTER"
+side="BOTH"

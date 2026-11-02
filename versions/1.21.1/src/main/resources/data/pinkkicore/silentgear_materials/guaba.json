@@ -1,0 +1,66 @@
+{
+  "type": "silentgear:simple",
+  "parent": "silentgear:empty",
+  "crafting": {
+    "can_salvage": true,
+    "categories": [
+      "organic"
+    ],
+    "gear_type_blacklist": [],
+    "ingredient": {
+      "item": "pinkkicore:guaba"
+    },
+    "part_substitutes": {}
+  },
+  "display": {
+    "color": "#FFC87945",
+    "main_texture_type": "LOW_CONTRAST",
+    "name": {
+      "translate": "material.pinkkicore.guaba"
+    },
+    "name_prefix": ""
+  },
+  "properties": {
+    "silentgear:main": {
+      "durability": 60.0,
+      "armor_durability": 5.0,
+      "enchantment_value": 5.0,
+      "rarity": 1.0,
+      "charging_value": 0.5,
+      "repair_value": 0.25,
+      "harvest_speed": 2.0,
+      "attack_damage": 0.0,
+      "attack_speed": 0.0,
+      "ranged_damage": 0.0,
+      "draw_speed": 0.0,
+      "projectile_speed": 1.0,
+      "projectile_accuracy": 0.9,
+      "armor": 5.0,
+      "armor/helmet": 1.0,
+      "armor/chestplate": 2.0,
+      "armor/leggings": 1.0,
+      "armor/boots": 1.0,
+      "harvest_tier": {
+        "incorrect_blocks_for_tool": "silentgear:incorrect_for_wood_tools",
+        "level_hint": "0",
+        "name": "wood"
+      },
+      "traits": [
+        {
+          "trait": "pinkkicore:guaba_touch",
+          "level": 1,
+          "conditions": []
+        }
+      ]
+    },
+    "silentgear:rod": {
+      "traits": [
+        {
+          "trait": "pinkkicore:guaba_touch",
+          "level": 1,
+          "conditions": []
+        }
+      ]
+    }
+  }
+}

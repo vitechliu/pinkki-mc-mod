@@ -40,6 +40,8 @@ jobs:
           ref: ${{ inputs.ref || github.sha }}
       - name: Check target selection and porting gates
         run: python3 -m unittest discover -s scripts/tests -v
+      - name: Check captured modpack dependency gates
+        run: python3 scripts/check-dependency-baselines.py --check
       - name: Select requested targets
         id: targets
         env:

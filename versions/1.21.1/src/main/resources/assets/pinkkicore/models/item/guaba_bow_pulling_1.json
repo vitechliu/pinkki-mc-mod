@@ -1,0 +1,6 @@
+{
+  "parent": "pinkkicore:item/guaba_bow",
+  "textures": {
+    "layer0": "pinkkicore:item/guaba_bow_pulling_1"
+  }
+}

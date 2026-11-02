@@ -27,7 +27,7 @@ dependencies {
     // Publisher versions: Tetra 5.6.0 and Mutil 5.2.0 explicitly include 1.19.1.
     compileOnly fg.deobf("maven.modrinth:tetra:tj9wtOla")
     compileOnly fg.deobf("maven.modrinth:mutil:1cVegazl")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.2-5.1.6.4:api")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
     // GeckoLib 3 is a different API and mod ID from the main target's GeckoLib 4.
     implementation fg.deobf("software.bernie.geckolib:geckolib-forge-1.19:${geckolib_version}")
     // GeckoLib embeds this in its release JAR; development runs need it explicitly.

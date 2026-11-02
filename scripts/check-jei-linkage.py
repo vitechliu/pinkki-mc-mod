@@ -56,10 +56,12 @@ def read_class(raw):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--api', type=Path, action='append', required=True, help='JEI release/API JAR; repeat for common + Forge APIs')
-    parser.add_argument("--minecraft", choices=["1.20.1", "1.19.1"], default="1.20.1")
+    parser.add_argument("--minecraft", choices=["1.20.1", "1.19.1", "1.21.1"], default="1.20.1")
     args = parser.parse_args()
     props = dict(line.split('=', 1) for line in (ROOT/'mod.properties').read_text().splitlines() if '=' in line)
-    jar = ROOT/f"versions/{args.minecraft}/build/libs/pinkkicore-forge-{args.minecraft}-{props['mod_version']}.jar"
+    loader = "neoforge" if args.minecraft == "1.21.1" else "forge"
+    prefix = PREFIX.replace("/forge/", f"/{loader}/")
+    jar = ROOT/f"versions/{args.minecraft}/build/libs/pinkkicore-{loader}-{args.minecraft}-{props['mod_version']}.jar"
     api = {}
     for path in args.api:
         with zipfile.ZipFile(path) as archive:
@@ -73,9 +75,9 @@ def main():
         return (name, descriptor) in entry['members'][kind] or any(resolves(kind, parent, name, descriptor, visited) for parent in entry['parents'])
     checked = 0
     with zipfile.ZipFile(jar) as archive:
-        plugins = [name for name in archive.namelist() if name.startswith(PREFIX) and name.endswith('.class')]
+        plugins = [name for name in archive.namelist() if name.startswith(prefix) and name.endswith('.class')]
         assert plugins, 'Missing JEI integration'
-        assert b'Lmezz/jei/api/JeiPlugin;' in archive.read(PREFIX+'GuabaJeiPlugin.class'), 'Missing JEI discovery annotation'
+        assert b'Lmezz/jei/api/JeiPlugin;' in archive.read(prefix+'GuabaJeiPlugin.class'), 'Missing JEI discovery annotation'
         for path in plugins:
             cls = read_class(archive.read(path))
             for owner in cls['classes']:
@@ -86,7 +88,7 @@ def main():
                     assert resolves(kind, owner, name, descriptor), f'Missing JEI {kind} {owner}.{name}{descriptor}'
                     checked += 1
         for path in archive.namelist():
-            if path.endswith('.class') and not path.startswith(PREFIX):
+            if path.endswith('.class') and not path.startswith(prefix):
                 assert b'mezz/jei/' not in archive.read(path), f'Optional JEI API leaked outside isolated plugin: {path}'
         assert not any(name.startswith('mezz/jei/') for name in archive.namelist()), 'JEI must remain external'
     print(f'PASS: {len(plugins)} isolated plugin classes; {checked} JEI field/method links resolved against '+', '.join(path.name for path in args.api))

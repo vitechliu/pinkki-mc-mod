@@ -1,11 +1,11 @@
 # PinkkiCore
 
-面向 Minecraft Java 版的多版本 mod，MIT 许可证。1.20.1 已实装 1 级材料[瓜巴](wiki/items.md#guaba)和[粉红矿](wiki/items.md#pink-ore)及其获取/加工配方，中立生物[饼蛙和刷怪蛋](wiki/bosses.md#bingwa)、可拾取装备的人形 NPC [粉红妹](wiki/bosses.md#pinkki)和[瓜巴影融](wiki/bosses.md#guaba-yingrong)，以及支持转换加工与自动化设置的[瓜巴工作台](wiki/guaba-workbench.md)（0.1.0 开发中，尚未发布）；1.19.1 Forge 已补齐当前玩法（无头验证），1.21.1 尚待适配。
+面向 Minecraft Java 版的多版本 mod，MIT 许可证。1.20.1 已实装 1 级材料[瓜巴](wiki/items.md#guaba)和[粉红矿](wiki/items.md#pink-ore)及其获取/加工配方，中立生物[饼蛙和刷怪蛋](wiki/bosses.md#bingwa)、可拾取装备的人形 NPC [粉红妹](wiki/bosses.md#pinkki)和[瓜巴影融](wiki/bosses.md#guaba-yingrong)，以及支持转换加工与自动化设置的[瓜巴工作台](wiki/guaba-workbench.md)（0.1.0 开发中，尚未发布）。1.19.1 Forge 和 1.21.1 NeoForge 已有适配实现与历史无头验证；依赖基线调整后，两者的完整适配检查点均需重新验证。当前阻碍见[依赖基线记录](docs/changes/2026-10-30-modpack-dependency-baselines.md)，1.21.1 可选联动范围见[适配记录](docs/changes/2026-10-28-port-1.21.1.md)。
 
 | 优先级 | Minecraft | 加载器 | Java | 构建工具 |
 | --- | --- | --- | --- | --- |
 | 主要 | 1.20.1 | Forge 47.4.28 | JDK 17 | Gradle 8.8 / ForgeGradle 6.0.54 |
-| 次要 | 1.21.1 | NeoForge 21.1.264 | JDK 21 | Gradle 9.2.1 / ModDevGradle 2.0.148 |
+| 次要 | 1.21.1 | NeoForge 21.1.72 | JDK 21 | Gradle 9.2.1 / ModDevGradle 2.0.148 |
 | 次要 | 1.19.1 | Forge 42.0.9 | JDK 17 | Gradle 7.5 / ForgeGradle 5.1.77 |
 
 Minecraft、加载器、Gradle 和构建插件版本固定在仓库配置中。升级这些版本时需重新构建、启动测试。**1.19.1 与 1.19.2 是不同目标，不可混装 JAR。**
@@ -22,15 +22,19 @@ Minecraft、加载器、Gradle 和构建插件版本固定在仓库配置中。�
 
 ## Curios 饰品
 
-1.20.1 可选安装 Curios 5.14.1+（5.x），使用[瓜巴头套与粉红之祝](wiki/items.md#guaba-hood)。客户端和服务端均需安装才能佩戴；未安装时物品保留且提示需要 Curios。头饰、护符各提供 1 格，细节见[接入约定](docs/curios-integration.md)。本地两个 HMCL 测试实例可通过 `python3 scripts/deploy-local.py --with-curios` 补齐前置，不启动游戏。
+1.20.1 可选安装 Curios 5.3.5+（5.x），使用[瓜巴头套与粉红之祝](wiki/items.md#guaba-hood)。客户端和服务端均需安装才能佩戴；未安装时物品保留且提示需要 Curios。头饰、护符各提供 1 格，细节见[接入约定](docs/curios-integration.md)。本地两个 HMCL 测试实例可通过 `python3 scripts/deploy-local.py --with-curios` 补齐前置，不启动游戏。
 
 ## GeckoLib 前置与整合包兼容
 
+三平台整合包清单、依赖门槛与复查命令见[整合包调研](docs/compatibility/modpack-dependency-research-2026-10-30.md)。
+
+1.21.1 NeoForge 使用外置 GeckoLib **4.6.6**（允许4.x），可选JEI 19.21.0.247、Curios 9.2.2+、Silent Gear 4.2.1.1 + Silent Lib 10.6.0和Iron’s Spells 3.16.3及其前置。Tetra与官方匠魂没有对应宿主；无头证据、Silent Gear既有可选配方问题及GUI待验范围见[1.21.1适配记录](docs/changes/2026-10-28-port-1.21.1.md)。
+
 1.19.1 Forge 使用 GeckoLib **3.1.30**（mod ID `geckolib3`），与 1.20.1 的 4.x API 分开适配。该目标的可选依赖为 JEI 11.2.0.244、Curios 1.19.2-5.1.6.4、Tetra 5.6.0 + Mutil 5.2.0；发布方均明确支持 1.19.1，文件名中的 1.19.2 不改变本项目的精确游戏目标。范围与验证见 [1.19.1 适配记录](docs/changes/2026-10-28-port-1.19.1.md)。
 
-1.20.1 Forge 已接入 GeckoLib：使用 **4.4.9 作为编译 API 基线**，运行时允许 **`[4.4.9,5)`**。客户端与服务端都需要安装匹配 **1.20.1 Forge** 的 GeckoLib；整合包已有满足范围的版本时保留原版本，不额外放入第二份，也不因本项目开发而默认升级它。独立新实例可选 4.8.4，具体整合包仍需验证。
+1.20.1 Forge 已接入 GeckoLib：使用 **4.2.3 作为编译 API 基线**，运行时允许 **`[4.2.3,5)`**。客户端与服务端都需要安装匹配 **1.20.1 Forge** 的 GeckoLib；整合包已有满足范围的版本时保留原版本，不额外放入第二份，也不因本项目开发而默认升级它。独立新实例可选 4.8.4，具体整合包仍需验证。
 
-表中 Forge 47.4.28 是固定构建 SDK，运行最低版本单独配置为 47.1.0。GeckoLib 的新功能不能绕过编译基线直接使用；修改任一最低版本都应说明原因并重新验证。详见 [依赖选型、验证范围与整合包核对流程](docs/geckolib-compatibility.md)。次要目标尚未接入本次依赖；ATM10 为 1.21.1，需后续按需适配 NeoForge 目标。
+表中 Forge 47.4.28 是固定构建 SDK，运行最低版本单独配置为 47.1.0。GeckoLib 的新功能不能绕过编译基线直接使用；修改任一最低版本都应说明原因并重新验证。详见 [依赖选型、验证范围与整合包核对流程](docs/geckolib-compatibility.md)。次要目标使用上文各自的前置；1.21.1无头通过不代表ATM10或其他完整整合包已验收。
 
 模型设计流程的首个样例是 [饼蛙造型与动作审阅](designs/bingwa/README.md)，包含可编辑 Blockbench 工程及七段动作。已在 1.20.1 接入实体与刷怪蛋；[玩家说明](wiki/bosses.md#bingwa)包含指令、获取方式与中立反击规则。
 
@@ -139,7 +143,7 @@ python3 scripts/smoke-server.py 1.20.1
 
 1. 使用启动器创建独立游戏实例，安装表中对应 Minecraft 和 Forge/NeoForge 版本；各实例独立游戏目录。
 2. 从对应 `build/libs/` 或 GitHub Release 选一个匹配目标的 JAR，放进该实例 `mods/`，同一 mod 只保留一个版本。
-   1.20.1 Forge 还需 GeckoLib 4.4.9 或以上的 4.x；已有兼容前置时直接复用，不能混装 Forge、NeoForge、Fabric 文件。
+   1.20.1 Forge 还需 GeckoLib 4.2.3 或以上的 4.x；已有兼容前置时直接复用，不能混装 Forge、NeoForge、Fabric 文件。
 3. 启动，在 Mods 列表及日志中确认加载，进入测试世界；退出后再启动一次确认存档正常。
 4. 独立服务端使用相同加载器安装流程，把同目标 JAR 放进服务端 `mods/`。生产部署前先在测试服验证，备份存档，停服替换，保留旧 JAR 以便回滚。
    1.20.1 服务端也需安装匹配的 GeckoLib，建议与客户端使用同一版本。
