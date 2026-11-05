@@ -80,7 +80,7 @@ for bone in geo['bones']:
             close([u, v], cube['uv'][key]['uv'])
             close([U-u, V-v], cube['uv'][key]['uv_size'])
 
-assert len(animations) == len(bb['animations']) == 2
+assert len(animations) == len(bb['animations']) == 4
 for name, animation in animations.items():
     assert animation['animation_length'] > 0
     for bone_name, channels in animation['bones'].items():

@@ -6,7 +6,7 @@
     <label class="form-label">动作
       <select class="form-select" id="guaba_dragon-motion">
         <option value="static">造型（静态）</option><option value="idle">待机呼吸</option>
-        <option value="breath_pose">喷火姿态草案（无火焰）</option>
+        <option value="breath_pose">喷火姿态（粒子在游戏中生成）</option><option value="walk">行走</option><option value="melee">近战咬击</option>
       </select>
     </label>
     <button type="button" class="btn" id="guaba_dragon-play">播放</button>
@@ -122,7 +122,7 @@
     root.dataset.rendered='true';root.dataset.motion=state.motion;root.dataset.time=state.time.toFixed(3);
   }
   function updateControls(){const a=selectedAnimation(),length=a?.animation_length||0;$('motion').value=state.motion;$('back_crest').checked=state.back_crest;$('neck_mane').checked=state.neck_mane;$('rig').checked=state.rig;
-    const status=state.motion==='breath_pose'?'喷火姿态草案 · 0–0.65 秒蓄力 / 1–2 秒张口保持 / 2.8 秒复位 · 无火焰与伤害':'瓜巴龙 · 红蓝肌肉头部 / 金色颈腹 / 红色龙身 · 设计稿';
+    const status=state.motion==='breath_pose'?'喷火姿态草案 · 0–0.65 秒蓄力 / 1–4 秒张口保持 / 4.8 秒复位 · 无火焰与伤害':'瓜巴龙 · 红蓝肌肉头部 / 金色颈腹 / 红色龙身 · 设计稿';
     if($('status').textContent!==status)$('status').textContent=status;
 
     $('time').max=length;$('time').disabled=!a;$('time').value=state.time;$('time-label').textContent=state.time.toFixed(2)+' / '+length.toFixed(2)+' 秒';$('play').textContent=playing?'暂停':'播放';$('play').setAttribute('aria-pressed',String(playing));}

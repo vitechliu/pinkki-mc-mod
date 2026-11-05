@@ -137,5 +137,10 @@
   "tooltip.pinkkicore.requires_curios": "需要安装 Curios 才能佩戴并生效",
   "tetra.material.pinkkicore_guaba.prefix": "瓜巴",
   "tetra.material.pinkkicore_thunder_guaba.prefix": "雷霆瓜巴",
-  "tetra.variant_category.pinkkicore_thunder_guaba.label": "雷霆瓜巴"
+  "tetra.variant_category.pinkkicore_thunder_guaba.label": "雷霆瓜巴",
+  "entity.pinkkicore.guaba_dragon": "朱罗纪瓜巴龙",
+  "item.pinkkicore.guaba_dragon_spawn_egg": "朱罗纪瓜巴龙刷怪蛋",
+  "faction.pinkkicore.hostile": "敌对",
+  "faction.pinkkicore.neutral": "中立",
+  "faction.pinkkicore.special": "特殊"
 }

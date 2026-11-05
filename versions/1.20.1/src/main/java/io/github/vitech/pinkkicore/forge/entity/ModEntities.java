@@ -23,17 +23,26 @@ public final class ModEntities {
         EntityType.Builder.of(GuabaYingrongEntity::new, MobCategory.CREATURE)
             .sized(0.6F, 1.8F).clientTrackingRange(10).build(ModInfo.ID + ":guaba_yingrong"));
 
+    public static final RegistryObject<EntityType<GuabaDragonEntity>> GUABA_DRAGON = ENTITIES.register("guaba_dragon", () ->
+        EntityType.Builder.of(GuabaDragonEntity::new, MobCategory.MONSTER)
+            .sized(1.3F, 2.9F).fireImmune().clientTrackingRange(10).build(ModInfo.ID + ":guaba_dragon"));
+
     private ModEntities() {}
 
     public static void register(IEventBus bus) {
         ENTITIES.register(bus);
         bus.addListener(ModEntities::attributes);
         bus.addListener(WildlifeSpawns::register);
+        bus.addListener((net.minecraftforge.event.entity.SpawnPlacementRegisterEvent event) ->
+            event.register(GUABA_DRAGON.get(), net.minecraft.world.entity.SpawnPlacements.Type.ON_GROUND,
+                net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                GuabaDragonEntity::canSpawn, net.minecraftforge.event.entity.SpawnPlacementRegisterEvent.Operation.REPLACE));
     }
 
     private static void attributes(EntityAttributeCreationEvent event) {
         event.put(GUABA_YINGRONG.get(), GuabaYingrongEntity.createAttributes().build());
         event.put(PINKKI.get(), PinkkiEntity.createAttributes().build());
+        event.put(GUABA_DRAGON.get(), GuabaDragonEntity.createAttributes().build());
         event.put(BINGWA.get(), BingwaEntity.createAttributes().build());
     }
 }

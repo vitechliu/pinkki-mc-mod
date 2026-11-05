@@ -137,5 +137,10 @@
   "tooltip.pinkkicore.requires_curios": "Requires Curios to equip and activate",
   "tetra.material.pinkkicore_guaba.prefix": "Guaba",
   "tetra.material.pinkkicore_thunder_guaba.prefix": "Thunder Guaba",
-  "tetra.variant_category.pinkkicore_thunder_guaba.label": "Thunder Guaba"
+  "tetra.variant_category.pinkkicore_thunder_guaba.label": "Thunder Guaba",
+  "entity.pinkkicore.guaba_dragon": "Jurassic Guaba Dragon",
+  "item.pinkkicore.guaba_dragon_spawn_egg": "Jurassic Guaba Dragon Spawn Egg",
+  "faction.pinkkicore.hostile": "Hostile",
+  "faction.pinkkicore.neutral": "Neutral",
+  "faction.pinkkicore.special": "Special"
 }

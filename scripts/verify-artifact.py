@@ -212,6 +212,32 @@ def main():
                 ("textures/bingwa.png", "textures/entity/bingwa.png"),
             ]:
                 assert archive.read(f"assets/pinkkicore/{resource}") == (ROOT / "designs/bingwa" / source).read_bytes(), "Bingwa source/export mismatch"
+            assert "io/github/vitech/pinkkicore/core/MobFaction.class" in archive.namelist()
+            assert "io/github/vitech/pinkkicore/forge/entity/MobFactions.class" in archive.namelist()
+            for language, labels in [("zh_cn", ("敌对", "中立", "特殊")), ("en_us", ("Hostile", "Neutral", "Special"))]:
+                strings = json.loads(archive.read(f"assets/pinkkicore/lang/{language}.json"))
+                for faction_id, faction_label in zip(("hostile", "neutral", "special"), labels):
+                    assert strings[f"faction.pinkkicore.{faction_id}"] == faction_label
+            # Jurassic Guaba Dragon is currently a 1.20.1-only addition.
+            for source, resource in [
+                ("guaba_dragon.geo.json", "geo/guaba_dragon.geo.json"),
+                ("guaba_dragon.animation.json", "animations/guaba_dragon.animation.json"),
+                ("textures/guaba_dragon.png", "textures/entity/guaba_dragon.png"),
+            ]:
+                assert archive.read(f"assets/pinkkicore/{resource}") == (ROOT / "designs/guaba-dragon" / source).read_bytes(), "Guaba dragon source/export mismatch"
+            dragon_animations = json.loads(archive.read("assets/pinkkicore/animations/guaba_dragon.animation.json"))["animations"]
+            assert set(dragon_animations) == {f"animation.guaba_dragon.{name}" for name in ("idle", "walk", "melee", "breath_pose")}
+            assert dragon_animations["animation.guaba_dragon.breath_pose"]["animation_length"] == 4.8
+            assert json.loads(archive.read("assets/pinkkicore/models/item/guaba_dragon_spawn_egg.json")) == {"parent": "minecraft:item/template_spawn_egg"}
+            assert "data/pinkkicore/loot_tables/entities/guaba_dragon.json" not in archive.namelist(), "No dragon loot pool requested"
+            assert json.loads(archive.read("data/pinkkicore/tags/worldgen/biome/guaba_dragon_spawns.json"))["values"] == ["#minecraft:is_nether", "#minecraft:is_badlands"]
+            dragon_spawn = json.loads(archive.read("data/pinkkicore/forge/biome_modifier/add_guaba_dragon.json"))
+            assert dragon_spawn == {"type": "forge:add_spawns", "biomes": "#pinkkicore:guaba_dragon_spawns", "spawners": [{"type": "pinkkicore:guaba_dragon", "weight": 6, "minCount": 1, "maxCount": 1}]}
+            for language, dragon_name in [("zh_cn", "朱罗纪瓜巴龙"), ("en_us", "Jurassic Guaba Dragon")]:
+                strings = json.loads(archive.read(f"assets/pinkkicore/lang/{language}.json"))
+                assert strings["entity.pinkkicore.guaba_dragon"] == dragon_name
+            for path in ("entity/GuabaDragonEntity", "client/GuabaDragonModel", "client/GuabaDragonRenderer"):
+                assert f"io/github/vitech/pinkkicore/forge/{path}.class" in archive.namelist()
             animations = json.loads(archive.read("assets/pinkkicore/animations/bingwa.animation.json"))["animations"]
             assert set(animations) == {f"animation.bingwa.{name}" for name in ("idle", "walk", "jump", "swim", "float", "croak", "tongue")}
             egg = json.loads(archive.read("assets/pinkkicore/models/item/bingwa_spawn_egg.json"))

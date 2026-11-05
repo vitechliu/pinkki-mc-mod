@@ -207,3 +207,35 @@ if (project.hasProperty('wildlifeProbe')) {
     }
     tasks.named('wildlifeProbeJar').configure { finalizedBy 'reobfWildlifeProbeJar' }
 }
+
+if (project.hasProperty('guabaDragonProbe')) {
+    sourceSets {
+        guabaDragonProbe {
+            java.srcDir '../../scripts/tests/guaba_dragon_probe'
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        }
+    }
+    tasks.register('guabaDragonProbeJar', Jar) {
+        archiveFileName = 'guaba-dragon-probe.jar'
+        from sourceSets.guabaDragonProbe.output
+        from('../../scripts/tests/guaba_dragon_probe/mods.toml') { into 'META-INF' }
+    }
+    reobf { guabaDragonProbeJar { classpath.from(sourceSets.guabaDragonProbe.compileClasspath) } }
+    tasks.named('guabaDragonProbeJar').configure { finalizedBy 'reobfGuabaDragonProbeJar' }
+}
+
+if (project.hasProperty('factionProbe')) {
+    sourceSets {
+        factionProbe {
+            java.srcDir '../../scripts/tests/faction_probe'
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        }
+    }
+    tasks.register('factionProbeJar', Jar) {
+        archiveFileName = 'faction-probe.jar'
+        from sourceSets.factionProbe.output
+        from('../../scripts/tests/faction_probe/mods.toml') { into 'META-INF' }
+    }
+    reobf { factionProbeJar { classpath.from(sourceSets.factionProbe.compileClasspath) } }
+    tasks.named('factionProbeJar').configure { finalizedBy 'reobfFactionProbeJar' }
+}

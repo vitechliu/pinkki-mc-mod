@@ -118,12 +118,21 @@ d=anim('idle',3)
 channel(d,'neck_base','rotation',[(0,[0,0,0]),(1.5,[-2,0,0]),(3,[0,0,0])])
 channel(d,'body','scale',[(0,[1,1,1]),(1.5,[1.015,1.01,1.015]),(3,[1,1,1])])
 for i in range(4): channel(d,'tail_'+str(i+1),'rotation',[(0,[0,-3,0]),(1.5,[0,3,0]),(3,[0,-3,0])])
-d=anim('breath_pose',2.8,False)
-channel(d,'neck_base','rotation',[(0,[0,0,0]),(.65,[-9,0,0]),(1,[5,0,0]),(2,[5,0,0]),(2.8,[0,0,0])])
-channel(d,'neck_tip','rotation',[(0,[0,0,0]),(.65,[-5,0,0]),(1,[5,0,0]),(2,[5,0,0]),(2.8,[0,0,0])])
-channel(d,'jaw','rotation',[(0,[0,0,0]),(.65,[-6,0,0]),(1,[-32,0,0]),(2,[-32,0,0]),(2.8,[0,0,0])])
+d=anim('breath_pose',4.8,False)
+channel(d,'neck_base','rotation',[(0,[0,0,0]),(.65,[-9,0,0]),(1,[5,0,0]),(4,[5,0,0]),(4.8,[0,0,0])])
+channel(d,'neck_tip','rotation',[(0,[0,0,0]),(.65,[-5,0,0]),(1,[5,0,0]),(4,[5,0,0]),(4.8,[0,0,0])])
+channel(d,'jaw','rotation',[(0,[0,0,0]),(.65,[-6,0,0]),(1,[-32,0,0]),(4,[-32,0,0]),(4.8,[0,0,0])])
 for side,sign in [('left',1),('right',-1)]:
-    channel(d,'arm_'+side,'rotation',[(0,[0,0,0]),(.65,[-12,0,sign*8]),(2,[-12,0,sign*8]),(2.8,[0,0,0])])
+    channel(d,'arm_'+side,'rotation',[(0,[0,0,0]),(.65,[-12,0,sign*8]),(4,[-12,0,sign*8]),(4.8,[0,0,0])])
+
+d=anim('walk',1)
+for side,sign in [('left',1),('right',-1)]:
+    channel(d,'leg_'+side,'rotation',[(0,[18*sign,0,0]),(.5,[-18*sign,0,0]),(1,[18*sign,0,0])])
+    channel(d,'arm_'+side,'rotation',[(0,[-10*sign,0,0]),(.5,[10*sign,0,0]),(1,[-10*sign,0,0])])
+channel(d,'tail_1','rotation',[(0,[0,-4,0]),(.5,[0,4,0]),(1,[0,-4,0])])
+d=anim('melee',.45,False)
+channel(d,'neck_tip','rotation',[(0,[0,0,0]),(.15,[8,0,0]),(.45,[0,0,0])])
+channel(d,'jaw','rotation',[(0,[0,0,0]),(.1,[-18,0,0]),(.25,[0,0,0]),(.45,[0,0,0])])
 
 def png_bytes(width, height, pixels):
     def chunk(kind, data):

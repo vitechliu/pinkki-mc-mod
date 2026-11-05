@@ -123,3 +123,7 @@
 ![粉红之祝](/images/pink_blessing.png)
 
 用粉红锭[有序合成](./recipes.md#pink-blessing)。安装 Curios 后，放入**护符（charm）**槽，获得 **+2 护甲、+2 最大生命值（1 颗心）**；卸下后移除加成，不直接回复生命。每组 1 个。整合包增加槽位后，多件的属性可叠加。
+
+## 朱罗纪瓜巴龙刷怪蛋 {#guaba-dragon-spawn-egg}
+
+适用：Minecraft 1.20.1 Forge。注册 ID：`pinkkicore:guaba_dragon_spawn_egg`。使用后生成[朱罗纪瓜巴龙](./bosses.md#guaba-dragon)，位于创造模式的刷怪蛋分类。

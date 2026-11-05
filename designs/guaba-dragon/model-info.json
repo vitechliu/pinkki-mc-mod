@@ -3,7 +3,9 @@
   "cubes": 101,
   "animations": [
     "animation.guaba_dragon.idle",
-    "animation.guaba_dragon.breath_pose"
+    "animation.guaba_dragon.breath_pose",
+    "animation.guaba_dragon.walk",
+    "animation.guaba_dragon.melee"
   ],
   "atlas_size": [
     512,
