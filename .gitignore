@@ -41,3 +41,4 @@ wiki/.vitepress/cache/
 wiki/.vitepress/dist/
 # 仓库根目录下载的本地启动器，不影响各目标的 Gradle Wrapper JAR。
 /HMCL-*.jar
+/.obsidian
