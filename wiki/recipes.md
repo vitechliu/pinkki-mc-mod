@@ -25,7 +25,18 @@ import guideRecipe from '../versions/1.20.1/src/main/resources/data/pinkkicore/r
 import guabaRecipe from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba.json'
 import dirtToMud from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_conversion/dirt_to_mud.json'
 
+import guabaBed from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_bed.json'
+import bedConversion from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_conversion/bed_to_guaba_bed.json'
+import guabaCloudDream from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_cloud_dream.json'
+import guabaNetherDream from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_nether_dream.json'
+
 const items = {
+  '#minecraft:beds': { name: '任意颜色的床', image: '/images/minecraft/white_bed.png' },
+  'pinkkicore:guaba_bed': { name: '瓜巴床', image: '/images/guaba_bed.png', link: '/items#guaba-bed' },
+  'pinkkicore:cloud_dream': { name: '云梦', image: '/images/cloud_dream.png', link: '/items#cloud-dream' },
+  'pinkkicore:guaba_cloud_dream': { name: '瓜巴云梦', image: '/images/guaba_cloud_dream.png', link: '/items#cloud-dream' },
+  'pinkkicore:nether_dream': { name: '冥梦', image: '/images/nether_dream.png', link: '/items#nether-dream' },
+  'pinkkicore:guaba_nether_dream': { name: '瓜巴冥梦', image: '/images/guaba_nether_dream.png', link: '/items#nether-dream' },
   'minecraft:crafting_table': { name: '工作台', image: '/images/minecraft/crafting_table.svg' },
   'pinkkicore:guaba_workbench': { name: '瓜巴工作台', image: '/images/guaba_workbench.svg', link: '/guaba-workbench' },
   'pinkkicore:guaba_hood': { name: '瓜巴头套', image: '/images/guaba_hood.png', link: '/items#guaba-hood' },
@@ -164,3 +175,21 @@ const items = {
 ## 粉红之祝 {#pink-blessing}
 
 <CraftingRecipe :recipe="pinkBlessing" :items="items" />
+
+<!-- guide-version: 1.20.1 -->
+## 瓜巴床 {#guaba-bed}
+
+<CraftingRecipe :recipe="guabaBed" :items="items" />
+
+<GuabaConversion :recipe="bedConversion" :items="items" />
+
+图中以白床为例，原版所有颜色的床都可用。查看[瓜巴床的用法](./items.md#guaba-bed)。
+
+## 瓜巴云梦 {#guaba-cloud-dream}
+
+<CraftingRecipe :recipe="guabaCloudDream" :items="items" />
+
+## 瓜巴冥梦 {#guaba-nether-dream}
+
+<CraftingRecipe :recipe="guabaNetherDream" :items="items" />
+<!-- /guide-version -->

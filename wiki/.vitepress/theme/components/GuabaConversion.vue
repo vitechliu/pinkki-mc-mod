@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { withBase } from 'vitepress'
+import { ingredientKey, type RecipeIngredient } from './recipe-ingredient'
 type Visual = { name: string; image: string }
 const props = defineProps<{
-  recipe: { type: string; ingredient: { item: string }; input_count: number; guaba_cost: number; result: { item: string; count: number } }
+  recipe: { type: string; ingredient: RecipeIngredient; input_count: number; guaba_cost: number; result: { item: string; count: number } }
   items: Record<string, Visual>
 }>()
 if (props.recipe.type !== 'pinkkicore:guaba_conversion') throw new Error('不是瓜巴转换配方')
-for (const id of [props.recipe.ingredient.item, props.recipe.result.item, 'pinkkicore:guaba']) {
+const inputKey = ingredientKey(props.recipe.ingredient)
+for (const id of [inputKey, props.recipe.result.item, 'pinkkicore:guaba']) {
   if (!props.items[id]) throw new Error(`缺少加工图标：${id}`)
 }
 const fuel = props.items['pinkkicore:guaba']
-const input = props.items[props.recipe.ingredient.item]
+const input = props.items[inputKey]
 const output = props.items[props.recipe.result.item]
 </script>
 

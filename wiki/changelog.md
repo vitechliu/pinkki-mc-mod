@@ -1,5 +1,10 @@
 # 更新记录
 
+## 2026-11-21 · 瓜巴床与梦系材料
+
+- 1.20.1 新增[瓜巴床](./items.md#guaba-bed)，在下界和末地可以短睡并设置重生点。
+- 新增[云梦](./items.md#cloud-dream)、[冥梦](./items.md#nether-dream)和两种瓜巴版。可用于[匠魂、Tetra 和寂静装备](./compatibility.md#dream-materials)。
+
 ## 2026-11-02 · 生物阵营与特殊敌对
 
 - 增加“敌对、中立、特殊”三类[生物阵营](./bosses.md#factions)。

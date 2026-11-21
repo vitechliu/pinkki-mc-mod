@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { withBase } from 'vitepress'
+import { ingredientKey, type RecipeIngredient } from './recipe-ingredient'
 
 type ItemVisual = { name: string; image: string; link?: string }
 type Recipe = {
   type: string
-  ingredients?: { item: string }[]
+  ingredients?: RecipeIngredient[]
   pattern?: string[]
-  key?: Record<string, { item: string }>
+  key?: Record<string, RecipeIngredient>
   result: { item: string; count?: number }
 }
 const props = defineProps<{ recipe: Recipe; items: Record<string, ItemVisual> }>()
@@ -17,15 +18,15 @@ const ingredients = shaped
   ? (props.recipe.pattern ?? []).flatMap(row => Array.from({ length: 3 }, (_, i) => row[i] && row[i] !== ' ' ? props.recipe.key?.[row[i]] : null))
   : props.recipe.ingredients ?? []
 if (ingredients.length > 9) throw new Error('配方超过九格')
-for (const id of [...ingredients.filter(Boolean).map(i => i!.item), props.recipe.result.item]) {
+for (const id of [...ingredients.flatMap(i => i ? [ingredientKey(i)] : []), props.recipe.result.item]) {
   if (!props.items[id]) throw new Error(`配方缺少物品图标：${id}`)
 }
 const slots = computed(() => Array.from({ length: 9 }, (_, i) => {
   const ingredient = ingredients[i]
-  return ingredient ? props.items[ingredient.item] : null
+  return ingredient ? props.items[ingredientKey(ingredient)] : null
 }))
 const output = computed(() => props.items[props.recipe.result.item])
-const description = computed(() => `${ingredients.filter(Boolean).map(i => props.items[i!.item].name).join(' + ')} → ${output.value.name} × ${props.recipe.result.count ?? 1}`)
+const description = computed(() => `${ingredients.flatMap(i => i ? [props.items[ingredientKey(i)].name] : []).join(' + ')} → ${output.value.name} × ${props.recipe.result.count ?? 1}`)
 </script>
 
 <template>

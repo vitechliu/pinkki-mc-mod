@@ -1,0 +1,18 @@
+{
+  "type": "pinkkicore:guaba_conversion",
+  "ingredient": {
+    "type": "forge:difference",
+    "base": {
+      "tag": "minecraft:beds"
+    },
+    "subtracted": {
+      "item": "pinkkicore:guaba_bed"
+    }
+  },
+  "input_count": 1,
+  "guaba_cost": 1,
+  "result": {
+    "item": "pinkkicore:guaba_bed",
+    "count": 1
+  }
+}

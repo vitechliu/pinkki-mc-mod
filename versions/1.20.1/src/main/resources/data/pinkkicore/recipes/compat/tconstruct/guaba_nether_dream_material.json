@@ -1,0 +1,15 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "type": "tconstruct:material",
+  "ingredient": {
+    "item": "pinkkicore:guaba_nether_dream"
+  },
+  "material": "pinkkicore:guaba_nether_dream",
+  "needed": 1,
+  "value": 1
+}

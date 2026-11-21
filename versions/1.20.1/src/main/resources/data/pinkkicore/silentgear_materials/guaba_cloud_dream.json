@@ -1,0 +1,80 @@
+{
+  "type": "silentgear:standard",
+  "simple": true,
+  "harvest_tier": "minecraft:iron",
+  "availability": {
+    "tier": 2,
+    "categories": [
+      "metal"
+    ],
+    "visible": true,
+    "can_salvage": true,
+    "gear_blacklist": []
+  },
+  "crafting_items": {
+    "main": {
+      "item": "pinkkicore:guaba_cloud_dream"
+    }
+  },
+  "name": {
+    "translate": "material.pinkkicore.guaba_cloud_dream"
+  },
+  "stats": {
+    "main": {
+      "durability": 275,
+      "armor_durability": 16.5,
+      "enchantment_value": 14.0,
+      "harvest_speed": 6.0,
+      "melee_damage": 2.5,
+      "magic_damage": 1.0,
+      "attack_speed": 0.0,
+      "attack_speed/axe": -0.1,
+      "attack_speed/hoe": 0.0,
+      "ranged_damage": 1.0,
+      "ranged_speed": 0.1,
+      "projectile_speed": 1.0,
+      "projectile_accuracy": 1.1,
+      "armor": 16,
+      "armor/helmet": 2.0,
+      "armor/chestplate": 7,
+      "armor/leggings": 5.0,
+      "armor/boots": 2.0,
+      "magic_armor": 6.0
+    },
+    "rod": {}
+  },
+  "model": {
+    "main/all": [
+      {
+        "texture": "silentgear:main_generic_hc",
+        "color": "#D4AA61"
+      }
+    ],
+    "main/fragment": [
+      {
+        "texture": "silentgear:metal",
+        "color": "#D4AA61"
+      }
+    ],
+    "rod/all": [
+      {
+        "texture": "silentgear:rod_generic_lc",
+        "color": "#D4AA61"
+      }
+    ]
+  },
+  "traits": {
+    "main": [
+      {
+        "name": "pinkkicore:guaba_touch",
+        "level": 1
+      }
+    ],
+    "rod": [
+      {
+        "name": "pinkkicore:guaba_touch",
+        "level": 1
+      }
+    ]
+  }
+}

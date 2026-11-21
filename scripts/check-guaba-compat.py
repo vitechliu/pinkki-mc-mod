@@ -67,14 +67,13 @@ def stop(process):
     process.stdout.close()
 
 
-def check(name, research, libraries, java_home, artifact, probe, geckolib, eula):
+def check(name, research, libraries, java_home, artifact, probe, geckolib, eula, dependencies, marker):
     run = research / 'runtime' / name
     run.mkdir(parents=True)
     (run / 'libraries').symlink_to(libraries, target_is_directory=True)
     mods = run / 'mods'
     mods.mkdir()
     shutil.copy2(eula, run / 'eula.txt')
-    dependencies = [research / filename for group in CASES[name] for filename in GROUPS[group]]
     for source in [artifact, probe, geckolib, *dependencies]:
         shutil.copy2(source, mods / source.name)
     (run / 'server.properties').write_text(
@@ -111,7 +110,7 @@ def check(name, research, libraries, java_home, artifact, probe, geckolib, eula)
                 output.write(line)
                 output.flush()
                 ready |= 'Done (' in line
-                passed |= 'GUABA_COMPAT_PROBE PASS' in line
+                passed |= f'{marker} PASS' in line
                 stopped |= 'Stopping server' in line
                 # This offline test does not exercise authenticated multiplayer. Record the
                 # unrelated background key fetch separately; all other ERROR lines fail.
@@ -119,10 +118,10 @@ def check(name, research, libraries, java_home, artifact, probe, geckolib, eula)
                                 and '[mojang/YggdrasilServicesKeyInfo]' in line
                                 and 'Failed to request yggdrasil public key' in line)
                 auth_key_unavailable |= auth_failure
-                errors |= ('/ERROR]' in line and not auth_failure) or 'GUABA_COMPAT_PROBE FAIL' in line
-                if 'GUABA_COMPAT_PROBE' in line or 'GUABA ' in line:
+                errors |= ('/ERROR]' in line and not auth_failure) or f'{marker} FAIL' in line
+                if marker in line or 'GUABA ' in line:
                     print(name, line.strip(), flush=True)
-                if (passed or 'GUABA_COMPAT_PROBE FAIL' in line) and not sent:
+                if (passed or f'{marker} FAIL' in line) and not sent:
                     process.stdin.write('stop\n')
                     process.stdin.flush()
                     sent = True
@@ -134,6 +133,7 @@ def check(name, research, libraries, java_home, artifact, probe, geckolib, eula)
             'exit_code': code, 'ready': ready, 'probe_pass': passed, 'stopped': stopped,
             'errors': errors, 'auth_key_unavailable': auth_key_unavailable, 'log': str(log.relative_to(ROOT)),
             'artifact_sha256': hashlib.sha256(artifact.read_bytes()).hexdigest(),
+            'mods': {source.name: hashlib.sha256(source.read_bytes()).hexdigest() for source in dependencies},
         }
     finally:
         stop(process)
@@ -146,9 +146,15 @@ def main():
     parser.add_argument('--geckolib', type=Path, required=True, help='匹配 1.20.1 Forge 的 GeckoLib 4.4.9 JAR')
     parser.add_argument('--java-home', type=Path, required=True, help='JDK 17 目录')
     parser.add_argument('--cases', default=','.join(CASES))
+    parser.add_argument('--dream-probe', type=Path, help='以重混淆的 dream-probe.jar 验证梦系道具')
+    parser.add_argument('--current-tinkers', type=Path, nargs=2, metavar=('TCONSTRUCT', 'MANTLE'),
+                        help='增加 all-current 组合，替换其中的匠魂和 Mantle 发行包')
     args = parser.parse_args()
+    available_cases = set(CASES)
+    if args.current_tinkers:
+        available_cases.add('all-current')
     selected = args.cases.split(',')
-    if not selected or len(selected) != len(set(selected)) or any(name not in CASES for name in selected):
+    if not selected or len(selected) != len(set(selected)) or any(name not in available_cases for name in selected):
         parser.error('Unknown or duplicate case')
     java_home = args.java_home.resolve()
     version = subprocess.check_output([str(java_home / 'bin/java'), '-version'], stderr=subprocess.STDOUT, text=True)
@@ -166,7 +172,8 @@ def main():
             raise ValueError(f'Hash mismatch: {path}')
         shutil.copy2(path, research / path.name)
     libraries = args.libraries.resolve()
-    probe = compile_probe(research, libraries, java_home)
+    probe = args.dream_probe.resolve(strict=True) if args.dream_probe else compile_probe(research, libraries, java_home)
+    marker = 'DREAM_PROBE' if args.dream_probe else 'GUABA_COMPAT_PROBE'
     props = dict(line.split('=', 1) for line in (ROOT / 'mod.properties').read_text().splitlines()
                  if '=' in line and not line.startswith('#'))
     artifact = ROOT / 'versions/1.20.1/build/libs' / f"{props['mod_id']}-forge-1.20.1-{props['mod_version']}.jar"
@@ -179,7 +186,12 @@ def main():
     artifact = snapshot
     results = []
     for name in selected:
-        result = check(name, research, libraries, java_home, artifact, probe, args.geckolib.resolve(), eula)
+        dependencies = [research / filename for group in CASES['all' if name == 'all-current' else name]
+                        for filename in GROUPS[group] if name != 'all-current' or group != 'tconstruct']
+        if name == 'all-current':
+            dependencies.extend(path.resolve(strict=True) for path in args.current_tinkers)
+        result = check(name, research, libraries, java_home, artifact, probe, args.geckolib.resolve(), eula,
+                       dependencies, marker)
         results.append(result)
         (research / 'matrix-results.json').write_text(json.dumps(results, indent=2) + '\n')
         print(json.dumps(result), flush=True)

@@ -7,6 +7,7 @@ apply from: '../../gradle/forge.gradle'
 
 repositories {
     maven { url = "https://maven.theillusivec4.top/"; content { includeGroup "top.theillusivec4.curios" } }
+    maven { url = 'https://api.modrinth.com/maven'; content { includeGroup 'maven.modrinth' } }
     maven {
         name = 'JEI'
         url = 'https://maven.blamejared.com/'
@@ -30,6 +31,13 @@ dependencies {
     implementation 'com.eliotlash.mclib:mclib:20'
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
+    // The dream material adapters link only when their host mod is installed.
+    compileOnly fg.deobf('maven.modrinth:silent-gear:2Chvw4VA')
+    compileOnly fg.deobf('maven.modrinth:silent-lib:WGt4877n')
+    compileOnly fg.deobf('maven.modrinth:tinkers-construct:kJ9LD194')
+    compileOnly fg.deobf('maven.modrinth:mantle:SOJzuYxC')
+    compileOnly fg.deobf('maven.modrinth:tetra:voxpV4mH')
+    compileOnly fg.deobf('maven.modrinth:mutil:ls59E7KT')
     // Explicit development opt-in. Normal builds/servers do not install JEI.
     if (project.hasProperty('jeiRuntime')) {
         runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
@@ -119,6 +127,22 @@ tasks.register('generateGuide', Exec) {
 }
 sourceSets.main.resources.srcDir guideOutput
 tasks.named('processResources').configure { dependsOn 'generateGuide' }
+
+if (project.hasProperty('dreamProbe')) {
+    sourceSets {
+        dreamProbe {
+            java.srcDir '../../scripts/tests/dream_probe'
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        }
+    }
+    tasks.register('dreamProbeJar', Jar) {
+        archiveFileName = 'dream-probe.jar'
+        from sourceSets.dreamProbe.output
+        from('../../scripts/tests/dream_probe/mods.toml') { into 'META-INF' }
+    }
+    reobf { dreamProbeJar { classpath.from(sourceSets.dreamProbe.compileClasspath) } }
+    tasks.named('dreamProbeJar').configure { finalizedBy 'reobfDreamProbeJar' }
+}
 
 if (project.hasProperty('guideProbe')) {
     sourceSets {

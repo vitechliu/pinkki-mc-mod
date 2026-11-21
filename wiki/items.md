@@ -10,6 +10,29 @@
 
 获取方式：[西瓜片与泥巴合成](./recipes.md#guaba)。
 
+<!-- guide-version: 1.20.1 -->
+## 瓜巴床 {#guaba-bed}
+
+![瓜巴床](/images/guaba_bed.png)
+
+用任意颜色的床和瓜巴[合成或加工](./recipes.md#guaba-bed)。瓜巴床在下界和末地使用时不会爆炸，入睡时会设置当地的重生点。约 3 秒后自然醒来，世界时间照常流逝。在下界完成短睡还会获得[冥梦](#nether-dream)。
+
+## 云梦与瓜巴云梦 {#cloud-dream}
+
+![云梦](/images/cloud_dream.png)
+![瓜巴云梦](/images/guaba_cloud_dream.png)
+
+在主世界把床放在 **Y=192～196**，入睡至少 5 秒后醒来获得 1 个云梦。云梦加瓜巴可[合成瓜巴云梦](./recipes.md#guaba-cloud-dream)。用作[装备材料](./compatibility.md#dream-materials)时可提高移动速度。
+
+## 冥梦与瓜巴冥梦 {#nether-dream}
+
+![冥梦](/images/nether_dream.png)
+![瓜巴冥梦](/images/guaba_nether_dream.png)
+
+在下界的[瓜巴床](#guaba-bed)上短睡至自然醒来，获得 1 个冥梦。冥梦加瓜巴可[合成瓜巴冥梦](./recipes.md#guaba-nether-dream)。用作[装备材料](./compatibility.md#dream-materials)时可提高下界作战能力。
+
+<!-- /guide-version -->
+
 ## 粉红矿 {#pink-ore}
 
 粉红矿与瓜巴同属本模组 **1 级基础材料**；材料等级不代表采掘所需的工具等级。

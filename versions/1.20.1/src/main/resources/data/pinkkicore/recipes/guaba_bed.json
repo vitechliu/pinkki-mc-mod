@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "type": "forge:difference",
+      "base": {
+        "tag": "minecraft:beds"
+      },
+      "subtracted": {
+        "item": "pinkkicore:guaba_bed"
+      }
+    },
+    {
+      "item": "pinkkicore:guaba"
+    }
+  ],
+  "result": {
+    "item": "pinkkicore:guaba_bed"
+  }
+}

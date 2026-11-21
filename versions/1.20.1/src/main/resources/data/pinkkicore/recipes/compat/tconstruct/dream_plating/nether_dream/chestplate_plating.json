@@ -1,0 +1,26 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "type": "tconstruct:item_part_builder",
+  "cost": 6,
+  "pattern": "tconstruct:chestplate_plating",
+  "pattern_item": [
+    {
+      "tag": "tconstruct:patterns/default"
+    },
+    {
+      "item": "tconstruct:chestplate_plating_cast"
+    }
+  ],
+  "result": {
+    "item": "tconstruct:chestplate_plating",
+    "nbt": {
+      "Material": "pinkkicore:nether_dream"
+    }
+  },
+  "material": "pinkkicore:nether_dream"
+}

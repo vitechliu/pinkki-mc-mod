@@ -13,12 +13,20 @@ ITEM_IMAGES.update({f'/images/{name}.png': f'pinkkicore:{name}' for name in
                     ('guaba_hood', 'pink_blessing', 'pink_ore', 'deepslate_pink_ore', 'raw_pink', 'pink_ingot', 'pink_nugget', 'pink_block', 'raw_pink_block')})
 
 
-def compile_book(root=ROOT):
+ITEM_IMAGES.update({
+    f'/images/{name}.png': f'pinkkicore:{name}'
+    for name in ('guaba_bed', 'cloud_dream', 'guaba_cloud_dream', 'nether_dream', 'guaba_nether_dream')
+})
+
+
+def compile_book(root=ROOT, minecraft_version='1.20.1'):
     root = root.resolve()
     entries = []
     anchors = {}
     for page in PAGES:
         source = (root / 'wiki' / f'{page}.md').read_text()
+        source = re.sub(r'<!-- guide-version: ([\d.]+) -->\n(.*?)<!-- /guide-version -->\n?',
+                        lambda match: match[2] if minecraft_version == match[1] else '', source, flags=re.S)
         imports = dict(re.findall(r"import (\w+) from '([^']+\.json)'", source))
         source = re.sub(r'<script setup>.*?</script>', '', source, flags=re.S)
         title = re.search(r'^# (.+)$', source, re.M).group(1)
@@ -79,8 +87,9 @@ def compile_book(root=ROOT):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--minecraft-version', default='1.20.1')
     args = parser.parse_args()
-    book = compile_book()
+    book = compile_book(minecraft_version=args.minecraft_version)
     destination = args.output / 'assets/pinkkicore/guide/zh_cn.json'
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text(json.dumps(book, ensure_ascii=False, indent=2) + '\n')

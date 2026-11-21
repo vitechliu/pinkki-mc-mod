@@ -1,0 +1,26 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "type": "tconstruct:item_part_builder",
+  "cost": 2,
+  "pattern": "tconstruct:boots_plating",
+  "pattern_item": [
+    {
+      "tag": "tconstruct:patterns/default"
+    },
+    {
+      "item": "tconstruct:boots_plating_cast"
+    }
+  ],
+  "result": {
+    "item": "tconstruct:boots_plating",
+    "nbt": {
+      "Material": "pinkkicore:guaba_nether_dream"
+    }
+  },
+  "material": "pinkkicore:guaba_nether_dream"
+}

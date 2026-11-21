@@ -45,7 +45,7 @@ def verify_legacy(archive, deps):
         assert relative in archive.namelist(), f'Missing ported class: {relative}'
     import runpy
     generator = runpy.run_path(str(ROOT / 'scripts/generate-guide.py'))
-    assert json.loads(archive.read('assets/pinkkicore/guide/zh_cn.json')) == generator['compile_book']()
+    assert json.loads(archive.read('assets/pinkkicore/guide/zh_cn.json')) == generator['compile_book'](minecraft_version='1.19.1')
     runpy.run_path(str(ROOT / 'scripts/check-pink-ore-data.py'))['verify'](archive)
     for path in archive.namelist():
         if path.endswith('.class'):
@@ -105,7 +105,7 @@ def verify_neoforge(archive, deps):
         assert material['type'] == 'silentgear:simple' and 'silentgear:main' in material['properties'] and 'silentgear:rod' in material['properties']
     import runpy
     generator = runpy.run_path(str(ROOT / 'scripts/generate-guide.py'))
-    assert json.loads(archive.read('assets/pinkkicore/guide/zh_cn.json')) == generator['compile_book']()
+    assert json.loads(archive.read('assets/pinkkicore/guide/zh_cn.json')) == generator['compile_book'](minecraft_version='1.21.1')
     print('OK 1.21.1 complete classes/resources, native recipe/loot/tag/condition schemas, Java 21, external dependencies and offline guide')
 
 

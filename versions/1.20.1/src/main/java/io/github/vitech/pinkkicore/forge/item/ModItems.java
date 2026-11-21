@@ -1,10 +1,12 @@
 package io.github.vitech.pinkkicore.forge.item;
 
 import io.github.vitech.pinkkicore.core.ModInfo;
+import io.github.vitech.pinkkicore.forge.dream.GuabaBedBlock;
 import io.github.vitech.pinkkicore.forge.entity.ModEntities;
 import io.github.vitech.pinkkicore.forge.workbench.WorkbenchContent;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.BedItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -21,6 +23,16 @@ public final class ModItems {
     public static final RegistryObject<Item> GUABA = ITEMS.register("guaba", GuabaItem::new);
     public static final RegistryObject<Item> THUNDER_GUABA = ITEMS.register("thunder_guaba",
         () -> new Item(new Item.Properties().stacksTo(64).fireResistant()));
+    public static final RegistryObject<Item> CLOUD_DREAM = ITEMS.register("cloud_dream",
+        () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> GUABA_CLOUD_DREAM = ITEMS.register("guaba_cloud_dream",
+        () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> NETHER_DREAM = ITEMS.register("nether_dream",
+        () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> GUABA_NETHER_DREAM = ITEMS.register("guaba_nether_dream",
+        () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> GUABA_BED = ITEMS.register("guaba_bed",
+        () -> new BedItem(GuabaBedBlock.BLOCK.get(), new Item.Properties().stacksTo(1)));
 
     public static final RegistryObject<Item> BINGWA_SPAWN_EGG = ITEMS.register("bingwa_spawn_egg", () ->
         new ForgeSpawnEggItem(ModEntities.BINGWA, 0xEFE4BD, 0xE89328, new Item.Properties()));
@@ -57,9 +69,14 @@ public final class ModItems {
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(GUABA);
             event.accept(THUNDER_GUABA);
+            event.accept(CLOUD_DREAM);
+            event.accept(GUABA_CLOUD_DREAM);
+            event.accept(NETHER_DREAM);
+            event.accept(GUABA_NETHER_DREAM);
         }
         if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
             event.accept(WorkbenchContent.ITEM);
+            event.accept(GUABA_BED);
             event.accept(io.github.vitech.pinkkicore.forge.charging.ChargingContent.ITEM);
         }
     }

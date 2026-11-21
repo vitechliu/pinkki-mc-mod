@@ -1,0 +1,742 @@
+{
+  "meta": {
+    "format_version": "4.10",
+    "model_format": "java_block",
+    "box_uv": false
+  },
+  "name": "瓜巴床",
+  "model_identifier": "guaba_bed",
+  "resolution": {
+    "width": 64,
+    "height": 64
+  },
+  "elements": [
+    {
+      "name": "床头 · 深棕床架",
+      "from": [
+        0,
+        3,
+        0
+      ],
+      "to": [
+        16,
+        5,
+        16
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            32.0,
+            0.0,
+            48.0,
+            8.0
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "texture": null
+        },
+        "east": {
+          "uv": [
+            32.0,
+            0.0,
+            48.0,
+            8.0
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            32.0,
+            0.0,
+            48.0,
+            8.0
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            32.0,
+            0.0,
+            48.0,
+            8.0
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            32.0,
+            0.0,
+            48.0,
+            8.0
+          ],
+          "texture": 0
+        }
+      },
+      "type": "cube",
+      "uuid": "75f02d86-b636-550d-a2fd-f49934709a76",
+      "origin": [
+        8,
+        0,
+        16
+      ],
+      "autouv": 0,
+      "box_uv": false
+    },
+    {
+      "name": "床头 · 瓜巴条纹被面",
+      "from": [
+        0,
+        5,
+        0
+      ],
+      "to": [
+        16,
+        8,
+        16
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            16.0,
+            0.0,
+            32.0,
+            4.0
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "texture": null
+        },
+        "east": {
+          "uv": [
+            16.0,
+            0.0,
+            32.0,
+            4.0
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            16.0,
+            0.0,
+            32.0,
+            4.0
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            0.0,
+            0.0,
+            16.0,
+            16.0
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            16.0,
+            0.0,
+            32.0,
+            4.0
+          ],
+          "texture": 0
+        }
+      },
+      "type": "cube",
+      "uuid": "1ac0a0b9-d4f4-5cd1-b12a-70b310b809b6",
+      "origin": [
+        8,
+        0,
+        16
+      ],
+      "autouv": 0,
+      "box_uv": false
+    },
+    {
+      "name": "床头 · 左床脚",
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        3,
+        3,
+        3
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            32.0,
+            16.0,
+            38.0,
+            22.0
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            32.0,
+            16.0,
+            38.0,
+            22.0
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            32.0,
+            16.0,
+            38.0,
+            22.0
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            32.0,
+            16.0,
+            38.0,
+            22.0
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            32.0,
+            16.0,
+            38.0,
+            22.0
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            32.0,
+            16.0,
+            38.0,
+            22.0
+          ],
+          "texture": 0
+        }
+      },
+      "type": "cube",
+      "uuid": "aa983af8-377d-50a1-bb67-945af35365b0",
+      "origin": [
+        8,
+        0,
+        16
+      ],
+      "autouv": 0,
+      "box_uv": false
+    },
+    {
+      "name": "床头 · 右床脚",
+      "from": [
+        13,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        3,
+        3
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            32.0,
+            16.0,
+            38.0,
+            22.0
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            32.0,
+            16.0,
+            38.0,
+            22.0
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            32.0,
+            16.0,
+            38.0,
+            22.0
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            32.0,
+            16.0,
+            38.0,
+            22.0
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            32.0,
+            16.0,
+            38.0,
+            22.0
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            32.0,
+            16.0,
+            38.0,
+            22.0
+          ],
+          "texture": 0
+        }
+      },
+      "type": "cube",
+      "uuid": "459072cb-635b-5e14-a36c-f92797f99362",
+      "origin": [
+        8,
+        0,
+        16
+      ],
+      "autouv": 0,
+      "box_uv": false
+    },
+    {
+      "name": "床头 · 米白枕头",
+      "from": [
+        2,
+        8,
+        1
+      ],
+      "to": [
+        14,
+        9,
+        7
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            48.0,
+            0.0,
+            64.0,
+            3.0
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            48.0,
+            0.0,
+            64.0,
+            3.0
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            48.0,
+            0.0,
+            64.0,
+            3.0
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            48.0,
+            0.0,
+            64.0,
+            3.0
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            16.0,
+            16.0,
+            28.0,
+            22.0
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            48.0,
+            0.0,
+            64.0,
+            3.0
+          ],
+          "texture": 0
+        }
+      },
+      "type": "cube",
+      "uuid": "f772482c-2d98-5ec1-b55e-120fbdbe7c51",
+      "origin": [
+        8,
+        0,
+        16
+      ],
+      "autouv": 0,
+      "box_uv": false
+    },
+    {
+      "name": "床尾 · 深棕床架",
+      "from": [
+        0,
+        3,
+        16
+      ],
+      "to": [
+        16,
+        5,
+        32
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "texture": null
+        },
+        "south": {
+          "uv": [
+            32.0,
+            0.0,
+            48.0,
+            8.0
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            32.0,
+            0.0,
+            48.0,
+            8.0
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            32.0,
+            0.0,
+            48.0,
+            8.0
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            32.0,
+            0.0,
+            48.0,
+            8.0
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            32.0,
+            0.0,
+            48.0,
+            8.0
+          ],
+          "texture": 0
+        }
+      },
+      "type": "cube",
+      "uuid": "065cd7f5-2917-5ef0-9874-0cd3fa389200",
+      "origin": [
+        8,
+        0,
+        16
+      ],
+      "autouv": 0,
+      "box_uv": false
+    },
+    {
+      "name": "床尾 · 瓜巴条纹被面",
+      "from": [
+        0,
+        5,
+        16
+      ],
+      "to": [
+        16,
+        8,
+        32
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "texture": null
+        },
+        "south": {
+          "uv": [
+            16.0,
+            0.0,
+            32.0,
+            4.0
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            16.0,
+            0.0,
+            32.0,
+            4.0
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            16.0,
+            0.0,
+            32.0,
+            4.0
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            0.0,
+            16.0,
+            16.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            16.0,
+            0.0,
+            32.0,
+            4.0
+          ],
+          "texture": 0
+        }
+      },
+      "type": "cube",
+      "uuid": "beb7456c-07fd-5d7e-abac-35ff6daff672",
+      "origin": [
+        8,
+        0,
+        16
+      ],
+      "autouv": 0,
+      "box_uv": false
+    },
+    {
+      "name": "床尾 · 左床脚",
+      "from": [
+        0,
+        0,
+        29
+      ],
+      "to": [
+        3,
+        3,
+        32
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            32.0,
+            16.0,
+            38.0,
+            22.0
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            32.0,
+            16.0,
+            38.0,
+            22.0
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            32.0,
+            16.0,
+            38.0,
+            22.0
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            32.0,
+            16.0,
+            38.0,
+            22.0
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            32.0,
+            16.0,
+            38.0,
+            22.0
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            32.0,
+            16.0,
+            38.0,
+            22.0
+          ],
+          "texture": 0
+        }
+      },
+      "type": "cube",
+      "uuid": "b225fd0a-3084-5623-87fe-6c4035500b19",
+      "origin": [
+        8,
+        0,
+        16
+      ],
+      "autouv": 0,
+      "box_uv": false
+    },
+    {
+      "name": "床尾 · 右床脚",
+      "from": [
+        13,
+        0,
+        29
+      ],
+      "to": [
+        16,
+        3,
+        32
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            32.0,
+            16.0,
+            38.0,
+            22.0
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            32.0,
+            16.0,
+            38.0,
+            22.0
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            32.0,
+            16.0,
+            38.0,
+            22.0
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            32.0,
+            16.0,
+            38.0,
+            22.0
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            32.0,
+            16.0,
+            38.0,
+            22.0
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            32.0,
+            16.0,
+            38.0,
+            22.0
+          ],
+          "texture": 0
+        }
+      },
+      "type": "cube",
+      "uuid": "fbc92938-74af-5849-9b3c-bc7bdf979ea3",
+      "origin": [
+        8,
+        0,
+        16
+      ],
+      "autouv": 0,
+      "box_uv": false
+    }
+  ],
+  "outliner": [
+    "75f02d86-b636-550d-a2fd-f49934709a76",
+    "1ac0a0b9-d4f4-5cd1-b12a-70b310b809b6",
+    "aa983af8-377d-50a1-bb67-945af35365b0",
+    "459072cb-635b-5e14-a36c-f92797f99362",
+    "f772482c-2d98-5ec1-b55e-120fbdbe7c51",
+    "065cd7f5-2917-5ef0-9874-0cd3fa389200",
+    "beb7456c-07fd-5d7e-abac-35ff6daff672",
+    "b225fd0a-3084-5623-87fe-6c4035500b19",
+    "fbc92938-74af-5849-9b3c-bc7bdf979ea3"
+  ],
+  "textures": [
+    {
+      "name": "guaba_bed.png",
+      "id": "0",
+      "uuid": "23b8b441-3e25-5d2f-a14f-185d44dadcb9",
+      "source": "data:image/png;base64,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",
+      "mode": "bitmap",
+      "saved": false,
+      "width": 64,
+      "height": 64,
+      "uv_width": 64,
+      "uv_height": 64
+    }
+  ]
+}

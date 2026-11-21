@@ -2,6 +2,7 @@ package io.github.vitech.pinkkicore.forge;
 
 import com.mojang.logging.LogUtils;
 import io.github.vitech.pinkkicore.core.ModInfo;
+import io.github.vitech.pinkkicore.forge.dream.GuabaBedBlock;
 import io.github.vitech.pinkkicore.forge.item.ModItems;
 import io.github.vitech.pinkkicore.forge.entity.ModEntities;
 import io.github.vitech.pinkkicore.forge.workbench.WorkbenchContent;
@@ -19,6 +20,7 @@ public final class PinkkiCore {
         var bus = FMLJavaModLoadingContext.get().getModEventBus();
         ModEntities.register(bus);
         ModItems.register(bus);
+        GuabaBedBlock.register(bus);
         io.github.vitech.pinkkicore.forge.ore.PinkOreContent.register(bus);
         WorkbenchContent.register(bus);
         io.github.vitech.pinkkicore.forge.charging.ChargingContent.register(bus);

@@ -117,7 +117,8 @@ if (project.hasProperty('pinkkiProbe')) {
 def guideOutput = layout.buildDirectory.dir('generated/guide')
 tasks.register('generateGuide', Exec) {
     workingDir rootProject.file('../..')
-    commandLine 'python3', 'scripts/generate-guide.py', '--output', guideOutput.get().asFile.absolutePath
+    commandLine 'python3', 'scripts/generate-guide.py', '--minecraft-version', minecraft_version,
+        '--output', guideOutput.get().asFile.absolutePath
     inputs.files(fileTree('../../wiki') { include '*.md' }, '../../scripts/generate-guide.py')
     outputs.dir guideOutput
 }

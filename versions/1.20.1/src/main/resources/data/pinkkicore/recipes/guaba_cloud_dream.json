@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "pinkkicore:cloud_dream"
+    },
+    {
+      "item": "pinkkicore:guaba"
+    }
+  ],
+  "result": {
+    "item": "pinkkicore:guaba_cloud_dream"
+  }
+}

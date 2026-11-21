@@ -1,0 +1,38 @@
+{
+  "primary": 5.5,
+  "secondary": 3.8,
+  "tertiary": 3,
+  "durability": 275,
+  "integrityCost": 2,
+  "integrityGain": 5,
+  "magicCapacity": 84,
+  "toolLevel": "minecraft:iron",
+  "toolEfficiency": 6,
+  "requiredTools": {
+    "hammer_dig": "minecraft:gold"
+  },
+  "key": "pinkkicore_guaba_cloud_dream",
+  "category": "pinkkicore_guaba_cloud_dream",
+  "tints": {
+    "glyph": "D4AA61",
+    "texture": "D4AA61"
+  },
+  "textures": [
+    "metal",
+    "default"
+  ],
+  "material": {
+    "items": [
+      "pinkkicore:guaba_cloud_dream"
+    ],
+    "count": 1
+  },
+  "effects": {
+    "pinkkicore_cloud_dream": 1,
+    "pinkkicore_guaba_touch": 1
+  },
+  "features": [
+    "pinkkicore_cloud_dream",
+    "pinkkicore_guaba_touch"
+  ]
+}

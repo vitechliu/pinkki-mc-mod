@@ -1,0 +1,15 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "tconstruct"
+    }
+  ],
+  "type": "tconstruct:material",
+  "ingredient": {
+    "item": "pinkkicore:cloud_dream"
+  },
+  "material": "pinkkicore:cloud_dream",
+  "needed": 1,
+  "value": 1
+}
