@@ -37,6 +37,7 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod("pinkkicore_guaba_dragon_probe")
 public final class GuabaDragonProbe {
+    private final PetDragonChecks pets = new PetDragonChecks();
     private ServerLevel level;
     private ServerPlayer player;
     private GuabaDragonEntity dragon;
@@ -47,6 +48,7 @@ public final class GuabaDragonProbe {
     private GuabaDragonEntity wallDragon, farDragon, cancelDragon;
     private Cow wallVictim, farVictim, cancelVictim;
     public GuabaDragonProbe() {
+        MinecraftForge.EVENT_BUS.addListener(pets::onHurt);
         MinecraftForge.EVENT_BUS.addListener(this::started);
         MinecraftForge.EVENT_BUS.addListener(this::tick);
     }
@@ -93,10 +95,13 @@ public final class GuabaDragonProbe {
             require(restored.getName().getString().equals("renamed-dragon") && !restored.isCustomNameVisible(),"name NBT lost");
             saved.remove("CustomName");saved.remove("CustomNameVisible");restored.load(saved);
             require(restored.hasCustomName() && restored.isCustomNameVisible() && restored.getBreathTicks()==0,"unnamed migration failed");
-            // Kill a real entity; no custom loot pool and no inherited wildlife materials.
             var doomed=dragon(27,3);doomed.hurt(level.damageSources().genericKill(),1000);
-            require(level.getEntitiesOfClass(ItemEntity.class,new AABB(25,99,1,30,104,6)).isEmpty(),"dragon dropped items");
-            System.out.println("GUABA_DRAGON registry + spawn egg + default/custom names + NBT + attributes + actual empty death loot PASS");
+            var drops=level.getEntitiesOfClass(ItemEntity.class,new AABB(25,99,1,30,104,6));
+            require(drops.size()==1 && drops.get(0).getItem().is(ModItems.GUABA_DRAGON_EGG.get())
+                && drops.get(0).getItem().getCount()>=1 && drops.get(0).getItem().getCount()<=2,"wrong guaranteed dragon loot");
+            drops.forEach(Entity::discard);
+            System.out.println("GUABA_DRAGON registry + spawn egg + default/custom names + NBT + attributes + guaranteed death loot PASS");
+            pets.start(level);
         } catch(Throwable error) { fail(error); }
     }
     private void checkBiomesAndPlacement() {
@@ -131,6 +136,7 @@ public final class GuabaDragonProbe {
         if(event.phase!=TickEvent.Phase.END || level==null || done)return;
         try {
             ticks++;
+            pets.tick(ticks);
             if(dragon.getTarget()==player)acquired=true;
             if(ticks==45) {
                 require(acquired,"did not acquire survival player unprovoked");

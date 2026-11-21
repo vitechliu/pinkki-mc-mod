@@ -80,7 +80,7 @@ for bone in geo['bones']:
             close([u, v], cube['uv'][key]['uv'])
             close([U-u, V-v], cube['uv'][key]['uv_size'])
 
-assert len(animations) == len(bb['animations']) == 4
+assert len(animations) == len(bb['animations']) == 5
 for name, animation in animations.items():
     assert animation['animation_length'] > 0
     for bone_name, channels in animation['bones'].items():
@@ -104,6 +104,14 @@ assert png.startswith(b'\x89PNG\r\n\x1a\n')
 assert struct.unpack('>II', png[16:24]) == (512, 512)
 assert base64.b64decode(bb['textures'][0]['source'].split(',', 1)[1]) == png
 assert review['texture'] == bb['textures'][0]['source']
+assert len(review['variants']) == len(bb['textures']) == 4
+for texture in bb['textures']:
+    path = HERE / 'textures' / texture['name']
+    assert review['variants'][path.stem] == texture['source']
+    assert base64.b64decode(texture['source'].split(',', 1)[1]) == path.read_bytes()
+    assert struct.unpack('>II', path.read_bytes()[16:24]) == (512, 512)
+for egg in (HERE/'textures').glob('*_egg.png'):
+    assert struct.unpack('>II', egg.read_bytes()[16:24]) == (16, 16)
 offset=8
 idat=b''
 while offset < len(png):

@@ -30,7 +30,22 @@ import bedConversion from '../versions/1.20.1/src/main/resources/data/pinkkicore
 import guabaCloudDream from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_cloud_dream.json'
 import guabaNetherDream from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_nether_dream.json'
 
+import dragonEgg from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_dragon_egg.json'
+import convertDragonEgg from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_conversion/egg_to_guaba_dragon_egg.json'
+import pinkDragonEgg from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/pink_guaba_dragon_egg.json'
+import chargeDragonEgg from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/guaba_charging/guaba_dragon_egg_to_thunder.json'
+import cloudDragonEgg from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/cloud_guaba_dragon_egg.json'
+import cloudDragonEggGuaba from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/cloud_guaba_dragon_egg_from_guaba_cloud_dream.json'
+import netherDragonEgg from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/nether_guaba_dragon_egg.json'
+import netherDragonEggGuaba from '../versions/1.20.1/src/main/resources/data/pinkkicore/recipes/nether_guaba_dragon_egg_from_guaba_nether_dream.json'
+
 const items = {
+  'minecraft:egg': { name: '鸡蛋', image: '/images/minecraft/egg.png' },
+  'pinkkicore:guaba_dragon_egg': { name: '瓜巴龙蛋', image: '/images/guaba_dragon_egg.png', link: '/items#guaba-dragon-eggs' },
+  'pinkkicore:pink_guaba_dragon_egg': { name: '粉红瓜巴龙蛋', image: '/images/pink_guaba_dragon_egg.png', link: '/items#guaba-dragon-eggs' },
+  'pinkkicore:thunder_guaba_dragon_egg': { name: '雷霆瓜巴龙蛋', image: '/images/thunder_guaba_dragon_egg.png', link: '/items#guaba-dragon-eggs' },
+  'pinkkicore:cloud_guaba_dragon_egg': { name: '云梦瓜巴龙蛋', image: '/images/cloud_guaba_dragon_egg.png', link: '/items#guaba-dragon-eggs' },
+  'pinkkicore:nether_guaba_dragon_egg': { name: '冥梦瓜巴龙蛋', image: '/images/nether_guaba_dragon_egg.png', link: '/items#guaba-dragon-eggs' },
   '#minecraft:beds': { name: '任意颜色的床', image: '/images/minecraft/white_bed.png' },
   'pinkkicore:guaba_bed': { name: '瓜巴床', image: '/images/guaba_bed.png', link: '/items#guaba-bed' },
   'pinkkicore:cloud_dream': { name: '云梦', image: '/images/cloud_dream.png', link: '/items#cloud-dream' },
@@ -192,4 +207,37 @@ const items = {
 ## 瓜巴冥梦 {#guaba-nether-dream}
 
 <CraftingRecipe :recipe="guabaNetherDream" :items="items" />
+<!-- /guide-version -->
+
+
+<!-- guide-version: 1.20.1 -->
+## 瓜巴龙蛋 {#guaba-dragon-eggs}
+
+### 普通瓜巴龙蛋
+
+<CraftingRecipe :recipe="dragonEgg" :items="items" />
+
+<GuabaConversion :recipe="convertDragonEgg" :items="items" />
+
+### 粉红瓜巴龙蛋
+
+<CraftingRecipe :recipe="pinkDragonEgg" :items="items" />
+
+### 雷霆瓜巴龙蛋
+
+<GuabaCharging :recipe="chargeDragonEgg" :items="items" />
+
+### 云梦瓜巴龙蛋
+
+<CraftingRecipe :recipe="cloudDragonEgg" :items="items" />
+
+<CraftingRecipe :recipe="cloudDragonEggGuaba" :items="items" />
+
+### 冥梦瓜巴龙蛋
+
+<CraftingRecipe :recipe="netherDragonEgg" :items="items" />
+
+<CraftingRecipe :recipe="netherDragonEggGuaba" :items="items" />
+
+查看[各变体的战斗能力](./bosses.md#pet-guaba-dragons)。
 <!-- /guide-version -->

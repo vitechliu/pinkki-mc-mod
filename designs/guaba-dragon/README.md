@@ -22,15 +22,16 @@
 | `idle` | 3 秒循环 | 小幅呼吸、抬颈、逐节摆尾 |
 | `walk` | 1 秒循环 | 后腿交替迈动、前爪反向摆动 |
 | `melee` | 0.45 秒单次 | 小幅探颈和咬合；伤害由服务端近战控制 |
-| `breath_pose` | 4.8 秒单次 | 0–1 秒蓄力；1–4 秒张口喷射；4–4.8 秒复位 |
+| `breath_pose` | 4.8 秒单次 | 0–1 秒蓄力，1–4 秒张口喷射，4–4.8 秒复位 |
+| `flight` | 0.8 秒循环 | 云梦躯干前倾、收脚、摆尾，实体升降由游戏控制 |
 
 动画没有实体世界根位移。审阅器展示同一骨架和关键帧，火焰粒子在游戏服务端产生；伤害、AI、碰撞、位移和同步由版本适配层处理。
 
 ## 文件与复现
 
-- `guaba_dragon.bbmodel`：Blockbench 4.10 GeckoLib 工程，内嵌贴图与四段动作。
+- `guaba_dragon.bbmodel`：Blockbench 4.10 GeckoLib 工程，内嵌四套贴图和五段动作。主贴图分配给各面，在纹理列表可将其他配色应用到全模型。
 - `guaba_dragon.geo.json` / `guaba_dragon.animation.json` / `textures/guaba_dragon.png`：与 1.20.1 入包文件一致。
-- `review.html`：内嵌真实导出数据的离线 WebGL 审阅器，无 CDN。支持旋转、缩放、四向视角、播放/暂停、时间轴、骨骼和背鬃开关。
+- `review.html`：内嵌真实导出数据的离线 WebGL 审阅器，无 CDN。支持四套配色、旋转、缩放、四向视角、播放/暂停、时间轴、骨骼和背鬃开关。
 - `generate.py` / `review-template.html`：确定性生成源，建模和渲染基础由 `designs/bingwa/` 适配，不修改饼蛙资产。
 - `validate.py`：坐标与 UV 往返、PNG 数据与 CRC、骨骼层级、关键帧和审阅数据一致性。
 - `check-geckolib.py` / `GeckoAssetCheck.java`：使用本地缓存的最低 GeckoLib 4.2.3 / Forge 1.20.1 解析，不启动游戏。
@@ -41,10 +42,12 @@ python3 designs/guaba-dragon/validate.py
 python3 designs/guaba-dragon/check-geckolib.py
 ```
 
-生成后将几何、动画和纹理同步到 1.20.1 资源目录；发行校验会拒绝源资产和入包文件不一致。
+生成后将几何、动画和龙身贴图同步到 1.20.1 资源。五枚龙蛋图标由生成器的 16×16 像素图案与各自配色生成，同时供游戏和 Wiki 使用。发行校验核对源资产、Wiki 图标和入包文件的一致性。
+
+普通宠物及雷霆沿用朱罗纪瓜巴龙的底色。粉红从躯干到颈腹改用玫瑰粉渐变色组，云梦采用白色与浅蓝，冥梦采用深红与暗紫。雷霆电弧和云雾粒子在游戏服务端生成。
 
 ## 审阅边界
 
-初稿和红蓝头部修订均已在浏览器审阅。日志与截图位于 `.local/guaba-dragon-review/`。四段动作已通过静态校验与 GeckoLib 4.2.3 解析。
+初稿和红蓝头部修订均已在浏览器审阅。日志与截图位于 `.local/guaba-dragon-review/`。原版四段动作曾通过静态校验与 GeckoLib 4.2.3 解析。宠物配色和飞行动作的验证见[宠物接入记录](../../docs/changes/2026-11-21-guaba-dragon-pets.md)。
 
 Blockbench 编辑器导入尚未完成：先前安装官方商店 GeckoLib 插件被自动审批拒绝，需用户明确授权安装；本次不重试安装。Minecraft 客户端外观、粒子与动画衔接尚未实机验收，其他目标版本未适配/验证。

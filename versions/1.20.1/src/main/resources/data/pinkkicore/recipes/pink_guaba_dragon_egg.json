@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "MMM",
+    "MEM",
+    "MMM"
+  ],
+  "key": {
+    "M": {
+      "item": "pinkkicore:pink_ingot"
+    },
+    "E": {
+      "item": "pinkkicore:guaba_dragon_egg"
+    }
+  },
+  "result": {
+    "item": "pinkkicore:pink_guaba_dragon_egg"
+  }
+}

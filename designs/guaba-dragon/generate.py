@@ -12,6 +12,14 @@ import zlib
 
 HERE = Path(__file__).resolve().parent
 PALETTE = {'red':(177,48,34),'gold':(247,200,59),'orange':(233,112,25),'blue':(30,104,154),'cyan':(55,156,189),'ivory':(255,233,171),'mouth':(69,24,39),'black':(19,25,37)}
+VARIANT_COLORS = {
+    'pink_guaba_dragon': ((210, 76, 122), (255, 190, 211), (241, 112, 160), (133, 53, 104), (231, 142, 189)),
+    'cloud_guaba_dragon': ((215, 229, 240), (250, 250, 245), (178, 210, 232), (111, 150, 181), (166, 202, 220)),
+    'nether_guaba_dragon': ((118, 30, 40), (217, 86, 52), (175, 46, 41), (56, 20, 36), (124, 45, 64)),
+}
+VARIANT_PALETTES = {name: {**PALETTE, **dict(zip(('red', 'gold', 'orange', 'blue', 'cyan'), colors))}
+                    for name, colors in VARIANT_COLORS.items()}
+
 BONES = []
 ELEMENTS = []
 SEED = uuid.UUID('cdf2e8c1-c352-4b36-9fb6-4b23d5ec8cca')
@@ -134,6 +142,30 @@ d=anim('melee',.45,False)
 channel(d,'neck_tip','rotation',[(0,[0,0,0]),(.15,[8,0,0]),(.45,[0,0,0])])
 channel(d,'jaw','rotation',[(0,[0,0,0]),(.1,[-18,0,0]),(.25,[0,0,0]),(.45,[0,0,0])])
 
+d=anim('flight',.8)
+channel(d,'body','rotation',[(0,[13,0,0]),(.4,[16,0,0]),(.8,[13,0,0])])
+channel(d,'neck_base','rotation',[(0,[-13,0,0]),(.4,[-16,0,0]),(.8,[-13,0,0])])
+channel(d,'tail_1','rotation',[(0,[-6,-4,0]),(.4,[-8,4,0]),(.8,[-6,-4,0])])
+for side, sign in [('left',1),('right',-1)]:
+    channel(d,'arm_'+side,'rotation',[(0,[-19,0,sign*10]),(.8,[-19,0,sign*10])])
+    channel(d,'leg_'+side,'rotation',[(0,[-20,0,sign*4]),(.8,[-20,0,sign*4])])
+    channel(d,'shin_'+side,'rotation',[(0,[34,0,0]),(.8,[34,0,0])])
+
+
+EGG_ROWS = (
+    '................', '................', '......####......', '.....#HHls#.....',
+    '....#HHlaas#....', '....#Hbaalss#...', '...#lbbllssds#..', '...#llllcdds#...',
+    '...#laalscdds#..', '..#lbaallssds#..', '..#lllccssddd#..', '..#sllcbbdddd#..',
+    '...#ssllbdds#...', '....#ssssss#....', '.....######.....', '................',
+)
+EGG_COLORS = {
+    'guaba_dragon_egg': ('794733', 'fff6dd','f1ddbd','d7b387','bd9268','ec822e','ffc84c','b9482e'),
+    'pink_guaba_dragon_egg': ('71364e','fff1f8','f8c9df','da93b7','b5779e','db5791','f788b0','ad466f'),
+    'thunder_guaba_dragon_egg': ('22395e','e5f5ff','bcdaf3','7399c2','506d9e','ffbd50','fff48a','4591dd'),
+    'cloud_guaba_dragon_egg': ('496884','ffffff','e5f4fb','bad2e4','91b2cd','94cfe5','f8ffff','7399cc'),
+    'nether_guaba_dragon_egg': ('3c212d','ffac86','da765f','a54744','74333f','e55338','ff9848','a92442'),
+}
+
 def png_bytes(width, height, pixels):
     def chunk(kind, data):
         return struct.pack('>I', len(data)) + kind + data + struct.pack('>I', zlib.crc32(kind + data) & 0xffffffff)
@@ -148,7 +180,8 @@ def write_json(path, obj):
 def build():
     # Per-face UVs, with one texel per Minecraft model unit; eyes have extra detail.
     atlas = 512
-    pixels = bytearray([0] * atlas * atlas * 4)
+    palettes = {'guaba_dragon': PALETTE, **VARIANT_PALETTES}
+    pixels = {name: bytearray(atlas * atlas * 4) for name in palettes}
     x = y = row = 1
     for group in BONES:
         for item in group['cubes']:
@@ -169,7 +202,8 @@ def build():
                 rng = random.Random(item['name'] + face)
                 for py in range(h):
                     for px in range(w):
-                        color = PALETTE[item['color']]
+                        color_key = item['color']
+                        eye_color = None
                         jitter = rng.choice([0, 0, 0, -3, 2, 1])
                         # Red flesh remains exposed between blue muscle bands. Paint
                         # each real UV face; no flat reference-image projection.
@@ -194,26 +228,28 @@ def build():
                                     blue = abs(u-.5) < .15 or v > .78
                             else:
                                 blue = face == 'down' or (face in ['north','south'] and (u < .23 or u > .77)) or (face in ['east','west'] and .35 < u < .65)
-                            color = PALETTE['blue' if blue else 'red']
+                            color_key = 'blue' if blue else 'red'
 
                         if item['eyes'] and face == 'north':
                             u, v = (px+.5)/w, (py+.5)/h
                             dx, dy = (u-.5)/.42, (v-.5)/.46
                             r = dx*dx+dy*dy
                             if r < 1:
-                                color = (128, 143, 69) if r > .73 else (218, 225, 130)
+                                eye_color = (128, 143, 69) if r > .73 else (218, 225, 130)
                                 if abs(u-.52) < .105 and .23 < v < .76:
-                                    color = (48, 58, 37)
+                                    eye_color = (48, 58, 37)
                                 if .24 < u < .43 and .22 < v < .40:
-                                    color = (252, 251, 215)
+                                    eye_color = (252, 251, 215)
                             jitter = 0
                         elif item['color'] in ['red', 'gold', 'blue'] and rng.random() < .035:
                             jitter = -9
                         elif item['color'] == 'gold' and py % 4 == 0:
                             jitter = -10
-                        rgba = [max(0, min(255, c+jitter)) for c in color] + [255]
                         i = ((y+py)*atlas+x+px)*4
-                        pixels[i:i+4] = bytes(rgba)
+                        for name, palette in palettes.items():
+                            color = eye_color or palette[color_key]
+                            rgba = [max(0, min(255, c+jitter)) for c in color] + [255]
+                            pixels[name][i:i+4] = bytes(rgba)
                 x += w+1
                 row = max(row, h)
             item['uv'] = uv
@@ -226,10 +262,18 @@ def build():
                            origin=[-pivot[0], pivot[1], pivot[2]], rotation=[-rotation[0], -rotation[1], rotation[2]],
                            autouv=0, box_uv=False, color=0, faces=faces)
             ELEMENTS.append(element)
-    texture = png_bytes(atlas, atlas, pixels)
-    (HERE/'textures').mkdir(exist_ok=True)
-    (HERE/'textures/guaba_dragon.png').write_bytes(texture)
-    texture_source = 'data:image/png;base64,' + base64.b64encode(texture).decode()
+    textures = {name: png_bytes(atlas, atlas, image) for name, image in pixels.items()}
+    texture = textures['guaba_dragon']
+    for name, image in textures.items():
+        (HERE/'textures'/f'{name}.png').write_bytes(image)
+    texture_sources = {name: 'data:image/png;base64,' + base64.b64encode(image).decode()
+                       for name, image in textures.items()}
+    for name, colors in EGG_COLORS.items():
+        assert all(len(row) == 16 for row in EGG_ROWS)
+        rgba = {symbol: bytes.fromhex(color + 'ff') for symbol, color in zip('#Hlsdabc', colors)}
+        rgba['.'] = bytes(4)
+        sprite = b''.join(rgba[pixel] for row in EGG_ROWS for pixel in row)
+        (HERE/'textures'/f'{name}.png').write_bytes(png_bytes(16, 16, sprite))
     geo_bones = []
     for group in BONES:
         data = {k: v for k, v in group.items() if k != 'cubes'}
@@ -269,13 +313,14 @@ def build():
               geckolib_modid='pinkkicore', visible_box=[10, 7, 2],
               resolution=dict(width=atlas, height=atlas), elements=ELEMENTS,
               outliner=[outline(BONES[0])], animations=bb_animations,
-              textures=[dict(name='guaba_dragon.png', id='0', uuid=uid('texture'), source=texture_source,
-                             relative_path='textures/guaba_dragon.png', mode='bitmap', particle=False,
-                             width=atlas, height=atlas, uv_width=atlas, uv_height=atlas)])
+              textures=[dict(name=f'{name}.png', id=str(index), uuid=uid('texture' if index == 0 else name + '_texture'),
+                             source=source, relative_path=f'textures/{name}.png', mode='bitmap', particle=False,
+                             width=atlas, height=atlas, uv_width=atlas, uv_height=atlas)
+                        for index, (name, source) in enumerate(texture_sources.items())])
     write_json(HERE/'guaba_dragon.bbmodel', bb)
     # The reviewer reads these exact geometry/animation values, not a second model.
     payload = dict(geometry=geo['minecraft:geometry'][0], animations=ANIMATIONS,
-                   texture=texture_source, names={uid(c['name']): c['name'] for b in BONES for c in b['cubes']})
+                   texture=texture_sources['guaba_dragon'], variants=texture_sources, names={uid(c['name']): c['name'] for b in BONES for c in b['cubes']})
     write_json(HERE/'review-data.json', payload)
     template = HERE/'review-template.html'
     if template.exists():

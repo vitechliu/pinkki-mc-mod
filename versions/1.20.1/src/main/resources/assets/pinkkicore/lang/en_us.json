@@ -171,5 +171,15 @@
   "tetra.stats.pinkkicore_nether_dream": "Nether Resonance",
   "tetra.stats.pinkkicore_nether_dream.tooltip": "In the Nether, grants 2 attack damage to a main-hand weapon or 2 armor to the piece worn.",
   "tetra.material.feature.pinkkicore_nether_dream": "Nether Resonance",
-  "tetra.material.feature.pinkkicore_nether_dream.tooltip": "In the Nether, grants 2 attack damage to a main-hand weapon or 2 armor to the piece worn."
+  "tetra.material.feature.pinkkicore_nether_dream.tooltip": "In the Nether, grants 2 attack damage to a main-hand weapon or 2 armor to the piece worn.",
+  "item.pinkkicore.guaba_dragon_egg": "Guaba Dragon Egg",
+  "entity.pinkkicore.pet_guaba_dragon": "Guaba Dragon",
+  "item.pinkkicore.pink_guaba_dragon_egg": "Pink Guaba Dragon Egg",
+  "entity.pinkkicore.pet_pink_guaba_dragon": "Pink Guaba Dragon",
+  "item.pinkkicore.thunder_guaba_dragon_egg": "Thunder Guaba Dragon Egg",
+  "entity.pinkkicore.pet_thunder_guaba_dragon": "Thunder Guaba Dragon",
+  "item.pinkkicore.cloud_guaba_dragon_egg": "Cloud Guaba Dragon Egg",
+  "entity.pinkkicore.pet_cloud_guaba_dragon": "Cloud Guaba Dragon",
+  "item.pinkkicore.nether_guaba_dragon_egg": "Nether Guaba Dragon Egg",
+  "entity.pinkkicore.pet_nether_guaba_dragon": "Nether Guaba Dragon"
 }

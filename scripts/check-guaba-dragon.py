@@ -18,7 +18,13 @@ ROOT = Path(__file__).resolve().parent.parent
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--geckolib', type=Path, required=True)
+    parser.add_argument('--extra-mod', type=Path, action='append', default=[],
+        help='Optional local mod JAR for isolated coexistence checks')
+    parser.add_argument('--port', type=int, default=25589, help='Local port for this isolated server')
     args = parser.parse_args()
+    if not 1 <= args.port <= 65535:
+        parser.error('--port must be between 1 and 65535')
+    extras = [path.resolve(strict=True) for path in args.extra_mod]
     library_root = ROOT / '.local/package-test/1.20.1'
     eula = library_root / 'eula.txt'
     if not eula.is_file() or 'eula=true' not in eula.read_text().splitlines():
@@ -35,10 +41,10 @@ def main():
     mods.mkdir(parents=True)
     (run / 'libraries').symlink_to(library_root / 'libraries', target_is_directory=True)
     shutil.copy2(eula, run / 'eula.txt')
-    for path in (artifact, probe, gecko):
+    for path in (artifact, probe, gecko, *extras):
         shutil.copy2(path, mods / path.name)
     (run / 'server.properties').write_text(
-        'server-ip=127.0.0.1\nserver-port=25589\nlevel-name=guaba-dragon-test-world\n'
+        f'server-ip=127.0.0.1\nserver-port={args.port}\nlevel-name=guaba-dragon-test-world\n'
         'level-seed=12345\nview-distance=2\nsimulation-distance=2\nmax-players=1\n'
         'difficulty=normal\nenable-rcon=false\nenable-query=false\nonline-mode=false\n')
     java = ROOT / '.local/jdk-17/Contents/Home/bin/java'
@@ -80,7 +86,7 @@ def main():
         code = process.wait(timeout=30)
         result = dict(passed=code == 0 and ready and passed and stopped and not errors,
             exit_code=code, ready=ready, probe_pass=passed, stopped=stopped, errors=errors,
-            geckolib=gecko.name, artifact_sha256=hashlib.sha256(artifact.read_bytes()).hexdigest())
+            geckolib=gecko.name, extra_mods=[path.name for path in extras], artifact_sha256=hashlib.sha256(artifact.read_bytes()).hexdigest())
         (run / 'result.json').write_text(json.dumps(result, indent=2) + '\n')
         print(json.dumps(result), run.relative_to(ROOT))
         if not result['passed']:

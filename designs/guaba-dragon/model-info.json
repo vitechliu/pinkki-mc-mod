@@ -5,7 +5,8 @@
     "animation.guaba_dragon.idle",
     "animation.guaba_dragon.breath_pose",
     "animation.guaba_dragon.walk",
-    "animation.guaba_dragon.melee"
+    "animation.guaba_dragon.melee",
+    "animation.guaba_dragon.flight"
   ],
   "atlas_size": [
     512,

@@ -25,6 +25,16 @@ class GuideContentTest(unittest.TestCase):
         self.assertIn('雷击强度和间隔不随等级变化', str(entries['guaba-potions']))
 
 
+    def test_dragon_recipes_and_variant_icons_only_ship_in_primary_guide(self):
+        for minecraft in ('1.20.1', '1.19.1', '1.21.1'):
+            with self.subTest(minecraft=minecraft):
+                book = guide.compile_book(minecraft_version=minecraft)
+                blocks = [block for entry in book['entries'] for block in entry['blocks']]
+                species = [block for block in blocks if block.get('anchor') == 'pet-guaba-dragons']
+                icons = [block for block in blocks if block['type'] == 'item' and block['id'].endswith('guaba_dragon_egg')]
+                recipes = [block for block in blocks if block['type'] == 'recipe' and 'guaba_dragon_egg' in block['id']]
+                self.assertEqual((len(species), len(icons), len(recipes)), (1, 5, 8) if minecraft == '1.20.1' else (0, 0, 0))
+
     def temporary_wiki(self):
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)

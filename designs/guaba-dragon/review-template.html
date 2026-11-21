@@ -1,12 +1,18 @@
 <meta charset="UTF-8">
 <style>:root{--foreground:#eee5cf;--border:#78654e;--destructive:#ff8b70}body{color:var(--foreground);margin:0;padding:28px;background:#171f27;font:15px system-ui}button,select{background:#2e3c49;color:#eee5cf;border:1px solid #697b87;border-radius:6px;padding:7px 12px}.viz-controls,.viz-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.form-range{width:100%}</style>
-<h2>瓜巴龙 / GUABA DRAGON</h2><p>01 · 造型与关节审阅　｜　16 单位 = 1 格　｜　喷火姿态不含火焰特效</p>
+<h2>瓜巴龙系列 · 模型审阅</h2>
 <div id="guaba_dragon-model-review">
   <div class="viz-controls">
+    <label class="form-label">外观
+      <select id="guaba_dragon-variant">
+        <option value="guaba_dragon">普通 / 雷霆</option><option value="pink_guaba_dragon">粉红</option>
+        <option value="cloud_guaba_dragon">云梦</option><option value="nether_guaba_dragon">冥梦</option>
+      </select>
+    </label>
     <label class="form-label">动作
       <select class="form-select" id="guaba_dragon-motion">
         <option value="static">造型（静态）</option><option value="idle">待机呼吸</option>
-        <option value="breath_pose">喷火姿态（粒子在游戏中生成）</option><option value="walk">行走</option><option value="melee">近战咬击</option>
+        <option value="breath_pose">喷火姿态（粒子在游戏中生成）</option><option value="walk">行走</option><option value="melee">近战咬击</option><option value="flight">云梦短飞</option>
       </select>
     </label>
     <button type="button" class="btn" id="guaba_dragon-play">播放</button>
@@ -24,7 +30,7 @@
   </div>
   <label class="form-label" for="guaba_dragon-time">动作时间 <span class="tabular-nums" id="guaba_dragon-time-label">0.00 / 0.00 秒</span></label>
   <input class="form-range" type="range" id="guaba_dragon-time" min="0" max="0" step="0.01" value="0" disabled>
-  <div id="guaba_dragon-status" class="text-small text-muted" aria-live="polite">瓜巴龙 · 红蓝肌肉头部 / 金色颈腹 / 红色龙身 · 设计稿</div>
+  <div id="guaba_dragon-status" class="text-small text-muted" aria-live="polite">雷霆电弧与云梦雾气由游戏生成。</div>
 </div>
 <style>
   #guaba_dragon-model-review { color:var(--foreground); display:grid; gap:12px; }
@@ -65,8 +71,20 @@
   gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,1,1,0,gl.RGBA,gl.UNSIGNED_BYTE,new Uint8Array([230,228,194,255]));
   gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);
   gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
-  const image=new Image();image.onload=()=>{gl.bindTexture(gl.TEXTURE_2D,texture);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,image);root.dataset.textureReady='true';};
-  image.onerror=()=>error('贴图载入失败。');image.src=data.texture;
+  function loadVariant(name){
+    const image=new Image();
+    image.onload=()=>{
+      if($('variant').value!==name)return;
+      gl.bindTexture(gl.TEXTURE_2D,texture);
+      gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,image);
+      root.dataset.textureReady='true';
+      root.dataset.variant=name;
+    };
+    image.onerror=()=>error('贴图载入失败。');
+    image.src=data.variants[name];
+  }
+  $('variant').addEventListener('change',()=>loadVariant($('variant').value));
+  loadVariant($('variant').value);
   gl.uniform1i(loc.uTexture,0);gl.enable(gl.DEPTH_TEST);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
   const identity=()=>[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1];
   const multiply=(a,b)=>{const c=Array(16).fill(0);for(let col=0;col<4;col++)for(let row=0;row<4;row++)for(let k=0;k<4;k++)c[col*4+row]+=a[k*4+row]*b[col*4+k];return c;};
@@ -122,7 +140,7 @@
     root.dataset.rendered='true';root.dataset.motion=state.motion;root.dataset.time=state.time.toFixed(3);
   }
   function updateControls(){const a=selectedAnimation(),length=a?.animation_length||0;$('motion').value=state.motion;$('back_crest').checked=state.back_crest;$('neck_mane').checked=state.neck_mane;$('rig').checked=state.rig;
-    const status=state.motion==='breath_pose'?'喷火姿态草案 · 0–0.65 秒蓄力 / 1–4 秒张口保持 / 4.8 秒复位 · 无火焰与伤害':'瓜巴龙 · 红蓝肌肉头部 / 金色颈腹 / 红色龙身 · 设计稿';
+    const status=state.motion==='breath_pose'?'喷火姿态草案 · 0–0.65 秒蓄力 / 1–4 秒张口保持 / 4.8 秒复位 · 无火焰与伤害':'雷霆电弧与云梦雾气由游戏生成。';
     if($('status').textContent!==status)$('status').textContent=status;
 
     $('time').max=length;$('time').disabled=!a;$('time').value=state.time;$('time-label').textContent=state.time.toFixed(2)+' / '+length.toFixed(2)+' 秒';$('play').textContent=playing?'暂停':'播放';$('play').setAttribute('aria-pressed',String(playing));}

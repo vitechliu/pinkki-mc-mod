@@ -150,3 +150,18 @@
 ## 朱罗纪瓜巴龙刷怪蛋 {#guaba-dragon-spawn-egg}
 
 适用：Minecraft 1.20.1 Forge。注册 ID：`pinkkicore:guaba_dragon_spawn_egg`。使用后生成[朱罗纪瓜巴龙](./bosses.md#guaba-dragon)，位于创造模式的刷怪蛋分类。
+
+
+<!-- guide-version: 1.20.1 -->
+## 瓜巴龙蛋 {#guaba-dragon-eggs}
+
+![瓜巴龙蛋](/images/guaba_dragon_egg.png)
+![粉红瓜巴龙蛋](/images/pink_guaba_dragon_egg.png)
+![雷霆瓜巴龙蛋](/images/thunder_guaba_dragon_egg.png)
+![云梦瓜巴龙蛋](/images/cloud_guaba_dragon_egg.png)
+![冥梦瓜巴龙蛋](/images/nether_guaba_dragon_egg.png)
+
+手持龙蛋右键地面，召唤对应的[宠物瓜巴龙](./bosses.md#pet-guaba-dragons)。需要留出足够的放置空间。
+
+击杀[朱罗纪瓜巴龙](./bosses.md#guaba-dragon)可获得 1–2 枚普通龙蛋，也可用瓜巴与鸡蛋制作。普通龙蛋可进一步[合成或加工为四种龙蛋](./recipes.md#guaba-dragon-eggs)。云梦和冥梦配方各需八份同一种材料。
+<!-- /guide-version -->

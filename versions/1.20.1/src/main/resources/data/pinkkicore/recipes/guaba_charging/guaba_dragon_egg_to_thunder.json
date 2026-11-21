@@ -1,0 +1,11 @@
+{
+  "type": "pinkkicore:guaba_charging",
+  "ingredient": {
+    "item": "pinkkicore:guaba_dragon_egg"
+  },
+  "input_count": 1,
+  "result": {
+    "item": "pinkkicore:thunder_guaba_dragon_egg",
+    "count": 1
+  }
+}

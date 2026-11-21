@@ -2,6 +2,7 @@ package io.github.vitech.pinkkicore.forge.item;
 
 import io.github.vitech.pinkkicore.core.ModInfo;
 import io.github.vitech.pinkkicore.forge.dream.GuabaBedBlock;
+import io.github.vitech.pinkkicore.forge.entity.GuabaDragonVariant;
 import io.github.vitech.pinkkicore.forge.entity.ModEntities;
 import io.github.vitech.pinkkicore.forge.workbench.WorkbenchContent;
 import net.minecraftforge.common.ForgeSpawnEggItem;
@@ -49,6 +50,16 @@ public final class ModItems {
     public static final RegistryObject<Item> GUABA_DRAGON_SPAWN_EGG = ITEMS.register("guaba_dragon_spawn_egg", () ->
         new ForgeSpawnEggItem(ModEntities.GUABA_DRAGON, 0xB13022, 0x1E689A, new Item.Properties()));
 
+    public static final RegistryObject<Item> GUABA_DRAGON_EGG = dragonEgg(GuabaDragonVariant.NORMAL);
+    public static final RegistryObject<Item> PINK_GUABA_DRAGON_EGG = dragonEgg(GuabaDragonVariant.PINK);
+    public static final RegistryObject<Item> THUNDER_GUABA_DRAGON_EGG = dragonEgg(GuabaDragonVariant.THUNDER);
+    public static final RegistryObject<Item> CLOUD_GUABA_DRAGON_EGG = dragonEgg(GuabaDragonVariant.CLOUD);
+    public static final RegistryObject<Item> NETHER_GUABA_DRAGON_EGG = dragonEgg(GuabaDragonVariant.NETHER);
+
+    private static RegistryObject<Item> dragonEgg(GuabaDragonVariant variant) {
+        return ITEMS.register(variant.eggId(), () -> new GuabaDragonEggItem(variant));
+    }
+
     private ModItems() {}
 
     public static void register(IEventBus bus) {
@@ -60,6 +71,11 @@ public final class ModItems {
         if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS) {
             event.accept(BINGWA_SPAWN_EGG);
             event.accept(GUABA_DRAGON_SPAWN_EGG);
+            event.accept(GUABA_DRAGON_EGG);
+            event.accept(PINK_GUABA_DRAGON_EGG);
+            event.accept(THUNDER_GUABA_DRAGON_EGG);
+            event.accept(CLOUD_GUABA_DRAGON_EGG);
+            event.accept(NETHER_GUABA_DRAGON_EGG);
             event.accept(CHARGED_CREEPER_EGG);
             event.accept(PINKKI_SPAWN_EGG);
             event.accept(GUABA_YINGRONG_SPAWN_EGG);

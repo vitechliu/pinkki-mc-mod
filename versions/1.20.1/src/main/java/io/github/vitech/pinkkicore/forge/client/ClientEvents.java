@@ -31,5 +31,6 @@ public final class ClientEvents {
         event.registerEntityRenderer(ModEntities.PINKKI.get(), PinkkiRenderer::new);
         event.registerEntityRenderer(ModEntities.BINGWA.get(), BingwaRenderer::new);
         event.registerEntityRenderer(ModEntities.GUABA_DRAGON.get(), GuabaDragonRenderer::new);
+        event.registerEntityRenderer(ModEntities.PET_GUABA_DRAGON.get(), GuabaDragonRenderer::new);
     }
 }

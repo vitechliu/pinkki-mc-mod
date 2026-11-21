@@ -226,17 +226,35 @@ def main():
             ]:
                 assert archive.read(f"assets/pinkkicore/{resource}") == (ROOT / "designs/guaba-dragon" / source).read_bytes(), "Guaba dragon source/export mismatch"
             dragon_animations = json.loads(archive.read("assets/pinkkicore/animations/guaba_dragon.animation.json"))["animations"]
-            assert set(dragon_animations) == {f"animation.guaba_dragon.{name}" for name in ("idle", "walk", "melee", "breath_pose")}
+            assert set(dragon_animations) == {f"animation.guaba_dragon.{name}" for name in ("idle", "walk", "melee", "breath_pose", "flight")}
             assert dragon_animations["animation.guaba_dragon.breath_pose"]["animation_length"] == 4.8
             assert json.loads(archive.read("assets/pinkkicore/models/item/guaba_dragon_spawn_egg.json")) == {"parent": "minecraft:item/template_spawn_egg"}
-            assert "data/pinkkicore/loot_tables/entities/guaba_dragon.json" not in archive.namelist(), "No dragon loot pool requested"
+            dragon_loot = json.loads(archive.read("data/pinkkicore/loot_tables/entities/guaba_dragon.json"))
+            assert dragon_loot == {"type": "minecraft:entity", "pools": [{"rolls": 1, "entries": [
+                {"type": "minecraft:item", "name": "pinkkicore:guaba_dragon_egg", "functions": [
+                    {"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 2}}]}]}]}
+            dragon_variants = ("", "pink_", "thunder_", "cloud_", "nether_")
+            for prefix in dragon_variants:
+                egg_id = f"{prefix}guaba_dragon_egg"
+                assert json.loads(archive.read(f"assets/pinkkicore/models/item/{egg_id}.json")) == {
+                    "parent": "minecraft:item/generated", "textures": {"layer0": f"pinkkicore:item/{egg_id}"}}
+                icon = archive.read(f"assets/pinkkicore/textures/item/{egg_id}.png")
+                assert icon == (ROOT / "designs/guaba-dragon/textures" / f"{egg_id}.png").read_bytes()
+                assert icon == (ROOT / "wiki/public/images" / f"{egg_id}.png").read_bytes()
+            for variant in ("pink", "cloud", "nether"):
+                texture_name = f"{variant}_guaba_dragon.png"
+                assert archive.read(f"assets/pinkkicore/textures/entity/{texture_name}") == (ROOT / "designs/guaba-dragon/textures" / texture_name).read_bytes()
             assert json.loads(archive.read("data/pinkkicore/tags/worldgen/biome/guaba_dragon_spawns.json"))["values"] == ["#minecraft:is_nether", "#minecraft:is_badlands"]
             dragon_spawn = json.loads(archive.read("data/pinkkicore/forge/biome_modifier/add_guaba_dragon.json"))
             assert dragon_spawn == {"type": "forge:add_spawns", "biomes": "#pinkkicore:guaba_dragon_spawns", "spawners": [{"type": "pinkkicore:guaba_dragon", "weight": 6, "minCount": 1, "maxCount": 1}]}
             for language, dragon_name in [("zh_cn", "朱罗纪瓜巴龙"), ("en_us", "Jurassic Guaba Dragon")]:
                 strings = json.loads(archive.read(f"assets/pinkkicore/lang/{language}.json"))
                 assert strings["entity.pinkkicore.guaba_dragon"] == dragon_name
-            for path in ("entity/GuabaDragonEntity", "client/GuabaDragonModel", "client/GuabaDragonRenderer"):
+                for prefix in dragon_variants:
+                    assert strings[f"entity.pinkkicore.pet_{prefix}guaba_dragon"]
+                    assert strings[f"item.pinkkicore.{prefix}guaba_dragon_egg"]
+            for path in ("entity/GuabaDragonEntity", "entity/PetGuabaDragonEntity", "entity/GuabaDragonBreath",
+                         "item/GuabaDragonEggItem", "client/GuabaDragonModel", "client/GuabaDragonRenderer"):
                 assert f"io/github/vitech/pinkkicore/forge/{path}.class" in archive.namelist()
             animations = json.loads(archive.read("assets/pinkkicore/animations/bingwa.animation.json"))["animations"]
             assert set(animations) == {f"animation.bingwa.{name}" for name in ("idle", "walk", "jump", "swim", "float", "croak", "tongue")}
@@ -405,7 +423,8 @@ def main():
             assert charging_craft['key'] == {'L': {'item': 'minecraft:lightning_rod'}, 'E': {'item': 'minecraft:enchanting_table'}, 'T': {'item': 'pinkkicore:thunder_guaba'}}
             assert charging_craft['result'] == {'item': 'pinkkicore:guaba_charging_station', 'count': 1}
             for charging_recipe_name, source, result in [('guaba_to_thunder_guaba', 'pinkkicore:guaba', 'pinkkicore:thunder_guaba'),
-                                         ('creeper_to_charged_creeper', 'minecraft:creeper_spawn_egg', 'pinkkicore:charged_creeper_spawn_egg')]:
+                                         ('creeper_to_charged_creeper', 'minecraft:creeper_spawn_egg', 'pinkkicore:charged_creeper_spawn_egg'),
+                                         ('guaba_dragon_egg_to_thunder', 'pinkkicore:guaba_dragon_egg', 'pinkkicore:thunder_guaba_dragon_egg')]:
                 assert json.loads(archive.read(f'data/pinkkicore/recipes/guaba_charging/{charging_recipe_name}.json')) == {
                     'type': 'pinkkicore:guaba_charging', 'ingredient': {'item': source}, 'input_count': 1, 'result': {'item': result, 'count': 1}}
             for path in ('ChargingContent', 'GuabaChargingBlock', 'GuabaChargingEntity', 'GuabaChargingMenu', 'GuabaChargingRecipe'):
@@ -423,7 +442,7 @@ def main():
                 assert optional_charging == {'conditions': [{'type': 'forge:mod_loaded', 'modid': 'irons_spellbooks'}],
                     'type': 'pinkkicore:guaba_charging', 'ingredient': {'item': charging_input}, 'input_count': 1,
                     'result': {'item': charging_output, 'count': 1}}
-            assert 'irons_spellbooks' not in deps, 'Data-only optional charging must not require Iron spellbooks'
+            assert 'irons_spellbooks' not in deps, 'Optional Iron spellbooks integrations must not add a mandatory dependency'
             assert not any(p.startswith('io/redspace/ironsspellbooks/') or p.startswith('assets/irons_spellbooks/') for p in archive.namelist()), 'Do not bundle third-party code or artwork'
             definition_path = 'data/pinkkicore/guaba_potions.json'
             assert archive.read(definition_path) == (ROOT / 'versions/1.20.1/src/main/resources' / definition_path).read_bytes()

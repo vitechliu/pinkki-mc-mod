@@ -17,6 +17,10 @@ ITEM_IMAGES.update({
     f'/images/{name}.png': f'pinkkicore:{name}'
     for name in ('guaba_bed', 'cloud_dream', 'guaba_cloud_dream', 'nether_dream', 'guaba_nether_dream')
 })
+ITEM_IMAGES.update({
+    f'/images/{prefix}guaba_dragon_egg.png': f'pinkkicore:{prefix}guaba_dragon_egg'
+    for prefix in ('', 'pink_', 'thunder_', 'cloud_', 'nether_')
+})
 
 
 def compile_book(root=ROOT, minecraft_version='1.20.1'):

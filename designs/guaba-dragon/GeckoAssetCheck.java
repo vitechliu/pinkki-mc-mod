@@ -17,7 +17,8 @@ public final class GeckoAssetCheck {
         }
         JsonObject file = JsonParser.parseString(Files.readString(Path.of(args[1]))).getAsJsonObject();
         BakedAnimations animations = JsonUtil.GEO_GSON.fromJson(file.getAsJsonObject("animations"), BakedAnimations.class);
-        if (geometry.bones().length != 24 || cubes != 101 || animations.animations().size() != 4)
+        if (geometry.bones().length != 24 || cubes != 101 || animations.animations().size() != 5
+                || !animations.animations().containsKey("animation.guaba_dragon.flight"))
             throw new AssertionError("Unexpected geometry or animation count");
         System.out.println("PASS GeckoLib asset parser: bones=" + geometry.bones().length
                 + ", cubes=" + cubes + ", animations=" + animations.animations().keySet());

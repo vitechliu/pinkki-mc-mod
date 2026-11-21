@@ -171,5 +171,15 @@
   "tetra.stats.pinkkicore_nether_dream": "下界共鸣",
   "tetra.stats.pinkkicore_nether_dream.tooltip": "在下界增加主手武器 2 点攻击力，或增加该件护甲 2 点护甲。",
   "tetra.material.feature.pinkkicore_nether_dream": "下界共鸣",
-  "tetra.material.feature.pinkkicore_nether_dream.tooltip": "在下界增加主手武器 2 点攻击力，或增加该件护甲 2 点护甲。"
+  "tetra.material.feature.pinkkicore_nether_dream.tooltip": "在下界增加主手武器 2 点攻击力，或增加该件护甲 2 点护甲。",
+  "item.pinkkicore.guaba_dragon_egg": "瓜巴龙蛋",
+  "entity.pinkkicore.pet_guaba_dragon": "瓜巴龙",
+  "item.pinkkicore.pink_guaba_dragon_egg": "粉红瓜巴龙蛋",
+  "entity.pinkkicore.pet_pink_guaba_dragon": "粉红瓜巴龙",
+  "item.pinkkicore.thunder_guaba_dragon_egg": "雷霆瓜巴龙蛋",
+  "entity.pinkkicore.pet_thunder_guaba_dragon": "雷霆瓜巴龙",
+  "item.pinkkicore.cloud_guaba_dragon_egg": "云梦瓜巴龙蛋",
+  "entity.pinkkicore.pet_cloud_guaba_dragon": "云梦瓜巴龙",
+  "item.pinkkicore.nether_guaba_dragon_egg": "冥梦瓜巴龙蛋",
+  "entity.pinkkicore.pet_nether_guaba_dragon": "冥梦瓜巴龙"
 }
