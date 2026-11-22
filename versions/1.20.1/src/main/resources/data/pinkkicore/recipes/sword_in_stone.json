@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " S ",
+    "CCC",
+    "GTG"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:stone_sword"
+    },
+    "C": {
+      "item": "minecraft:cobblestone"
+    },
+    "G": {
+      "item": "pinkkicore:guaba"
+    },
+    "T": {
+      "item": "pinkkicore:thunder_guaba"
+    }
+  },
+  "result": {
+    "item": "pinkkicore:sword_in_stone"
+  }
+}

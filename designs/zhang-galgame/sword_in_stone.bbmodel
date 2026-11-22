@@ -1,0 +1,573 @@
+{
+  "meta": {
+    "format_version": "4.10",
+    "model_format": "java_block",
+    "box_uv": false
+  },
+  "name": "sword_in_stone",
+  "model_identifier": "sword_in_stone",
+  "resolution": {
+    "width": 128,
+    "height": 128
+  },
+  "display": {
+    "gui": {
+      "rotation": [
+        27,
+        225,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0.78,
+        0.78,
+        0.78
+      ]
+    },
+    "ground": {
+      "scale": [
+        0.4,
+        0.4,
+        0.4
+      ],
+      "translation": [
+        0,
+        2,
+        0
+      ]
+    },
+    "fixed": {
+      "scale": [
+        0.7,
+        0.7,
+        0.7
+      ]
+    }
+  },
+  "elements": [
+    {
+      "name": "圆石薄底座",
+      "from": [
+        0,
+        0,
+        1
+      ],
+      "to": [
+        16,
+        3,
+        15
+      ],
+      "uuid": "329638a8-80ca-5e5f-8a81-047fa27636a9",
+      "type": "cube",
+      "origin": [
+        8,
+        0,
+        8
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "box_uv": false,
+      "faces": {
+        "north": {
+          "uv": [
+            0.0,
+            0.0,
+            32.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            0.0,
+            0.0,
+            32.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            0.0,
+            0.0,
+            32.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            0.0,
+            0.0,
+            32.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            0.0,
+            0.0,
+            32.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            0.0,
+            0.0,
+            32.0,
+            32.0
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "石剑刃",
+      "from": [
+        6.75,
+        2.7,
+        7.48
+      ],
+      "to": [
+        9.25,
+        11.5,
+        8.52
+      ],
+      "uuid": "8b63da9f-f028-54f2-af31-3d8a4595a066",
+      "type": "cube",
+      "origin": [
+        8,
+        0,
+        8
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "box_uv": false,
+      "faces": {
+        "north": {
+          "uv": [
+            32.0,
+            0.0,
+            64.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            32.0,
+            0.0,
+            64.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            32.0,
+            0.0,
+            64.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            32.0,
+            0.0,
+            64.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            32.0,
+            0.0,
+            64.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            32.0,
+            0.0,
+            64.0,
+            32.0
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "剑脊",
+      "from": [
+        7.45,
+        3,
+        7.24
+      ],
+      "to": [
+        8.55,
+        11.4,
+        8.76
+      ],
+      "uuid": "7d0e42cb-d946-521a-b82f-d2529689ff74",
+      "type": "cube",
+      "origin": [
+        8,
+        0,
+        8
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "box_uv": false,
+      "faces": {
+        "north": {
+          "uv": [
+            32.0,
+            0.0,
+            64.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            32.0,
+            0.0,
+            64.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            32.0,
+            0.0,
+            64.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            32.0,
+            0.0,
+            64.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            32.0,
+            0.0,
+            64.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            32.0,
+            0.0,
+            64.0,
+            32.0
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "护手",
+      "from": [
+        4.1,
+        10.8,
+        7.05
+      ],
+      "to": [
+        11.9,
+        12,
+        8.95
+      ],
+      "uuid": "7d90bf24-ef57-5e15-acf8-f71981f48285",
+      "type": "cube",
+      "origin": [
+        8,
+        0,
+        8
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "box_uv": false,
+      "faces": {
+        "north": {
+          "uv": [
+            64.0,
+            0.0,
+            96.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            64.0,
+            0.0,
+            96.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            64.0,
+            0.0,
+            96.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            64.0,
+            0.0,
+            96.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            64.0,
+            0.0,
+            96.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            64.0,
+            0.0,
+            96.0,
+            32.0
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "剑柄",
+      "from": [
+        7.15,
+        11.99,
+        7.22
+      ],
+      "to": [
+        8.85,
+        14.7,
+        8.78
+      ],
+      "uuid": "f1b055c9-b218-5ea1-a33b-bb296028b451",
+      "type": "cube",
+      "origin": [
+        8,
+        0,
+        8
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "box_uv": false,
+      "faces": {
+        "north": {
+          "uv": [
+            96.0,
+            0.0,
+            128.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            96.0,
+            0.0,
+            128.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            96.0,
+            0.0,
+            128.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            96.0,
+            0.0,
+            128.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            96.0,
+            0.0,
+            128.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            96.0,
+            0.0,
+            128.0,
+            32.0
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "柄尾",
+      "from": [
+        6.8,
+        14.7,
+        7
+      ],
+      "to": [
+        9.2,
+        15.7,
+        9
+      ],
+      "uuid": "c0f1a0bd-41d9-5f4c-99ce-6146ac58154e",
+      "type": "cube",
+      "origin": [
+        8,
+        0,
+        8
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "box_uv": false,
+      "faces": {
+        "north": {
+          "uv": [
+            64.0,
+            0.0,
+            96.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            64.0,
+            0.0,
+            96.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            64.0,
+            0.0,
+            96.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            64.0,
+            0.0,
+            96.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            64.0,
+            0.0,
+            96.0,
+            32.0
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            64.0,
+            0.0,
+            96.0,
+            32.0
+          ],
+          "texture": 0
+        }
+      }
+    }
+  ],
+  "outliner": [
+    "329638a8-80ca-5e5f-8a81-047fa27636a9",
+    "8b63da9f-f028-54f2-af31-3d8a4595a066",
+    "7d0e42cb-d946-521a-b82f-d2529689ff74",
+    "7d90bf24-ef57-5e15-acf8-f71981f48285",
+    "f1b055c9-b218-5ea1-a33b-bb296028b451",
+    "c0f1a0bd-41d9-5f4c-99ce-6146ac58154e"
+  ],
+  "textures": [
+    {
+      "name": "sword_in_stone.png",
+      "id": "0",
+      "uuid": "3889d95b-5dbc-5994-94e7-cccec3e78507",
+      "source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAB4ElEQVR4nO3bwUobQRwH4LH4ChUKGkR9gZ6KNw++hiD4ZIXizQcQpNi7kEOgXjQEDGqhh5Z6VzagLJQJiezOHzLfd8hx5/D77czuZHbt29fT5xTo8/6XyOHT9/MfoeP/vToLHX+9+RlPJiGDj29uZwWYTu9Cxr+4uEyDT4M0HI5Cxv/1cJ/2N1IajX+HjP/451/60A4jUhMG5b0VYGdvN0U6PDwIHT/VXgDqpACVU4DKKUDl3l2Ane3tFGlzcyt0/CoK0IScC7rE3kETci7oqL2DVTPbCMrpOuR2mRa5dtcht8ukQAsU4L0h58ItNWvkwhV6R88AloYKZoB503WpOzl357qTCxSgj/V/mWv2sf4rTs/7AJaGyh8Co/5WfuUOX56dwMopQOUUoHIKULn/CtAcDYs8HtYcDXM8LPAtoOujYe0yLXLtro+Gtcvk2FlPr4FNyLlwS5w1bELOhSv0jp4B5i0NpULOLQ1C7mgGmDddlwo5F6qQCxSgj/V/mWv2sf4rTs+vgZaGCh4CLQ2VF8BXQ6vLTmDl1o6PTkI/D/+4FXu8++fwOnT8p2nMl8kAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCTF5Nlt7COHiqSAAAAAElFTkSuQmCC",
+      "mode": "bitmap",
+      "saved": false,
+      "width": 128,
+      "height": 128,
+      "uv_width": 128,
+      "uv_height": 128
+    }
+  ]
+}

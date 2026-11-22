@@ -1,0 +1,7 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_17",
+  "package": "io.github.vitech.pinkkicore.forge.compat.galgame.mixin",
+  "mixins": ["SilentGearCrossbowMixin"]
+}

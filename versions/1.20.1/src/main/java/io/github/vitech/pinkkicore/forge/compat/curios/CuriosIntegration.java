@@ -4,11 +4,16 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import io.github.vitech.pinkkicore.forge.effect.GuabaEffectFamily;
 import io.github.vitech.pinkkicore.forge.item.ModItems;
+import io.github.vitech.pinkkicore.forge.galgame.GalgameAccessories;
+import io.github.vitech.pinkkicore.forge.galgame.GalgameEffect;
 import java.util.ArrayList;
 import java.util.UUID;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.*;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import top.theillusivec4.curios.api.event.CurioChangeEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -33,8 +38,41 @@ public final class CuriosIntegration {
                 return modifiers;
             }
         });
+        registerPinkki(ModItems.FAVORITE_PERSON.get());
+        registerPinkki(ModItems.GALGAME_HEART.get());
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, CuriosIntegration::onApplicable);
+        MinecraftForge.EVENT_BUS.addListener(CuriosIntegration::onCurioChange);
     }
+    public static boolean wearingPinkki(LivingEntity entity, Item item) {
+        var inventory = CuriosApi.getCuriosInventory(entity).resolve();
+        var slot = inventory.flatMap(handler -> handler.getStacksHandler(GalgameAccessories.SLOT));
+        if (slot.isEmpty()) {
+            return false;
+        }
+        var equipped = slot.get().getStacks();
+        for (int index = 0; index < equipped.getSlots(); index++) {
+            if (equipped.getStackInSlot(index).is(item)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void onCurioChange(CurioChangeEvent event) {
+        if (event.getEntity() instanceof Player player && GalgameAccessories.SLOT.equals(event.getIdentifier())
+            && (event.getFrom().is(ModItems.GALGAME_HEART.get()) || event.getTo().is(ModItems.GALGAME_HEART.get()))) {
+            GalgameEffect.syncHeart(player);
+        }
+    }
+
+    private static void registerPinkki(Item item) {
+        CuriosApi.registerCurio(item, new ICurioItem() {
+            @Override public boolean canEquip(SlotContext context, ItemStack stack) {
+                return GalgameAccessories.SLOT.equals(context.identifier());
+            }
+        });
+    }
+
     private static boolean wearingHood(LivingEntity entity) {
         return CuriosApi.getCuriosInventory(entity).map(inv -> inv.findFirstCurio(ModItems.GUABA_HOOD.get()).isPresent()).orElse(false);
     }

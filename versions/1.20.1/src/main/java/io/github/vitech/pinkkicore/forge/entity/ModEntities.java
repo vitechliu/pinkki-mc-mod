@@ -31,6 +31,13 @@ public final class ModEntities {
         EntityType.Builder.of(PetGuabaDragonEntity::new, MobCategory.CREATURE)
             .sized(1.3F, 2.9F).fireImmune().clientTrackingRange(10).build(ModInfo.ID + ":pet_guaba_dragon"));
 
+    public static final RegistryObject<EntityType<ZhangEntity>> LITTLE_ZHANG = ENTITIES.register("little_zhang", () ->
+        EntityType.Builder.of(ZhangEntity::new, MobCategory.MONSTER)
+            .sized(0.65F, 1.9F).clientTrackingRange(10).build(ModInfo.ID + ":little_zhang"));
+    public static final RegistryObject<EntityType<ZhangEntity>> BIG_ZHANG = ENTITIES.register("big_zhang", () ->
+        EntityType.Builder.of(ZhangEntity::new, MobCategory.MONSTER)
+            .sized(1.3F, 3.8F).clientTrackingRange(10).build(ModInfo.ID + ":big_zhang"));
+
     private ModEntities() {}
 
     public static void register(IEventBus bus) {
@@ -49,5 +56,7 @@ public final class ModEntities {
         event.put(GUABA_DRAGON.get(), GuabaDragonEntity.createAttributes().build());
         event.put(PET_GUABA_DRAGON.get(), PetGuabaDragonEntity.createAttributes().build());
         event.put(BINGWA.get(), BingwaEntity.createAttributes().build());
+        event.put(LITTLE_ZHANG.get(), ZhangEntity.attributes(1).build());
+        event.put(BIG_ZHANG.get(), ZhangEntity.attributes(4).build());
     }
 }

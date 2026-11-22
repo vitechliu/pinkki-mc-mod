@@ -2,7 +2,7 @@
 
 适用目标：Minecraft 1.20.1 / Forge。核对日期：2026-10-28；源码参考 Curios `5.14.1+1.20.1`，提交 `a91da6ba2396f6ed9042c8a47a471ca5efc97da8`。
 
-1.20.1 已接入可选 Curios 5.3.5+1.20.1（允许后续 5.x；2026-10-30 降低下限，见[调研](compatibility/modpack-dependency-research-2026-10-30.md)）：瓜巴头套使用 `head`，粉红之祝使用 `charm`，各以 `SET` 分配 1 格给玩家；保留整合包扩槽和标签修改。未安装 Curios 时两件物品仍可合成，但不能佩戴生效。下文 `pinkki` 是已确定的槽位 ID，“粉饰”为暂定显示名称。数量、具体饰品和效果待实际功能设计时确定；不据此声明次要版本支持。
+1.20.1 可选 Curios 5.3.5+（5.x）。瓜巴头套使用 `head`，粉红之祝使用 `charm`，各分配 1 格。最爱之人和旮旯之心共用两个 `pinkki` 粉饰槽。四件饰品均可合成，佩戴效果需要 Curios。
 
 ## 官方预设槽位
 
@@ -33,37 +33,23 @@
 - 1.20.1 的槽位定义按 ID 合并：不同 Mod 命名空间下的 `ring.json` 会共同影响 `ring`。资源目录的 Mod 命名空间不自动隔离槽位 ID。
 - 保留整合包通过数据包调整标签与槽位的能力。标签通常使用 `replace: false`；不要额外写死无必要的同义槽位检查。
 
-## PinkkiCore 专属槽位：粉饰
+## PinkkiCore 专属粉饰槽
 
 | 项目 | 约定 |
 | --- | --- |
 | 槽位 ID | `pinkki`，后续保持稳定 |
-| 暂定中文名称 | 粉饰 |
+| 中文名称 | 粉饰 |
 | 翻译键 | `curios.identifier.pinkki` |
 | 默认物品标签 | `curios:pinkki` |
 | 定义资源 | `data/pinkkicore/curios/slots/pinkki.json` |
 | 玩家槽位分配资源 | `data/pinkkicore/curios/entities/player.json` |
 | 可佩戴物品清单 | `data/curios/tags/items/pinkki.json` |
-| 用途 | 本 Mod 需要独立装备位置的专属饰品；具体物品范围待设计 |
-| 默认数量、图标、外观槽、叠加规则 | 待首个饰品功能确定，不提前锁定 |
+| 发行饰品 | 最爱之人、旮旯之心 |
+| 默认数量与叠加 | 2 格，`SET`。仅有效装备槽提供效果，同款重复装备按一件计算 |
 
 普通戒指、项链、手套等仍优先使用公共预设，不把本 Mod 的全部饰品都归入 `pinkki`。确有独立装备位置需求的物品才归入粉饰。
 
-“独立槽位”不自动意味着“只能放本 Mod 物品”或“粉饰只能放这里”：其他 Mod / 数据包可以加入 `curios:pinkki`，默认通用 `curio` 规则也可能允许跨槽装备。如果后续要求粉饰严格专用、不能绕过数量限制，需要同时设计槽位验证、物品 `canEquip` 和通用槽交互，验证后再承诺独占行为。
-
-### 粉饰槽位后续实现清单
-
-本次不创建尚无对应物品的 `pinkki` 槽。公共 `head` / `charm` 已实现；下列专属槽位清单按需执行。以下路径位于 `versions/1.20.1/src/main/resources/` 下；目前仅记录设计，不创建发行资源。
-
-1. 将匹配版本的 Curios 加入构建依赖及 `mods.toml` 依赖声明，明确必需还是可选。若采用可选依赖，隔离直接引用 Curios 类型的类，验证未安装时仍可加载。
-2. 创建 `data/pinkkicore/curios/slots/pinkki.json`，配置确定后的数量、图标等。默认数量优先使用 `SET`，不要无条件 `ADD` 导致多个 Mod 叠加扩槽。
-3. 创建 `data/pinkkicore/curios/entities/player.json`，向 `minecraft:player` 分配 `pinkki`。使用公共预设的饰品也要分配相应槽位。
-4. 创建 `data/curios/tags/items/pinkki.json`，使用 `replace: false`，只列入实际注册的饰品。不写入尚不存在的占位物品。
-5. 在对应语言文件中添加 `curios.identifier.pinkki` 的中文“粉饰”及英文翻译；槽位 ID 不随显示名称调整而改变。
-6. 自有饰品通常实现 `ICurioItem`。静态属性优先用属性接口及传入的槽位 UUID；持续效果明确服务端执行、重复佩戴叠加与卸下清理。角色上的模型显示单独通过客户端渲染接入。
-7. 补充实际游戏功能的 `docs/changes/` 记录、游戏内手册和 Wiki；完成适用的 1.20.1 无头检查、发行 JAR 校验及本地部署。客户端操作遵守默认禁止实机测试规则。
-
-同 ID 多份槽位定义在默认 `SET` 下取最大数量，`ADD` / `REMOVE` 是额外数量修饰。不要覆盖公共槽位的验证器或用 `replace: true` 清空其他 Mod 的物品来实现本 Mod 的限制。
+整合包可扩展槽位数量和标签。PinkkiCore 的两件粉饰通过 `canEquip` 限定在 `pinkki`，查询效果时扫描该槽的有效装备。最爱之人在张家的目标筛选与命中入口都生效。旮旯之心根据装备状态动态加一级，续时、等级回退和属性更新随原版状态处理。
 
 ## 后续验收重点
 

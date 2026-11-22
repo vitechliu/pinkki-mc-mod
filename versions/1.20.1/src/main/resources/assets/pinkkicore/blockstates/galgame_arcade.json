@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "pinkkicore:block/galgame_arcade"
+    },
+    "facing=east": {
+      "model": "pinkkicore:block/galgame_arcade",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "pinkkicore:block/galgame_arcade",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "pinkkicore:block/galgame_arcade",
+      "y": 270
+    }
+  }
+}

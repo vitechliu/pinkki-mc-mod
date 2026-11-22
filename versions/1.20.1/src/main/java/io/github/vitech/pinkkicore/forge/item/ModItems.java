@@ -1,11 +1,13 @@
 package io.github.vitech.pinkkicore.forge.item;
 
 import io.github.vitech.pinkkicore.core.ModInfo;
+import io.github.vitech.pinkkicore.forge.galgame.GalgameBlocks;
 import io.github.vitech.pinkkicore.forge.dream.GuabaBedBlock;
 import io.github.vitech.pinkkicore.forge.entity.GuabaDragonVariant;
 import io.github.vitech.pinkkicore.forge.entity.ModEntities;
 import io.github.vitech.pinkkicore.forge.workbench.WorkbenchContent;
 import net.minecraftforge.common.ForgeSpawnEggItem;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.BedItem;
 import net.minecraft.world.item.Item;
@@ -45,6 +47,16 @@ public final class ModItems {
         new ForgeSpawnEggItem(ModEntities.GUABA_YINGRONG, 0x302C21, 0xCBA45A, new Item.Properties()));
 
     public static final RegistryObject<Item> GUABA_HOOD = ITEMS.register("guaba_hood", () -> new AccessoryItem("guaba_hood"));
+    public static final RegistryObject<Item> SWORD_IN_STONE = ITEMS.register("sword_in_stone",
+        () -> new BlockItem(GalgameBlocks.SWORD_IN_STONE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> GALGAME_ARCADE = ITEMS.register("galgame_arcade",
+        () -> new BlockItem(GalgameBlocks.GALGAME_ARCADE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> ZHANG_FAV = ITEMS.register("zhang_fav", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> GALGAME_SOUL = ITEMS.register("galgame_soul", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> FAVORITE_PERSON = ITEMS.register("favorite_person",
+        () -> new AccessoryItem("favorite_person"));
+    public static final RegistryObject<Item> GALGAME_HEART = ITEMS.register("galgame_heart",
+        () -> new AccessoryItem("galgame_heart"));
     public static final RegistryObject<Item> PINK_BLESSING = ITEMS.register("pink_blessing", () -> new AccessoryItem("pink_blessing"));
 
     public static final RegistryObject<Item> GUABA_DRAGON_SPAWN_EGG = ITEMS.register("guaba_dragon_spawn_egg", () ->
@@ -83,6 +95,8 @@ public final class ModItems {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) event.accept(GUIDE_BOOK);
         if (event.getTabKey() == CreativeModeTabs.COMBAT) { event.accept(GUABA_HOOD); event.accept(PINK_BLESSING); event.accept(GUABA_SWORD); event.accept(GUABA_BOW); }
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
+            event.accept(ZHANG_FAV);
+            event.accept(GALGAME_SOUL);
             event.accept(GUABA);
             event.accept(THUNDER_GUABA);
             event.accept(CLOUD_DREAM);
@@ -90,7 +104,13 @@ public final class ModItems {
             event.accept(NETHER_DREAM);
             event.accept(GUABA_NETHER_DREAM);
         }
+        if (event.getTabKey() == CreativeModeTabs.COMBAT) {
+            event.accept(FAVORITE_PERSON);
+            event.accept(GALGAME_HEART);
+        }
         if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
+            event.accept(SWORD_IN_STONE);
+            event.accept(GALGAME_ARCADE);
             event.accept(WorkbenchContent.ITEM);
             event.accept(GUABA_BED);
             event.accept(io.github.vitech.pinkkicore.forge.charging.ChargingContent.ITEM);

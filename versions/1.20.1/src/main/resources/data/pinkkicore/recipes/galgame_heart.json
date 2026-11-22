@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " N ",
+    "SHD",
+    " W "
+  ],
+  "key": {
+    "N": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "S": {
+      "item": "pinkkicore:galgame_soul"
+    },
+    "H": {
+      "item": "minecraft:heart_of_the_sea"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "W": {
+      "item": "minecraft:pink_wool"
+    }
+  },
+  "result": {
+    "item": "pinkkicore:galgame_heart"
+  }
+}

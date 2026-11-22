@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "pinkkicore:block/sword_in_stone"
+    },
+    "facing=east": {
+      "model": "pinkkicore:block/sword_in_stone",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "pinkkicore:block/sword_in_stone",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "pinkkicore:block/sword_in_stone",
+      "y": 270
+    }
+  }
+}

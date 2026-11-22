@@ -1,0 +1,85 @@
+{
+  "type": "silentgear:standard",
+  "simple": true,
+  "harvest_tier": "minecraft:netherite",
+  "availability": {
+    "tier": 5,
+    "categories": [
+      "metal"
+    ],
+    "visible": true,
+    "gear_blacklist": [],
+    "can_salvage": true
+  },
+  "crafting_items": {
+    "main": {
+      "item": "pinkkicore:galgame_soul"
+    }
+  },
+  "name": {
+    "translate": "material.pinkkicore.galgame_soul"
+  },
+  "stats": {
+    "main": {
+      "durability": 1800,
+      "armor_durability": 39,
+      "enchantment_value": 15,
+      "rarity": 94,
+      "charging_value": 1,
+      "repair_value": 0.25,
+      "harvest_speed": 12,
+      "melee_damage": 5.5,
+      "attack_speed": 0.55,
+      "ranged_damage": 3,
+      "ranged_speed": 0.1,
+      "projectile_speed": 1.1,
+      "projectile_accuracy": 1.1,
+      "armor": 20,
+      "armor/helmet": 3,
+      "armor/chestplate": 8,
+      "armor/leggings": 6,
+      "armor/boots": 3,
+      "armor_toughness": 10
+    },
+    "rod": {
+      "durability": {
+        "mul2": 0.05
+      },
+      "harvest_speed": {
+        "mul2": 0.15
+      },
+      "attack_speed": {
+        "add": 0.3
+      }
+    }
+  },
+  "model": {
+    "main/all": [
+      {
+        "texture": "silentgear:main_generic_lc",
+        "color": "#F483B9"
+      }
+    ],
+    "main/fragment": [
+      {
+        "texture": "silentgear:main_generic_lc",
+        "color": "#F483B9"
+      }
+    ],
+    "rod/all": [
+      {
+        "texture": "silentgear:rod_generic_lc",
+        "color": "#F483B9"
+      }
+    ],
+    "rod/part": [
+      {
+        "texture": "silentgear:rod",
+        "color": "#F483B9"
+      }
+    ]
+  },
+  "name_prefix": {
+    "translate": "material.pinkkicore.galgame_soul"
+  }
+}

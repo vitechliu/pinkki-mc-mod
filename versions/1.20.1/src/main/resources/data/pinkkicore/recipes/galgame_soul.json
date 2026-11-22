@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PDP",
+    "EFR",
+    "PGP"
+  ],
+  "key": {
+    "P": {
+      "item": "pinkkicore:pink_ingot"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "E": {
+      "item": "minecraft:emerald"
+    },
+    "F": {
+      "item": "pinkkicore:favorite_person"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    }
+  },
+  "result": {
+    "item": "pinkkicore:galgame_soul"
+  }
+}

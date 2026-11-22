@@ -18,9 +18,9 @@ class GuideContentTest(unittest.TestCase):
         self.assertEqual([entry['title'] for entry in entries.values()], ['序章', '材料', '工作方块', '基础武器', '药水效果', '生物'])
         self.assertIn('pinkkicore:guide_book', recipe_ids(entries['handbook']))
         self.assertIn('pinkkicore:guaba_conversion/dirt_to_mud', recipe_ids(entries['work-blocks']))
-        self.assertEqual([b['toc'] for b in entries['work-blocks']['blocks'] if 'toc' in b], ['瓜巴工作台', '瓜巴充能台'])
-        self.assertEqual([b['toc'] for b in entries['creatures']['blocks'] if 'toc' in b][:2], ['瓜巴龙与变种', '粉红妹'])
-        self.assertEqual([b['toc'] for b in entries['weapons']['blocks'] if 'toc' in b], ['瓜巴剑', '瓜巴弓', '饰品'])
+        self.assertEqual([b['toc'] for b in entries['work-blocks']['blocks'] if 'toc' in b], ['瓜巴工作台', '瓜巴充能台', '石中剑', '旮旯游戏机'])
+        self.assertEqual([b['toc'] for b in entries['creatures']['blocks'] if 'toc' in b][:3], ['张小弟与张哥', '瓜巴龙与变种', '粉红妹'])
+        self.assertEqual([b['toc'] for b in entries['weapons']['blocks'] if 'toc' in b], ['瓜巴剑', '瓜巴弓', '饰品', '最爱之人', '旮旯之心'])
         self.assertTrue(any(b['type'] == 'brewing' for b in entries['guaba-potions']['blocks']))
         self.assertTrue(any(b['type'] == 'potion_stats' for b in entries['guaba-potions']['blocks']))
         for block_type in ('brewing', 'potion_stats'):
@@ -68,6 +68,14 @@ class GuideContentTest(unittest.TestCase):
                 icons = [block for block in blocks if block['type'] == 'item' and block['id'].endswith('guaba_dragon_egg')]
                 recipes = [block for block in blocks if block['type'] == 'recipe' and 'guaba_dragon_egg' in block['id']]
                 self.assertEqual((len(species), len(icons), len(recipes)), (1, 5, 8) if minecraft == '1.20.1' else (0, 0, 0))
+
+    def test_galgame_recipes_only_ship_in_primary_guide(self):
+        expected = {f'pinkkicore:{name}' for name in
+                    ('sword_in_stone', 'galgame_arcade', 'galgame_soul', 'favorite_person', 'galgame_heart')}
+        for target in ('1.20.1', '1.19.1', '1.21.1'):
+            book = guide.compile_book(minecraft_version=target)
+            recipes = {recipe for entry in book['entries'] for recipe in recipe_ids(entry)}
+            self.assertEqual(recipes & expected, expected if target == '1.20.1' else set())
 
     def temporary_wiki(self):
         temporary = tempfile.TemporaryDirectory()

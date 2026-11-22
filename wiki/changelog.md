@@ -1,5 +1,10 @@
 # 更新记录
 
+## 2026-11-22 · 张家与旮旯
+
+- 1.20.1 新增[石中剑和张家](./galgame.md#sword-in-stone)，召唤后可获得张哥之爱。
+- 新增[旮旯游戏机](./galgame.md#galgame-arcade)、[旮旯之魂](./galgame.md#galgame-soul)和两件[粉饰](./galgame.md#favorite-person)。
+
 ## 2026-11-22 · 百科与瓜巴手册
 
 - [百科](./guide.md)和 1.20.1 [瓜巴手册](./handbook.md)按六个主题组织，手册根据已安装的联动模组显示相关材料特性。

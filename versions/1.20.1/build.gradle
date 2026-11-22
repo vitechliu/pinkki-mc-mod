@@ -5,6 +5,10 @@ plugins {
 }
 apply from: '../../gradle/forge.gradle'
 
+minecraft {
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+}
+
 repositories {
     maven { url = "https://maven.theillusivec4.top/"; content { includeGroup "top.theillusivec4.curios" } }
     maven { url = 'https://api.modrinth.com/maven'; content { includeGroup 'maven.modrinth' } }
@@ -262,4 +266,25 @@ if (project.hasProperty('factionProbe')) {
     }
     reobf { factionProbeJar { classpath.from(sourceSets.factionProbe.compileClasspath) } }
     tasks.named('factionProbeJar').configure { finalizedBy 'reobfFactionProbeJar' }
+}
+
+tasks.named('jar', Jar).configure {
+    manifest.attributes('MixinConfigs': 'pinkkicore.galgame.mixins.json')
+}
+
+
+if (project.hasProperty('galgameProbe')) {
+    sourceSets {
+        galgameProbe {
+            java.srcDir '../../scripts/tests/galgame_probe'
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        }
+    }
+    tasks.register('galgameProbeJar', Jar) {
+        archiveFileName = 'galgame-probe.jar'
+        from sourceSets.galgameProbe.output
+        from('../../scripts/tests/galgame_probe/mods.toml') { into 'META-INF' }
+    }
+    reobf { galgameProbeJar { classpath.from(sourceSets.galgameProbe.compileClasspath) } }
+    tasks.named('galgameProbeJar').configure { finalizedBy 'reobfGalgameProbeJar' }
 }

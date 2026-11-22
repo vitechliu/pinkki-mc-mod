@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " B ",
+    "FAF",
+    " F "
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:black_dye"
+    },
+    "F": {
+      "item": "pinkkicore:zhang_fav"
+    },
+    "A": {
+      "item": "minecraft:armor_stand"
+    }
+  },
+  "result": {
+    "item": "pinkkicore:favorite_person"
+  }
+}

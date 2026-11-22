@@ -1,0 +1,13 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="MIT"
+[[mods]]
+modId="pinkkicore_galgame_probe"
+version="1.0.0"
+displayName="PinkkiCore Galgame headless probe"
+[[dependencies.pinkkicore_galgame_probe]]
+modId="pinkkicore"
+mandatory=true
+versionRange="[0,)"
+ordering="AFTER"
+side="SERVER"

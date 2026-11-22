@@ -28,6 +28,8 @@ public final class GuabaPotions {
     static final JsonObject SPEC = loadSpec();
     private static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, ModInfo.ID);
     private static final DeferredRegister<Potion> POTIONS = DeferredRegister.create(ForgeRegistries.POTIONS, ModInfo.ID);
+    public static final RegistryObject<MobEffect> GALGAME = EFFECTS.register("galgame",
+        io.github.vitech.pinkkicore.forge.galgame.GalgameEffect::new);
     public static final RegistryObject<MobEffect> GUABA = EFFECTS.register("guaba", GuabaEffect::new);
 
     public static final RegistryObject<MobEffect> THUNDER_GUABA = EFFECTS.register("thunder_guaba", ThunderGuabaEffect::new);

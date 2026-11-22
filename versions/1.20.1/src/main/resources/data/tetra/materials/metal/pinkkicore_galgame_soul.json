@@ -1,0 +1,39 @@
+{
+  "primary": 8.5,
+  "secondary": 2.5,
+  "tertiary": 4.25,
+  "durability": 1800,
+  "integrityCost": 2,
+  "integrityGain": 9,
+  "magicCapacity": 100,
+  "toolLevel": "minecraft:netherite",
+  "toolEfficiency": 12,
+  "requiredTools": {
+    "hammer_dig": "minecraft:diamond"
+  },
+  "key": "pinkkicore_galgame_soul",
+  "category": "pinkkicore_galgame_soul",
+  "tints": {
+    "glyph": "F483B9",
+    "texture": "F483B9"
+  },
+  "textures": [
+    "metal",
+    "default"
+  ],
+  "material": {
+    "items": [
+      "pinkkicore:galgame_soul"
+    ],
+    "count": 1
+  },
+  "effects": {
+    "pinkkicore_galgame_soul": 1
+  },
+  "features": [
+    "pinkkicore_galgame_soul"
+  ],
+  "attributes": {
+    "generic.attack_speed": 0.3
+  }
+}

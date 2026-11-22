@@ -61,6 +61,7 @@ final class DreamMaterials {
     private static final class Tetra {
         private static final ItemEffect CLOUD = ItemEffect.get("pinkkicore_cloud_dream");
         private static final ItemEffect NETHER = ItemEffect.get("pinkkicore_nether_dream");
+        private static final ItemEffect GALGAME = ItemEffect.get("pinkkicore_galgame_soul");
 
         static int effects(ItemStack stack) {
             if (!(stack.getItem() instanceof IModularItem item) || item.isBroken(stack)) {
@@ -68,7 +69,8 @@ final class DreamMaterials {
             }
             int cloud = item.getEffectLevel(stack, CLOUD) > 0 ? DreamEquipment.CLOUD : 0;
             int nether = item.getEffectLevel(stack, NETHER) > 0 ? DreamEquipment.NETHER : 0;
-            return cloud | nether;
+            int galgame = item.getEffectLevel(stack, GALGAME) > 0 ? DreamEquipment.GALGAME : 0;
+            return cloud | nether | galgame;
         }
     }
 }

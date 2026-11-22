@@ -1,6 +1,7 @@
 package io.github.vitech.pinkkicore.forge.dream;
 
 import io.github.vitech.pinkkicore.core.ModInfo;
+import io.github.vitech.pinkkicore.forge.galgame.GalgameEquipment;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -9,6 +10,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
@@ -23,6 +25,9 @@ import java.util.UUID;
 public final class DreamEquipment {
     static final int CLOUD = 1;
     static final int NETHER = 2;
+    static final int GALGAME = 4;
+    private static final UUID GALGAME_SPEED = UUID.fromString("79596ebc-bc0f-49ad-8c2e-5a064f039c61");
+    private static final UUID GALGAME_HEALTH = UUID.fromString("0e2b8b25-5b60-46e0-8e56-db09ca307d56");
     private static final UUID LIGHTWEIGHT = UUID.fromString("d5230124-d8d8-4cee-8daa-49a6e1a09535");
     private static final UUID NETHER_ATTACK = UUID.fromString("2a3a6b58-94a1-4663-b677-522ecec0440f");
     private static final UUID NETHER_ARMOR = UUID.fromString("453a383d-1d9e-45dc-a895-18a76b001a00");
@@ -60,10 +65,12 @@ public final class DreamEquipment {
         int held = active ? effects(mainHand) : 0;
         boolean lightweight = (held & CLOUD) != 0;
         double armorBonus = 0;
+        boolean galgameArmor = false;
         for (EquipmentSlot slot : ARMOR_SLOTS) {
             ItemStack armor = player.getItemBySlot(slot);
             int worn = active ? effects(armor) : 0;
             lightweight |= (worn & CLOUD) != 0;
+            galgameArmor |= (worn & GALGAME) != 0 && contributes(armor, slot, Attributes.ARMOR);
             if (inNether && (worn & NETHER) != 0 && contributes(armor, slot, Attributes.ARMOR)) {
                 armorBonus += 2;
             }
@@ -76,6 +83,32 @@ public final class DreamEquipment {
             netherAttack ? 2 : 0, AttributeModifier.Operation.ADDITION);
         update(player.getAttribute(Attributes.ARMOR), NETHER_ARMOR, "pinkkicore.nether_dream_armor",
             armorBonus, AttributeModifier.Operation.ADDITION);
+        boolean galgameHeld = (held & GALGAME) != 0 && isWeapon(mainHand);
+        update(player.getAttribute(Attributes.MOVEMENT_SPEED), GALGAME_SPEED, "pinkkicore.galgame_soul_speed",
+            galgameArmor || galgameHeld ? 0.08 : 0, AttributeModifier.Operation.MULTIPLY_TOTAL);
+        AttributeInstance health = player.getAttribute(Attributes.MAX_HEALTH);
+        boolean removingHealth = !galgameArmor && health != null && health.getModifier(GALGAME_HEALTH) != null;
+        update(health, GALGAME_HEALTH, "pinkkicore.galgame_soul_health",
+            galgameArmor ? 2 : 0, AttributeModifier.Operation.ADDITION);
+        if (removingHealth && player.getHealth() > player.getMaxHealth()) {
+            player.setHealth(player.getMaxHealth());
+        }
+        if (galgameArmor) {
+            GalgameEquipment.refreshArmor(player);
+        }
+    }
+
+    public static boolean containsGalgameSoul(ItemStack stack) {
+        return (effects(stack) & GALGAME) != 0;
+    }
+
+    public static boolean qualifiesAsGalgameWeapon(ItemStack stack) {
+        return isWeapon(stack) && containsGalgameSoul(stack);
+    }
+
+    private static boolean isWeapon(ItemStack stack) {
+        return stack.getItem() instanceof ProjectileWeaponItem
+            || contributes(stack, EquipmentSlot.MAINHAND, Attributes.ATTACK_DAMAGE);
     }
 
     private static boolean contributes(ItemStack stack, EquipmentSlot slot, Attribute attribute) {
@@ -123,6 +156,7 @@ public final class DreamEquipment {
         return switch (id.getPath()) {
             case "cloud_dream", "guaba_cloud_dream" -> CLOUD;
             case "nether_dream", "guaba_nether_dream" -> NETHER;
+            case "galgame_soul" -> GALGAME;
             default -> 0;
         };
     }

@@ -147,10 +147,16 @@ def main():
     parser.add_argument('--java-home', type=Path, required=True, help='JDK 17 目录')
     parser.add_argument('--cases', default=','.join(CASES))
     parser.add_argument('--dream-probe', type=Path, help='以重混淆的 dream-probe.jar 验证梦系道具')
+    parser.add_argument('--galgame-probe', type=Path, help='以重混淆的 galgame-probe.jar 验证张家与旮旯')
+    parser.add_argument('--curios', type=Path, help='增加 curios 测试组，并向 all 与 all-current 加入指定前置')
     parser.add_argument('--current-tinkers', type=Path, nargs=2, metavar=('TCONSTRUCT', 'MANTLE'),
                         help='增加 all-current 组合，替换其中的匠魂和 Mantle 发行包')
     args = parser.parse_args()
+    if args.galgame_probe and args.dream_probe:
+        parser.error('Select at most one feature probe')
     available_cases = set(CASES)
+    if args.curios:
+        available_cases.add('curios')
     if args.current_tinkers:
         available_cases.add('all-current')
     selected = args.cases.split(',')
@@ -172,8 +178,9 @@ def main():
             raise ValueError(f'Hash mismatch: {path}')
         shutil.copy2(path, research / path.name)
     libraries = args.libraries.resolve()
-    probe = args.dream_probe.resolve(strict=True) if args.dream_probe else compile_probe(research, libraries, java_home)
-    marker = 'DREAM_PROBE' if args.dream_probe else 'GUABA_COMPAT_PROBE'
+    feature_probe = args.galgame_probe or args.dream_probe
+    probe = feature_probe.resolve(strict=True) if feature_probe else compile_probe(research, libraries, java_home)
+    marker = 'GALGAME_PROBE' if args.galgame_probe else 'DREAM_PROBE' if args.dream_probe else 'GUABA_COMPAT_PROBE'
     props = dict(line.split('=', 1) for line in (ROOT / 'mod.properties').read_text().splitlines()
                  if '=' in line and not line.startswith('#'))
     artifact = ROOT / 'versions/1.20.1/build/libs' / f"{props['mod_id']}-forge-1.20.1-{props['mod_version']}.jar"
@@ -186,10 +193,12 @@ def main():
     artifact = snapshot
     results = []
     for name in selected:
-        dependencies = [research / filename for group in CASES['all' if name == 'all-current' else name]
+        dependencies = [research / filename for group in CASES.get('all' if name == 'all-current' else name, [])
                         for filename in GROUPS[group] if name != 'all-current' or group != 'tconstruct']
         if name == 'all-current':
             dependencies.extend(path.resolve(strict=True) for path in args.current_tinkers)
+        if args.curios and name in {'curios', 'all', 'all-current'}:
+            dependencies.append(args.curios.resolve(strict=True))
         result = check(name, research, libraries, java_home, artifact, probe, args.geckolib.resolve(), eula,
                        dependencies, marker)
         results.append(result)

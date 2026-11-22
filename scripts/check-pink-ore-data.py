@@ -54,7 +54,8 @@ def verify(archive, vanilla=None, *, detailed_guide=False):
     assert modifier == {'type': 'forge:add_features', 'biomes': '#minecraft:is_overworld',
                         'features': ['pinkkicore:ore_pink', 'pinkkicore:ore_pink_large', 'pinkkicore:ore_pink_buried'], 'step': 'underground_ores'}
     for name in ('mineable/pickaxe', 'needs_iron_tool'):
-        assert read(f'data/minecraft/tags/blocks/{name}.json') == {'replace': False, 'values': [f'pinkkicore:{b}' for b in blocks]}
+        tag = read(f'data/minecraft/tags/blocks/{name}.json')
+        assert tag['replace'] is False and {f'pinkkicore:{b}' for b in blocks} <= set(tag['values'])
     assert read('data/pinkkicore/tags/items/materials/tier_1.json')['values'] == ['pinkkicore:guaba', 'pinkkicore:pink_ingot']
     recipe_names = []
     for source in ('raw_pink', 'pink_ore', 'deepslate_pink_ore'):

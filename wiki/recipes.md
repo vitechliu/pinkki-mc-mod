@@ -243,3 +243,9 @@ const items = {
 
 查看[各变体的战斗能力](./bosses.md#pet-guaba-dragons)。
 <!-- /guide-version -->
+
+<!-- wiki-only -->
+## 张家与旮旯
+
+[石中剑、旮旯游戏机、旮旯之魂和粉饰配方](./galgame.md)
+<!-- /wiki-only -->
