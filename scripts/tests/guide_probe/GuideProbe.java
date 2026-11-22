@@ -46,9 +46,20 @@ public final class GuideProbe {
             grid.setItem(0, new ItemStack(Items.DIRT)); check(!recipe.matches(grid, level), "incorrect book ingredient accepted");
             try (var reader = new InputStreamReader(GuideBook.class.getResourceAsStream("/assets/pinkkicore/guide/zh_cn.json"), StandardCharsets.UTF_8)) {
                 var book = GuideBook.read(reader);
-                check(book.entries().size() == 7, "missing Wiki chapters");
-                check(book.entries().stream().anyMatch(e -> e.matches("六面") && e.id().equals("guaba-workbench")), "Chinese body search");
-                check(book.entries().stream().anyMatch(e -> e.matches("瓜巴手册")), "Chinese title search");
+                check(book.entries().stream().map(GuideBook.Entry::title).toList().equals(java.util.List.of(
+                        "序章", "材料", "工作方块", "基础武器", "药水效果", "生物")), "Wiki chapter order");
+                check(book.entries().stream().anyMatch(e -> e.matches("六面") && e.id().equals("work-blocks")), "Chinese body search");
+                check(book.entries().stream().anyMatch(e -> e.matches("瓜巴手册") && e.id().equals("handbook")), "Chinese title search");
+                check(book.entries().stream().anyMatch(e -> e.matches("瓜巴充能台") && e.id().equals("work-blocks")), "subsection title search");
+                var noMods = book.withInstalledMods(mod -> false);
+                check(noMods.entries().stream().noneMatch(e -> e.matches("寂静装备") || e.matches("铁魔法") || e.matches("梦系材料联动")),
+                        "optional entries searchable with no host mods");
+                var tetra = book.withInstalledMods("tetra"::equals);
+                check(tetra.entries().stream().anyMatch(e -> e.matches("Tetra") && e.matches("梦系材料联动")), "Tetra material content missing");
+                check(tetra.entries().stream().noneMatch(e -> e.matches("匠魂") || e.matches("寂静装备")), "uninstalled hosts shown");
+                var twoMods = book.withInstalledMods(mod -> mod.equals("silentgear") || mod.equals("irons_spellbooks"));
+                check(twoMods.entries().stream().anyMatch(e -> e.matches("寂静装备")), "Silent Gear material content missing");
+                check(twoMods.entries().stream().anyMatch(e -> e.matches("铁魔法充能")), "Iron's Spells content missing");
                 for (var entry : book.entries()) for (var block : entry.blocks()) if (block.type().equals("recipe")) {
                     var id = new ResourceLocation(block.id());
                     if (level.getRecipeManager().byKey(id).isPresent()) continue;

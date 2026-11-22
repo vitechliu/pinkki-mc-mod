@@ -9,7 +9,7 @@ import zipfile
 ROOT = Path(__file__).resolve().parent.parent
 
 
-def verify(archive, vanilla=None):
+def verify(archive, vanilla=None, *, detailed_guide=False):
     def read(path):
         return json.loads(archive.read(path))
 
@@ -74,11 +74,17 @@ def verify(archive, vanilla=None):
         recipe = read(f'data/pinkkicore/recipes/{name}.json')
         assert recipe['ingredients'] == [{'item': f'pinkkicore:{large}'}] and recipe['result'] == {'item': f'pinkkicore:{small}', 'count': 9}
         recipe_names.append(name)
+    for name in recipe_names:
+        assert read(f'data/pinkkicore/advancements/recipes/misc/{name}.json')['rewards']['recipes'] == [f'pinkkicore:{name}']
     guide = read('assets/pinkkicore/guide/zh_cn.json')
     guide_ids = {block.get('id') for entry in guide['entries'] for block in entry['blocks'] if block['type'] == 'recipe'}
-    for name in recipe_names:
-        assert f'pinkkicore:{name}' in guide_ids, f'Missing offline recipe diagram {name}'
-        assert read(f'data/pinkkicore/advancements/recipes/misc/{name}.json')['rewards']['recipes'] == [f'pinkkicore:{name}']
+    pink_recipes = {f'pinkkicore:{name}' for name in recipe_names}
+    if detailed_guide:
+        assert pink_recipes <= guide_ids, 'Missing offline Pink Ore recipe diagrams'
+    else:
+        materials = next(entry for entry in guide['entries'] if entry['id'] == 'materials')
+        assert any(block.get('anchor') == 'pink-ore' for block in materials['blocks']), 'Missing Pink Ore material entry'
+        assert pink_recipes.isdisjoint(guide_ids), 'Pink Ore derivative diagrams belong on the Wiki'
 
 
 def main():
@@ -93,7 +99,7 @@ def main():
                 verify(archive, vanilla)
         else:
             verify(archive)
-    print('Pink Ore resources PASS: generation, textures, tags, 12 recipes, unlocks and offline diagrams')
+    print('Pink Ore resources PASS: generation, textures, tags, 12 recipes, unlocks and compact guide entry')
 
 
 if __name__ == '__main__':

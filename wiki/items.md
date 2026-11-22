@@ -6,7 +6,7 @@
 
 > 一切瓜巴的起源
 
-瓜巴是本模组 **1 级基础材料**，可用于[酿造瓜巴药水](./guaba-potions.md)、[瓜巴工作台加工](./guaba-workbench.md)和[其他模组的装备制作](./compatibility.md#guaba)。不可食用，每组最多堆叠 64 个。
+瓜巴是本模组 **1 级基础材料**，可用于[酿造瓜巴药水](./guaba-potions.md)和[瓜巴工作台加工](./guaba-workbench.md)。不可食用，每组最多堆叠 64 个。
 
 获取方式：[西瓜片与泥巴合成](./recipes.md#guaba)。
 
@@ -22,20 +22,24 @@
 ![云梦](/images/cloud_dream.png)
 ![瓜巴云梦](/images/guaba_cloud_dream.png)
 
-在主世界把床放在 **Y=192～196**，入睡至少 5 秒后醒来获得 1 个云梦。云梦加瓜巴可[合成瓜巴云梦](./recipes.md#guaba-cloud-dream)。用作[装备材料](./compatibility.md#dream-materials)时可提高移动速度。
+在主世界把床放在 **Y=192～196**，入睡至少 5 秒后醒来获得 1 个云梦。云梦加瓜巴可[合成瓜巴云梦](./recipes.md#guaba-cloud-dream)。
 
 ## 冥梦与瓜巴冥梦 {#nether-dream}
 
 ![冥梦](/images/nether_dream.png)
 ![瓜巴冥梦](/images/guaba_nether_dream.png)
 
-在下界的[瓜巴床](#guaba-bed)上短睡至自然醒来，获得 1 个冥梦。冥梦加瓜巴可[合成瓜巴冥梦](./recipes.md#guaba-nether-dream)。用作[装备材料](./compatibility.md#dream-materials)时可提高下界作战能力。
+在下界的[瓜巴床](#guaba-bed)上短睡至自然醒来，获得 1 个冥梦。冥梦加瓜巴可[合成瓜巴冥梦](./recipes.md#guaba-nether-dream)。
 
 <!-- /guide-version -->
 
 ## 粉红矿 {#pink-ore}
 
+![粉红锭](/images/pink_ingot.png)
+
 粉红矿与瓜巴同属本模组 **1 级基础材料**；材料等级不代表采掘所需的工具等级。
+
+<!-- guide-summary: 主世界深处的粉红矿可用铁镐开采，矿石或掉落的粗粉红锭可熔炼成粉红锭，粉红粒和储存块可与锭或粗锭互相拆合。 -->
 
 ### 矿石与获取 {#pink-ore-mining}
 
@@ -50,8 +54,6 @@
 ### 粗粉红锭与粉红锭 {#pink-ingot}
 
 ![粗粉红锭](/images/raw_pink.png)
-
-![粉红锭](/images/pink_ingot.png)
 
 粗粉红锭或两种粉红矿石均可用[熔炉或高炉](./recipes.md#pink-smelting)炼成粉红锭，每份原料产出 1 锭。
 
@@ -77,7 +79,7 @@
 
 安装 JEI 后，在雷霆瓜巴上按 **R**，或在瓜巴上按 **U**，可查看“雷击转换”页面。
 
-雷霆瓜巴不可食用，每组最多 64 个。它天然耐火，也不会被后续雷击销毁；可用于[酿造雷霆瓜巴药水](./guaba-potions.md#thunder-guaba)，或作为[二级装备材料](./compatibility.md#thunder-guaba)。
+雷霆瓜巴不可食用，每组最多 64 个。它天然耐火，也不会被后续雷击销毁，可用于[酿造雷霆瓜巴药水](./guaba-potions.md#thunder-guaba)。
 
 ## 饼蛙刷怪蛋 {#bingwa-spawn-egg}
 
@@ -123,7 +125,11 @@
 
 用[避雷针、附魔台与雷霆瓜巴有序合成](./recipes.md#guaba-charging-station)。右键打开，左侧放原料、右侧取产物；每次消耗 1 个原料，约 1 秒完成，不需要额外瓜巴、燃料或能量。
 
-可把瓜巴转成雷霆瓜巴、苦力怕刷怪蛋转成闪电苦力怕刷怪蛋；同时安装铁魔法还可加工[雷电瓶和雷霆符文](./recipes.md#irons-charging)，查看[充能配方](./recipes.md#guaba-charging)。右上角提供与瓜巴工作台相同的四态红石控制；六面可设为输入、输出、双向或禁用，默认底面输出、其余面输入。输出满、产物不兼容或红石暂停时会等待，不吞材料。可用漏斗或物品管道自动化，并在 JEI 查询加工来源。
+可把瓜巴转成雷霆瓜巴、苦力怕刷怪蛋转成闪电苦力怕刷怪蛋，见[充能配方](./recipes.md#guaba-charging)。右上角提供与瓜巴工作台相同的四态红石控制；六面可设为输入、输出、双向或禁用，默认底面输出、其余面输入。输出满、产物不兼容或红石暂停时会等待，不吞材料。可用漏斗或物品管道自动化，并在 JEI 查询加工来源。
+
+<!-- guide-mod: irons_spellbooks -->
+安装铁魔法后还可加工[雷电瓶和雷霆符文](./recipes.md#irons-charging)。
+<!-- /guide-mod -->
 
 ## 闪电苦力怕刷怪蛋 {#charged-creeper-spawn-egg}
 

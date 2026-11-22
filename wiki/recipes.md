@@ -143,15 +143,17 @@ const items = {
 
 查看[充电桩操作与自动化](./items.md#guaba-charging-station)。
 
+<!-- guide-mod: irons_spellbooks -->
 ## 铁魔法充能联动 {#irons-charging}
 
-同时安装 Iron’s Spells ’n Spellbooks 时，瓜巴充电桩增加以下配方，每次 1 个原料转换为 1 个产物，耗时约 1 秒。
+安装 Iron’s Spells ’n Spellbooks 后，每次可将 1 个原料转换为 1 个产物，耗时约 1 秒。
 
 <GuabaCharging :recipe="chargeLightningBottle" :items="items" />
 
 <GuabaCharging :recipe="chargeLightningRune" :items="items" />
 
 不需要额外瓜巴或能量，也不改变铁魔法原有获取途径；支持漏斗、物品管道和 JEI 配方查询。
+<!-- /guide-mod -->
 
 ## 粉红矿熔炼 {#pink-smelting}
 

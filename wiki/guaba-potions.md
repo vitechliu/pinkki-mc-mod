@@ -16,7 +16,9 @@ const numerals = ['I', 'II', 'III', 'IV']
 
 所有等级都可能加速或减速、增加或降低护甲。移速以原来的 100% 为中心对称波动；护甲修正以 0 为中心对称波动。实际护甲最低为 0，不足以抵扣负修正时不会变成负护甲，实际减伤仍遵循游戏规则。
 
+<!-- guide-mod: silentgear,tconstruct,tetra -->
 使用瓜巴材料制作的[兼容装备](./compatibility.md#guaba)近战命中时，也可使目标获得持续 10 秒的瓜巴 I。
+<!-- /guide-mod -->
 
 ## 酿造
 

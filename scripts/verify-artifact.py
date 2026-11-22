@@ -46,7 +46,7 @@ def verify_legacy(archive, deps):
     import runpy
     generator = runpy.run_path(str(ROOT / 'scripts/generate-guide.py'))
     assert json.loads(archive.read('assets/pinkkicore/guide/zh_cn.json')) == generator['compile_book'](minecraft_version='1.19.1')
-    runpy.run_path(str(ROOT / 'scripts/check-pink-ore-data.py'))['verify'](archive)
+    runpy.run_path(str(ROOT / 'scripts/check-pink-ore-data.py'))['verify'](archive, detailed_guide=True)
     for path in archive.namelist():
         if path.endswith('.class'):
             assert struct.unpack('>H', archive.read(path)[6:8])[0] <= 61, f'Java >17: {path}'

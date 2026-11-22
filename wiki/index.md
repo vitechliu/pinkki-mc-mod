@@ -3,7 +3,7 @@ layout: home
 hero:
   name: PinkkiCore
   text: 冒险，从这里开始。
-  tagline: 玩家 Wiki · 基础框架已就绪，游戏内容陆续补充。
+  tagline: 查阅瓜巴材料、工作方块、药水与生物。
   actions:
     - theme: brand
       text: 开始阅读
@@ -12,17 +12,13 @@ hero:
       text: 查看项目
       link: https://github.com/vitechliu/pinkki-mc-mod
 features:
-  - title: 道具与合成
-    details: 查阅基础材料瓜巴及其无序合成配方（1.20.1，开发中未发布）。
-    link: /items
-  - title: 结构与多方块
-    details: 查阅世界结构、搭建方式与激活条件。当前尚无已实装条目。
-    link: /multiblocks
-  - title: 生物与 Boss
-    details: 查阅中立生物饼蛙及其刷怪蛋、指令召唤与反击规则（1.20.1，开发中未发布）。
-    link: /bosses
+  - title: 材料
+    details: 查阅瓜巴、雷霆瓜巴、粉红矿和梦系材料的获取与用途。
+    link: /items#guaba
+  - title: 工作方块
+    details: 用瓜巴工作台和瓜巴充电桩加工材料。
+    link: /guaba-workbench
+  - title: 生物
+    details: 了解瓜巴龙、宠物变种、粉红妹、瓜巴影融和饼蛙。
+    link: /bosses#guaba-dragon
 ---
-
-::: info 内容状态
-瓜巴、瓜巴工作台与饼蛙已在 1.20.1 开发版本实现，尚未发布。其他分类仍有占位页面；设计稿不代表已加入游戏。各条目的适用版本与状态以正文为准。
-:::

@@ -14,6 +14,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -29,6 +30,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraftforge.common.brewing.BrewingRecipe;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /** Native offline reader. All layout and Minecraft references stay on the client. */
@@ -40,6 +42,7 @@ public final class GuideScreen extends Screen {
     private final Deque<Location> history = new ArrayDeque<>();
     private final List<Row> rows = new ArrayList<>();
     private final List<Button> sidebar = new ArrayList<>();
+    private final List<RenderedItem> renderedItems = new ArrayList<>();
     private GuideBook book;
     private String page = lastPage, query = "";
     private int scroll = lastScroll, listScroll, contentHeight;
@@ -49,14 +52,14 @@ public final class GuideScreen extends Screen {
     private boolean loadFailed;
     private record Location(String page, int scroll) {}
     private record Row(int y, int height, FormattedCharSequence text, GuideBook.Block block) {}
-    private record Hovered(ItemStack stack, int x, int y) {}
-    private Hovered hovered;
+    private record NavLink(String label, String target, boolean subsection) {}
+    public record RenderedItem(ItemStack stack, Rect2i area) {}
 
     public GuideScreen() { super(Component.translatable("item.pinkkicore.guide_book")); }
     @Override protected void init() {
         if (book == null) {
             try (var reader = new InputStreamReader(minecraft.getResourceManager().open(CONTENT), StandardCharsets.UTF_8)) {
-                book = GuideBook.read(reader);
+                book = GuideBook.read(reader).withInstalledMods(ModList.get()::isLoaded);
             } catch (Exception error) {
                 LogUtils.getLogger().error("Cannot load PinkkiCore guide", error);
                 loadFailed = true;
@@ -72,35 +75,68 @@ public final class GuideScreen extends Screen {
         bodyWidth = panelWidth - sidebarWidth - 30; bodyHeight = panelHeight - 72;
         search = new EditBox(font, left + 10, top + 30, sidebarWidth - 12, 18, Component.translatable("guide.pinkkicore.search"));
         search.setMaxLength(80); search.setHint(Component.translatable("guide.pinkkicore.search")); search.setValue(query);
-        search.setResponder(value -> { query = value; listScroll = 0; refreshSidebar(); });
+        search.setResponder(value -> { query = value; listScroll = 0; refreshSidebar(true); });
         addRenderableWidget(search);
         back = addRenderableWidget(Button.builder(Component.translatable("guide.pinkkicore.back"), button -> {
-            if (!history.isEmpty()) { var previous = history.pop(); page = previous.page; scroll = previous.scroll; layout(); }
+            if (!history.isEmpty()) {
+                var previous = history.pop();
+                boolean changedChapter = !page.equals(previous.page);
+                page = previous.page;
+                scroll = previous.scroll;
+                layout();
+                if (changedChapter) refreshSidebar(true);
+            }
         }).bounds(bodyX, top + 28, 48, 20).build());
         addRenderableWidget(Button.builder(Component.translatable("gui.done"), button -> onClose())
                 .bounds(left + panelWidth - 54, top + 28, 44, 20).build());
-        sidebar.clear(); refreshSidebar(); layout();
+        sidebar.clear(); refreshSidebar(true); layout();
     }
     private GuideBook.Entry entry(String id) {
         return book.entries().stream().filter(e -> e.id().equals(id)).findFirst().orElse(null);
     }
-    private List<GuideBook.Entry> filtered() { return book.entries().stream().filter(e -> e.matches(query)).toList(); }
-    private void refreshSidebar() {
+    private List<NavLink> navigation() {
+        var links = new ArrayList<NavLink>();
+        String needle = query.strip().toLowerCase(Locale.ROOT);
+        for (var chapter : book.entries()) {
+            if (!chapter.matches(needle)) continue;
+            links.add(new NavLink(chapter.title(), chapter.id(), false));
+            if (!needle.isEmpty() || chapter.id().equals(page)) {
+                for (var block : chapter.blocks()) {
+                    if (!block.toc().isEmpty() && (needle.isEmpty() || block.toc().toLowerCase(Locale.ROOT).contains(needle)
+                            || block.text().toLowerCase(Locale.ROOT).contains(needle))) {
+                        links.add(new NavLink(block.toc(), chapter.id() + "#" + block.anchor(), true));
+                    }
+                }
+            }
+        }
+        return links;
+    }
+    private void refreshSidebar(boolean revealChapter) {
         sidebar.forEach(this::removeWidget); sidebar.clear();
-        List<GuideBook.Entry> matches = filtered();
+        List<NavLink> links = navigation();
         int capacity = Math.max(1, (panelHeight - 68) / 24);
-        listScroll = Math.max(0, Math.min(listScroll, Math.max(0, matches.size() - capacity)));
-        for (int i = listScroll; i < Math.min(matches.size(), listScroll + capacity); i++) {
-            var e = matches.get(i);
-            var button = Button.builder(Component.literal(e.title()), b -> {
-                navigate(e.id());
-                if (!query.isBlank()) {
-                    String needle = query.toLowerCase(Locale.ROOT);
+        listScroll = Math.max(0, Math.min(listScroll, Math.max(0, links.size() - capacity)));
+        if (revealChapter && query.isBlank()) {
+            for (int i = 0; i < links.size(); i++) {
+                if (!links.get(i).target.equals(page)) continue;
+                listScroll = Math.max(i - capacity + 1, Math.min(i, listScroll));
+                break;
+            }
+        }
+        for (int i = listScroll; i < Math.min(links.size(), listScroll + capacity); i++) {
+            var link = links.get(i);
+            int indent = link.subsection ? 10 : 0;
+            int buttonWidth = sidebarWidth - 12 - indent;
+            String label = font.plainSubstrByWidth(link.label, buttonWidth - 6);
+            var button = Button.builder(Component.literal(label), b -> {
+                navigate(link.target);
+                if (!query.isBlank() && !link.subsection) {
+                    String needle = query.strip().toLowerCase(Locale.ROOT);
                     rows.stream().filter(r -> r.text != null && plain(r.text).toLowerCase(Locale.ROOT).contains(needle))
                             .findFirst().ifPresent(r -> scroll = r.y);
                     clamp();
                 }
-            }).bounds(left + 10, top + 58 + (i - listScroll) * 24, sidebarWidth - 12, 20).build();
+            }).bounds(left + 10 + indent, top + 58 + (i - listScroll) * 24, buttonWidth, 20).build();
             sidebar.add(addRenderableWidget(button));
         }
     }
@@ -112,10 +148,12 @@ public final class GuideScreen extends Screen {
     private void navigate(String target) {
         String[] parts = target.split("#", 2);
         if (entry(parts[0]) == null) return;
+        boolean changedChapter = !page.equals(parts[0]);
         history.push(new Location(page, scroll)); page = parts[0]; scroll = 0; layout();
         if (parts.length == 2) rows.stream().filter(r -> r.block != null && r.block.anchor().equals(parts[1]))
                 .findFirst().ifPresent(r -> scroll = r.y);
         clamp();
+        if (changedChapter) refreshSidebar(true);
     }
     private Component rich(String text) {
         var result = Component.empty();
@@ -184,7 +222,10 @@ public final class GuideScreen extends Screen {
         }
         clamp();
     }
-    private void clamp() { scroll = Math.max(0, Math.min(scroll, Math.max(0, contentHeight - bodyHeight))); }
+    private void clamp() {
+        scroll = Math.max(0, Math.min(scroll, Math.max(0, contentHeight - bodyHeight)));
+        renderedItems.clear();
+    }
     @Override public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         renderBackground(graphics);
         graphics.fill(left, top, left + panelWidth, top + panelHeight, 0xFFF1E9D7);
@@ -192,13 +233,13 @@ public final class GuideScreen extends Screen {
         graphics.drawString(font, font.plainSubstrByWidth(title.getString(), sidebarWidth-12), left + 10, top + 12, 0x42382E, false);
         graphics.drawString(font, font.plainSubstrByWidth(entry(page).title(), bodyWidth), bodyX, top + 12, 0x42382E, false);
         back.active = !history.isEmpty();
-        hovered = null;
+        renderedItems.clear();
         graphics.enableScissor(bodyX, bodyY, bodyX + bodyWidth, bodyY + bodyHeight);
         for (var row : rows) {
             int y = bodyY + row.y - scroll;
             if (y + row.height < bodyY || y > bodyY + bodyHeight) continue;
             if (row.text != null) graphics.drawString(font, row.text, bodyX, y, 0x302A23, false);
-            else drawBlock(graphics, row.block, bodyX, y, mouseX, mouseY);
+            else drawBlock(graphics, row.block, bodyX, y);
         }
         graphics.disableScissor();
         if (contentHeight > bodyHeight) {
@@ -208,39 +249,52 @@ public final class GuideScreen extends Screen {
             graphics.fill(bodyX + bodyWidth - 3, sy, bodyX + bodyWidth, sy + thumb, 0xFF857052);
         }
         super.render(graphics, mouseX, mouseY, partialTick);
-        if (filtered().isEmpty()) graphics.drawString(font, Component.translatable("guide.pinkkicore.no_results"), left+10, top+60, 0x42382E, false);
-        if (hovered != null) graphics.renderTooltip(font, hovered.stack, mouseX, mouseY);
+        if (sidebar.isEmpty()) graphics.drawString(font, Component.translatable("guide.pinkkicore.no_results"), left+10, top+60, 0x42382E, false);
+        itemAt(mouseX, mouseY).ifPresent(item -> graphics.renderTooltip(font, item.stack, mouseX, mouseY));
     }
     private ItemStack sample(Ingredient ingredient) {
         ItemStack[] items = ingredient.getItems();
         return items.length == 0 ? ItemStack.EMPTY : items[(int)((Util.getMillis()/1500) % items.length)].copy();
     }
-    private void slot(GuiGraphics graphics, ItemStack stack, int x, int y, int mouseX, int mouseY) {
+    private void slot(GuiGraphics graphics, ItemStack stack, int x, int y) {
         graphics.fill(x, y, x+20, y+20, 0xFF79756E); graphics.fill(x+1, y+1, x+20, y+20, 0xFFFEFAEF);
         graphics.fill(x+1, y+1, x+19, y+19, 0xFFA39E93);
         if (!stack.isEmpty()) {
             graphics.renderItem(stack, x+2, y+2); graphics.renderItemDecorations(font, stack, x+2, y+2);
-            if (mouseY >= bodyY && mouseY < bodyY+bodyHeight && mouseX >= x && mouseX < x+20 && mouseY >= y && mouseY < y+20)
-                hovered = new Hovered(stack, x, y);
+            int visibleLeft = Math.max(x, bodyX);
+            int visibleTop = Math.max(y, bodyY);
+            int visibleRight = Math.min(x + 20, bodyX + bodyWidth - (contentHeight > bodyHeight ? 3 : 0));
+            int visibleBottom = Math.min(y + 20, bodyY + bodyHeight);
+            if (visibleLeft < visibleRight && visibleTop < visibleBottom) {
+                renderedItems.add(new RenderedItem(stack,
+                        new Rect2i(visibleLeft, visibleTop, visibleRight - visibleLeft, visibleBottom - visibleTop)));
+            }
         }
+    }
+    public Optional<RenderedItem> itemAt(double mouseX, double mouseY) {
+        return renderedItems.stream().filter(item -> {
+            var area = item.area;
+            return mouseX >= area.getX() && mouseX < area.getX() + area.getWidth()
+                    && mouseY >= area.getY() && mouseY < area.getY() + area.getHeight();
+        }).findFirst();
     }
     private void label(GuiGraphics g, Component label, int x, int y) {
         g.drawString(font, font.plainSubstrByWidth(label.getString(), Math.max(30, bodyX+bodyWidth-x-12)), x, y, 0x594B38, false);
     }
-    private void drawBlock(GuiGraphics g, GuideBook.Block block, int x, int y, int mx, int my) {
+    private void drawBlock(GuiGraphics g, GuideBook.Block block, int x, int y) {
         if (block.type().equals("item")) {
             var item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(block.id()));
-            if (item != null) { var stack = new ItemStack(item); slot(g, stack, x, y, mx, my); label(g, stack.getHoverName(), x+26, y+6); }
+            if (item != null) { var stack = new ItemStack(item); slot(g, stack, x, y); label(g, stack.getHoverName(), x+26, y+6); }
             return;
         }
         if (block.type().equals("brewing_rule")) {
             var recipe = (BrewingRecipe)BrewingRecipeRegistry.getRecipes().get(Integer.parseInt(block.id()));
             label(g, Component.translatable("guide.pinkkicore.brewing"), x, y);
-            slot(g, sample(recipe.getInput()), x, y+18, mx,my);
+            slot(g, sample(recipe.getInput()), x, y+18);
             g.drawString(font, "+", x+25, y+24, 0x594B38, false);
-            slot(g, sample(recipe.getIngredient()), x+38, y+18, mx,my);
+            slot(g, sample(recipe.getIngredient()), x+38, y+18);
             g.drawString(font, "→", x+65, y+24, 0x594B38, false);
-            slot(g, recipe.getOutput(), x+84, y+18, mx,my);
+            slot(g, recipe.getOutput(), x+84, y+18);
             label(g, recipe.getOutput().getHoverName(), x, y+46);
             return;
         }
@@ -252,33 +306,33 @@ public final class GuideScreen extends Screen {
             for (int i=0; i<9; i++) {
                 int ix=i%3, iy=i/3, index=iy*columns+ix;
                 boolean present = ix<columns && (!(crafting instanceof ShapedRecipe shaped) || iy<shaped.getHeight()) && index<crafting.getIngredients().size();
-                slot(g, present ? sample(crafting.getIngredients().get(index)) : ItemStack.EMPTY, x+ix*22, y+16+iy*22, mx,my);
+                slot(g, present ? sample(crafting.getIngredients().get(index)) : ItemStack.EMPTY, x+ix*22, y+16+iy*22);
             }
             g.drawString(font, "→", x+75, y+43, 0x594B38, false);
-            slot(g, crafting.getResultItem(minecraft.level.registryAccess()), x+96, y+38, mx,my);
+            slot(g, crafting.getResultItem(minecraft.level.registryAccess()), x+96, y+38);
         } else if (recipe instanceof AbstractCookingRecipe cooking) {
             label(g, Component.translatable(cooking instanceof BlastingRecipe ? "guide.pinkkicore.blasting" : "guide.pinkkicore.smelting"), x, y);
-            slot(g, sample(cooking.getIngredients().get(0)), x, y+22, mx,my);
+            slot(g, sample(cooking.getIngredients().get(0)), x, y+22);
             g.drawString(font, "→", x+37, y+28, 0x9A5125, false);
-            slot(g, cooking.getResultItem(minecraft.level.registryAccess()), x+62, y+22, mx,my);
+            slot(g, cooking.getResultItem(minecraft.level.registryAccess()), x+62, y+22);
             label(g, Component.translatable("guide.pinkkicore.cooking_time", cooking.getCookingTime()/20, cooking.getExperience()), x, y+55);
         } else if (recipe instanceof GuabaConversionRecipe conversion) {
             label(g, Component.translatable("block.pinkkicore.guaba_workbench"), x, y);
             var input = sample(conversion.getIngredients().get(0)); input.setCount(conversion.inputCount());
-            slot(g, new ItemStack(ModItems.GUABA.get(), Math.max(1, conversion.guabaCost())), x, y+17, mx,my);
-            slot(g, input, x, y+40, mx,my); g.drawString(font, "→", x+37, y+45, 0x594B38, false);
-            slot(g, conversion.getResultItem(minecraft.level.registryAccess()), x+62, y+40, mx,my);
+            slot(g, new ItemStack(ModItems.GUABA.get(), Math.max(1, conversion.guabaCost())), x, y+17);
+            slot(g, input, x, y+40); g.drawString(font, "→", x+37, y+45, 0x594B38, false);
+            slot(g, conversion.getResultItem(minecraft.level.registryAccess()), x+62, y+40);
             label(g, Component.translatable(conversion.guabaCost()==0 ? "guide.pinkkicore.catalyst" : "guide.pinkkicore.cost", conversion.guabaCost()), x, y+68);
         } else if (recipe instanceof io.github.vitech.pinkkicore.forge.charging.GuabaChargingRecipe charging) {
             label(g, Component.translatable("block.pinkkicore.guaba_charging_station"), x, y);
-            slot(g, sample(charging.getIngredients().get(0)), x, y+40, mx,my);
+            slot(g, sample(charging.getIngredients().get(0)), x, y+40);
             g.drawString(font, "→", x+37, y+45, 0x28687C, false);
-            slot(g, charging.getResultItem(minecraft.level.registryAccess()), x+62, y+40, mx,my);
+            slot(g, charging.getResultItem(minecraft.level.registryAccess()), x+62, y+40);
         } else label(g, Component.translatable("guide.pinkkicore.unavailable"), x, y);
     }
     @Override public boolean mouseScrolled(double x, double y, double delta) {
         if (x >= left && x < bodyX && y >= top+54 && y < top+panelHeight) {
-            listScroll -= (int)Math.signum(delta); refreshSidebar(); return true;
+            listScroll -= (int)Math.signum(delta); refreshSidebar(false); return true;
         }
         if (x >= bodyX && x < bodyX+bodyWidth && y >= bodyY && y < bodyY+bodyHeight) {
             scroll -= (int)(delta*26); clamp(); return true;
@@ -304,5 +358,8 @@ public final class GuideScreen extends Screen {
         return super.keyPressed(key,scan,modifiers);
     }
     @Override public boolean isPauseScreen() { return false; }
-    @Override public void removed() { if (!loadFailed) { lastPage=page; lastScroll=scroll; } }
+    @Override public void removed() {
+        renderedItems.clear();
+        if (!loadFailed) { lastPage=page; lastScroll=scroll; }
+    }
 }

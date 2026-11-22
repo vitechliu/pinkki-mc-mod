@@ -12,19 +12,42 @@ export default defineConfig({
       { text: '开始阅读', link: '/guide' }
     ],
     sidebar: [
-      { text: '玩家指南', items: [
-        { text: '项目与版本', link: '/guide' },
+      { text: '序章', items: [
+        { text: '模组简介', link: '/guide' },
         { text: '瓜巴手册', link: '/handbook' },
-        { text: '道具与方块', link: '/items' },
-        { text: '瓜巴药水', link: '/guaba-potions' },
+        { text: '项目版本与模组依赖', link: '/guide#versions' }
+      ] },
+      { text: '材料', items: [
+        { text: '瓜巴', link: '/items#guaba' },
+        { text: '雷霆瓜巴', link: '/items#thunder-guaba' },
+        { text: '粉红矿', link: '/items#pink-ore' },
+        { text: '云梦与瓜巴云梦', link: '/items#cloud-dream' },
+        { text: '冥梦与瓜巴冥梦', link: '/items#nether-dream' },
+        { text: '装备材料联动', link: '/compatibility#guaba' }
+      ] },
+      { text: '工作方块', items: [
         { text: '瓜巴工作台', link: '/guaba-workbench' },
-        { text: '合成与加工', link: '/recipes' },
-        { text: '模组兼容', link: '/compatibility' },
-        { text: '世界结构', link: '/structures' },
-        { text: '多方块', link: '/multiblocks' },
-        { text: '生物与 Boss', link: '/bosses' },
-        { text: '更新记录', link: '/changelog' }
-      ] }
+        { text: '瓜巴充能台', link: '/items#guaba-charging-station' }
+      ] },
+      { text: '基础武器', items: [
+        { text: '瓜巴剑', link: '/items#guaba-sword' },
+        { text: '瓜巴弓', link: '/items#guaba-bow' },
+        { text: '饰品', link: '/items#guaba-hood' }
+      ] },
+      { text: '药水效果', items: [
+        { text: '瓜巴药水', link: '/guaba-potions' },
+        { text: '雷霆瓜巴药水', link: '/guaba-potions#thunder-guaba' }
+      ] },
+      { text: '生物', items: [
+        { text: '瓜巴龙与变种', link: '/bosses#guaba-dragon' },
+        { text: '粉红妹', link: '/bosses#pinkki' },
+        { text: '瓜巴影融', link: '/bosses#guaba-yingrong' },
+        { text: '饼蛙', link: '/bosses#bingwa' },
+        { text: '闪电苦力怕', link: '/items#charged-creeper-spawn-egg' },
+        { text: '阵营与野外掉落', link: '/bosses#factions' }
+      ] },
+      { text: '合成与加工', link: '/recipes' },
+      { text: '更新记录', link: '/changelog' }
     ],
     search: { provider: 'local', options: { locales: { root: { translations: {
       button: { buttonText: '搜索文档', buttonAriaLabel: '搜索文档' },

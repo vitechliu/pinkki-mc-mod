@@ -6,16 +6,26 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Predicate;
 
 /** Content model only: also loadable on a dedicated server for artifact validation. */
 public record GuideBook(List<Entry> entries) {
-    public record Block(String type, String text, String id, String anchor) {}
+    public record Block(String type, String text, String id, String anchor, String toc, List<String> requiredMods) {
+        public Block(String type, String text, String id, String anchor) {
+            this(type, text, id, anchor, "", List.of());
+        }
+    }
     public record Entry(String id, String title, List<Block> blocks) {
         public boolean matches(String query) {
             String needle = query.strip().toLowerCase(Locale.ROOT);
-            return (title + " " + blocks.stream().map(Block::text).reduce("", (a, b) -> a + " " + b))
-                    .toLowerCase(Locale.ROOT).contains(needle);
+            return title.toLowerCase(Locale.ROOT).contains(needle) || blocks.stream().anyMatch(block ->
+                    block.text().toLowerCase(Locale.ROOT).contains(needle) || block.toc().toLowerCase(Locale.ROOT).contains(needle));
         }
+    }
+    public GuideBook withInstalledMods(Predicate<String> isLoaded) {
+        return new GuideBook(entries.stream().map(entry -> new Entry(entry.id(), entry.title(), entry.blocks().stream()
+                .filter(block -> block.requiredMods().isEmpty() || block.requiredMods().stream().anyMatch(isLoaded))
+                .toList())).toList());
     }
     private static String string(JsonObject obj, String name) {
         return obj.has(name) ? obj.get(name).getAsString() : "";
@@ -33,7 +43,12 @@ public record GuideBook(List<Entry> entries) {
                 String type = string(block, "type");
                 if (!List.of("text", "heading", "item", "recipe", "brewing", "potion_stats").contains(type))
                     throw new IllegalArgumentException("Unknown guide block: " + type);
-                blocks.add(new Block(type, string(block, "text"), string(block, "id"), string(block, "anchor")));
+                var requiredMods = new ArrayList<String>();
+                if (block.has("requiredMods")) {
+                    for (var mod : block.getAsJsonArray("requiredMods")) requiredMods.add(mod.getAsString());
+                }
+                blocks.add(new Block(type, string(block, "text"), string(block, "id"), string(block, "anchor"),
+                        string(block, "toc"), List.copyOf(requiredMods)));
             }
             String id = string(object, "id");
             if (id.isBlank() || !ids.add(id)) throw new IllegalArgumentException("Invalid/duplicate guide entry: " + id);
