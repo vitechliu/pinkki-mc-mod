@@ -38,11 +38,19 @@ public final class ModEntities {
         EntityType.Builder.of(ZhangEntity::new, MobCategory.MONSTER)
             .sized(1.3F, 3.8F).clientTrackingRange(10).build(ModInfo.ID + ":big_zhang"));
 
+    public static final RegistryObject<EntityType<NiumoMob>> BULLMAN = ENTITIES.register("bullman", () ->
+        EntityType.Builder.<NiumoMob>of(NiumoMob.Bullman::new, MobCategory.MONSTER)
+            .sized(0.7F, 2.05F).clientTrackingRange(8).build(ModInfo.ID + ":bullman"));
+    public static final RegistryObject<EntityType<NiumoMob>> LAO_CAI = ENTITIES.register("lao_cai", () ->
+        EntityType.Builder.<NiumoMob>of(NiumoMob.LaoCai::new, MobCategory.CREATURE)
+            .sized(0.7F, 1.45F).clientTrackingRange(8).build(ModInfo.ID + ":lao_cai"));
+
     private ModEntities() {}
 
     public static void register(IEventBus bus) {
         ENTITIES.register(bus);
         bus.addListener(ModEntities::attributes);
+        bus.addListener(NiumoSpawns::register);
         bus.addListener(WildlifeSpawns::register);
         bus.addListener((net.minecraftforge.event.entity.SpawnPlacementRegisterEvent event) ->
             event.register(GUABA_DRAGON.get(), net.minecraft.world.entity.SpawnPlacements.Type.ON_GROUND,
@@ -55,6 +63,8 @@ public final class ModEntities {
         event.put(PINKKI.get(), PinkkiEntity.createAttributes().build());
         event.put(GUABA_DRAGON.get(), GuabaDragonEntity.createAttributes().build());
         event.put(PET_GUABA_DRAGON.get(), PetGuabaDragonEntity.createAttributes().build());
+        event.put(BULLMAN.get(), NiumoMob.attributes(true).build());
+        event.put(LAO_CAI.get(), NiumoMob.attributes(false).build());
         event.put(BINGWA.get(), BingwaEntity.createAttributes().build());
         event.put(LITTLE_ZHANG.get(), ZhangEntity.attributes(1).build());
         event.put(BIG_ZHANG.get(), ZhangEntity.attributes(4).build());

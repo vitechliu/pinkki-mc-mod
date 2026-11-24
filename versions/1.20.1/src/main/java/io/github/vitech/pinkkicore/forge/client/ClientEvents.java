@@ -18,6 +18,7 @@ public final class ClientEvents {
     private ClientEvents() {}
     @SubscribeEvent public static void setup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
+            MenuScreens.register(io.github.vitech.pinkkicore.forge.niumo.NiumoTable.MENU.get(), NiumoTableScreen::new);
             MenuScreens.register(WorkbenchContent.MENU.get(), GuabaWorkbenchScreen::new);
             MenuScreens.register(io.github.vitech.pinkkicore.forge.charging.ChargingContent.MENU.get(), GuabaChargingScreen::new);
             ItemProperties.register(ModItems.GUABA_BOW.get(), new ResourceLocation("pull"), (stack, level, entity, seed) ->
@@ -29,6 +30,8 @@ public final class ClientEvents {
     @SubscribeEvent public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.GUABA_YINGRONG.get(), GuabaYingrongRenderer::new);
         event.registerEntityRenderer(ModEntities.PINKKI.get(), PinkkiRenderer::new);
+        event.registerEntityRenderer(ModEntities.BULLMAN.get(), ctx -> new NiumoMobRenderer(ctx, "bullman"));
+        event.registerEntityRenderer(ModEntities.LAO_CAI.get(), ctx -> new NiumoMobRenderer(ctx, "lao_cai"));
         event.registerEntityRenderer(ModEntities.LITTLE_ZHANG.get(), ZhangRenderer::new);
         event.registerEntityRenderer(ModEntities.BIG_ZHANG.get(), ZhangRenderer::new);
         event.registerEntityRenderer(ModEntities.BINGWA.get(), BingwaRenderer::new);

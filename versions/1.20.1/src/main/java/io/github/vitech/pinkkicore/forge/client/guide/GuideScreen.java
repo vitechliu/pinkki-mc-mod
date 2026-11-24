@@ -328,6 +328,14 @@ public final class GuideScreen extends Screen {
             slot(g, sample(charging.getIngredients().get(0)), x, y+40);
             g.drawString(font, "→", x+37, y+45, 0x28687C, false);
             slot(g, charging.getResultItem(minecraft.level.registryAccess()), x+62, y+40);
+        } else if (recipe instanceof io.github.vitech.pinkkicore.forge.niumo.NiumoRecipe niumo) {
+            label(g, Component.translatable("block.pinkkicore.niumo_table"), x, y);
+            var input = sample(niumo.getIngredients().get(0)).copy();
+            input.setCount(niumo.inputCount());
+            slot(g, input, x, y + 40);
+            g.drawString(font, "→", x + 37, y + 45, 0x594B38, false);
+            slot(g, niumo.getResultItem(minecraft.level.registryAccess()), x + 62, y + 40);
+            g.renderItem(new ItemStack(ModItems.NIUMO.get()), x + 33, y + 63);
         } else label(g, Component.translatable("guide.pinkkicore.unavailable"), x, y);
     }
     @Override public boolean mouseScrolled(double x, double y, double delta) {

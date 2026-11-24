@@ -74,6 +74,7 @@ public final class GalgameProbe {
                     level.setBlockAndUpdate(new BlockPos(x, CENTER.getY() - 1, z), Blocks.STONE.defaultBlockState());
                 }
             }
+            NiumoChecks.run(level);
             recipes(level);
             summon(level);
             combat(level);
@@ -90,6 +91,7 @@ public final class GalgameProbe {
             if (ModList.get().isLoaded("tetra")) {
                 GalgameGearChecks.Tetra.run(level);
             }
+            NiumoChecks.spawns(level);
             System.out.println("GALGAME_PROBE PASS");
         } catch (Throwable error) {
             System.out.println("GALGAME_PROBE FAIL " + error.getMessage());

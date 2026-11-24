@@ -1,0 +1,11 @@
+{
+  "type": "pinkkicore:niumo_table",
+  "ingredient": {
+    "item": "minecraft:golden_apple"
+  },
+  "input_count": 8,
+  "result": {
+    "item": "minecraft:enchanted_golden_apple",
+    "count": 1
+  }
+}

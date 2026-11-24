@@ -52,6 +52,10 @@ public final class ModItems {
     public static final RegistryObject<Item> GALGAME_ARCADE = ITEMS.register("galgame_arcade",
         () -> new BlockItem(GalgameBlocks.GALGAME_ARCADE.get(), new Item.Properties()));
     public static final RegistryObject<Item> ZHANG_FAV = ITEMS.register("zhang_fav", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> NIUMO = ITEMS.register("pinkki_nm", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> DEMON_SOUL = ITEMS.register("demon_soul", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> NIUMO_HELMET = ITEMS.register("niumo_helmet", () -> new AccessoryItem("niumo_helmet"));
+    public static final RegistryObject<Item> NIUMO_WHISKERS = ITEMS.register("niumo_whiskers", () -> new AccessoryItem("niumo_whiskers"));
     public static final RegistryObject<Item> GALGAME_SOUL = ITEMS.register("galgame_soul", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> FAVORITE_PERSON = ITEMS.register("favorite_person",
         () -> new AccessoryItem("favorite_person"));
@@ -96,6 +100,8 @@ public final class ModItems {
         if (event.getTabKey() == CreativeModeTabs.COMBAT) { event.accept(GUABA_HOOD); event.accept(PINK_BLESSING); event.accept(GUABA_SWORD); event.accept(GUABA_BOW); }
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(ZHANG_FAV);
+            event.accept(NIUMO);
+            event.accept(DEMON_SOUL);
             event.accept(GALGAME_SOUL);
             event.accept(GUABA);
             event.accept(THUNDER_GUABA);
@@ -106,10 +112,13 @@ public final class ModItems {
         }
         if (event.getTabKey() == CreativeModeTabs.COMBAT) {
             event.accept(FAVORITE_PERSON);
+            event.accept(NIUMO_HELMET);
+            event.accept(NIUMO_WHISKERS);
             event.accept(GALGAME_HEART);
         }
         if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
             event.accept(SWORD_IN_STONE);
+            event.accept(io.github.vitech.pinkkicore.forge.niumo.NiumoTable.ITEM);
             event.accept(GALGAME_ARCADE);
             event.accept(WorkbenchContent.ITEM);
             event.accept(GUABA_BED);

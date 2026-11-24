@@ -3,6 +3,7 @@ package io.github.vitech.pinkkicore.forge.client.jei;
 import io.github.vitech.pinkkicore.core.ModInfo;
 import io.github.vitech.pinkkicore.forge.client.GuabaWorkbenchScreen;
 import io.github.vitech.pinkkicore.forge.client.GuabaChargingScreen;
+import io.github.vitech.pinkkicore.forge.client.NiumoTableScreen;
 import io.github.vitech.pinkkicore.forge.client.guide.GuideScreen;
 import io.github.vitech.pinkkicore.forge.charging.ChargingContent;
 import io.github.vitech.pinkkicore.forge.workbench.WorkbenchContent;
@@ -72,6 +73,9 @@ public final class GuabaJeiPlugin implements IModPlugin {
         registration.addRecipeClickArea(GuabaWorkbenchScreen.class, 76, 52, 28, 20, GuabaConversionCategory.TYPE);
         registration.addGuiContainerHandler(GuabaWorkbenchScreen.class, new IGuiContainerHandler<GuabaWorkbenchScreen>() {
             @Override public List<Rect2i> getGuiExtraAreas(GuabaWorkbenchScreen screen) { return screen.getExtraGuiAreas(); }
+        });
+        registration.addGuiContainerHandler(NiumoTableScreen.class, new IGuiContainerHandler<NiumoTableScreen>() {
+            @Override public List<Rect2i> getGuiExtraAreas(NiumoTableScreen screen) { return screen.getExtraGuiAreas(); }
         });
     }
 

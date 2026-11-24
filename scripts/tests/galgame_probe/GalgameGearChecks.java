@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -32,6 +33,7 @@ import static io.github.vitech.pinkkicore.test.GalgameProbe.require;
 
 final class GalgameGearChecks {
     private static final String SOUL = "pinkkicore:galgame_soul";
+    private static final String DEMON = "pinkkicore:demon_soul";
 
     private GalgameGearChecks() {}
 
@@ -54,7 +56,18 @@ final class GalgameGearChecks {
             shoot(level, "Silent Gear crossbow", gear(SOUL, "crossbow", types[3], false), true);
             shoot(level, "Silent Gear slingshot", gear(SOUL, "slingshot", types[4], false), false);
             shoot(level, "Silent Gear trident", gear(SOUL, "trident", types[5], true), false);
-            System.out.println("GALGAME_PROBE Silent Gear sword, chestplate, bow, crossbow, slingshot and trident");
+            var demonMaterial = net.silentchaos512.gear.gear.material.MaterialManager.get(new ResourceLocation(DEMON));
+            require(demonMaterial != null && demonMaterial.getIngredient().test(new ItemStack(ModItems.DEMON_SOUL.get())),
+                "Silent Gear Demon Soul ingredient");
+            demonMelee(level, "Silent Gear", gear(DEMON, "sword", types[0], true));
+            demonArmor(level, "Silent Gear", gear(DEMON, "chestplate", types[1], false));
+            String[] ranged = {"bow", "crossbow", "slingshot", "trident"};
+            for (int index = 0; index < ranged.length; index++) {
+                String name = ranged[index];
+                shoot(level, "Silent Gear " + name, gear(DEMON, name, types[index + 2], name.equals("trident")),
+                    name.equals("crossbow"), true);
+            }
+            System.out.println("GALGAME_PROBE Silent Gear Galgame/Demon Soul sword, armor, bow, crossbow, slingshot and trident");
         }
 
         private static ItemStack gear(String material, String name, net.silentchaos512.gear.api.item.GearType type,
@@ -79,33 +92,41 @@ final class GalgameGearChecks {
             var mapping = slimeknights.tconstruct.library.recipe.material.MaterialRecipeCache.findRecipe(
                 new ItemStack(ModItems.GALGAME_SOUL.get()));
             require(mapping != null && mapping.getMaterial().getId().equals(id), "Tinkers ingredient mapping");
-            plating(level);
-            var sword = gear("sword", 3);
+            plating(level, SOUL, ModItems.GALGAME_SOUL.get());
+            var sword = gear(SOUL, "sword", 3);
             require(sword.getMaxDamage() > 1200, "Tinkers durability improvement");
             melee(level, "Tinkers", sword);
-            armor(level, "Tinkers", gear("plate_chestplate", 2));
-            shoot(level, "Tinkers longbow", gear("longbow", 3), false);
-            System.out.println("GALGAME_PROBE Tinkers sword, armor plating, chestplate and longbow");
+            armor(level, "Tinkers", gear(SOUL, "plate_chestplate", 2));
+            shoot(level, "Tinkers longbow", gear(SOUL, "longbow", 3), false);
+            var demonId = new slimeknights.tconstruct.library.materials.definition.MaterialId(DEMON);
+            var demonRecipe = slimeknights.tconstruct.library.recipe.material.MaterialRecipeCache.findRecipe(
+                new ItemStack(ModItems.DEMON_SOUL.get()));
+            require(demonRecipe != null && demonRecipe.getMaterial().getId().equals(demonId), "Tinkers Demon Soul ingredient");
+            plating(level, DEMON, ModItems.DEMON_SOUL.get());
+            demonMelee(level, "Tinkers", gear(DEMON, "sword", 3));
+            demonArmor(level, "Tinkers", gear(DEMON, "plate_chestplate", 2));
+            shoot(level, "Tinkers longbow", gear(DEMON, "longbow", 3), false, true);
+            System.out.println("GALGAME_PROBE Tinkers Galgame/Demon Soul sword, plating, chestplate and longbow");
         }
 
-        private static void plating(ServerLevel level) {
+        private static void plating(ServerLevel level, String material, Item ingredient) {
             var pos = new BlockPos(9, GalgameProbe.CENTER.getY(), 11);
             var builder = Objects.requireNonNull(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("tconstruct:part_builder")));
             level.setBlockAndUpdate(pos, builder.defaultBlockState());
             var bench = (slimeknights.tconstruct.tables.block.entity.table.PartBuilderBlockEntity) level.getBlockEntity(pos);
             require(bench != null, "Tinkers part builder");
             bench.setItem(1, new ItemStack(item("tconstruct:pattern")));
-            bench.setItem(0, new ItemStack(ModItems.GALGAME_SOUL.get(), 6));
+            bench.setItem(0, new ItemStack(ingredient, 6));
             bench.selectRecipe(new slimeknights.tconstruct.library.recipe.partbuilder.Pattern(new ResourceLocation("tconstruct:chestplate_plating")));
             var plate = bench.calcResult(null);
             require(plate.is(item("tconstruct:chestplate_plating"))
-                && ((slimeknights.tconstruct.library.tools.part.IMaterialItem) plate.getItem()).getMaterial(plate).getId().toString().equals(SOUL),
+                && ((slimeknights.tconstruct.library.tools.part.IMaterialItem) plate.getItem()).getMaterial(plate).getId().toString().equals(material),
                 "Tinkers armor plating recipe");
         }
 
-        private static ItemStack gear(String name, int parts) {
+        private static ItemStack gear(String id, String name, int parts) {
             var material = slimeknights.tconstruct.library.materials.MaterialRegistry.getMaterial(
-                new slimeknights.tconstruct.library.materials.definition.MaterialId(SOUL));
+                new slimeknights.tconstruct.library.materials.definition.MaterialId(id));
             var materials = new slimeknights.tconstruct.library.materials.definition.IMaterial[parts];
             Arrays.fill(materials, material);
             if (name.equals("longbow")) {
@@ -144,7 +165,30 @@ final class GalgameGearChecks {
             var thrown = new se.mickelus.tetra.items.modular.ThrownModularItemEntity(level, user, knife);
             require(level.addFreshEntity(thrown), "Tetra knife projectile fixture");
             hit(level, "Tetra knife", user, thrown);
-            System.out.println("GALGAME_PROBE Tetra sword, modular bow and thrown knife");
+            var demon = se.mickelus.tetra.data.DataManager.instance.materialData.getData(
+                new ResourceLocation("tetra:metal/pinkkicore_demon_soul"));
+            require(demon != null && demon.material.getApplicableItemStacks()[0].is(ModItems.DEMON_SOUL.get()),
+                "Tetra Demon Soul ingredient");
+            sword = new ItemStack(item("tetra:modular_sword"));
+            apply(sword, "sword/basic_blade", "basic_blade/pinkkicore_demon_soul");
+            apply(sword, "sword/basic_hilt", "basic_hilt/pinkkicore_demon_soul");
+            assemble(sword, level);
+            demonMelee(level, "Tetra", sword);
+            bow = new ItemStack(item("tetra:modular_bow"));
+            apply(bow, "bow/straight_stave", "straight_stave/pinkkicore_demon_soul");
+            apply(bow, "bow/basic_string", "basic_string/string");
+            assemble(bow, level);
+            shoot(level, "Tetra bow", bow, false, true);
+            knife = new ItemStack(item("tetra:modular_sword"));
+            apply(knife, "sword/throwing_knife", "throwing_knife/pinkkicore_demon_soul");
+            apply(knife, "sword/basic_hilt", "basic_hilt/iron");
+            assemble(knife, level);
+            user = GalgameProbe.player(level);
+            require(level.addFreshEntity(user), "Tetra Demon Soul knife shooter fixture");
+            thrown = new se.mickelus.tetra.items.modular.ThrownModularItemEntity(level, user, knife);
+            require(level.addFreshEntity(thrown), "Tetra Demon Soul knife projectile fixture");
+            hit(level, "Tetra knife", user, thrown, true);
+            System.out.println("GALGAME_PROBE Tetra Galgame/Demon Soul sword, bow and knife");
         }
 
         private static void apply(ItemStack item, String path, String variant) {
@@ -200,8 +244,45 @@ final class GalgameGearChecks {
         require(!player.hasEffect(effect), host + " removed armor renewed Galgame");
     }
 
+    private static void demonMelee(ServerLevel level, String host, ItemStack weapon) {
+        require(DreamEquipment.qualifiesAsDemonWeapon(weapon), host + " valid Demon Soul weapon");
+        var player = GalgameProbe.player(level);
+        var victim = target(level, true);
+        NiumoChecks.buff(victim);
+        player.setItemSlot(EquipmentSlot.MAINHAND, weapon);
+        GalgameProbe.tick(player);
+        player.attack(victim);
+        require(victim.getHealth() < 80 && !victim.hasEffect(MobEffects.MOVEMENT_SPEED)
+            && !player.hasEffect(GuabaPotions.GALGAME.get()), host + " Demon Soul melee trait");
+    }
+
+    private static void demonArmor(ServerLevel level, String host, ItemStack armor) {
+        require(DreamEquipment.containsDemonSoul(armor), host + " valid Demon Soul armor");
+        var wearer = EntityType.ZOMBIE.create(level);
+        wearer.setItemSlot(EquipmentSlot.CHEST, armor);
+        var zombie = EntityType.ZOMBIE.create(level);
+        NiumoChecks.buff(zombie);
+        require(wearer.hurt(level.damageSources().mobAttack(zombie), 3)
+            && !zombie.hasEffect(MobEffects.MOVEMENT_SPEED), host + " Demon Soul melee armor retaliation");
+        var arrow = new net.minecraft.world.entity.projectile.Arrow(level, zombie);
+        NiumoChecks.buff(zombie);
+        wearer.invulnerableTime = 0;
+        require(wearer.hurt(level.damageSources().arrow(arrow, zombie), 3)
+            && !zombie.hasEffect(MobEffects.MOVEMENT_SPEED), host + " Demon Soul ranged armor retaliation");
+        wearer.setItemSlot(EquipmentSlot.CHEST, ItemStack.EMPTY);
+        wearer.invulnerableTime = 0;
+        NiumoChecks.buff(zombie);
+        require(wearer.hurt(level.damageSources().mobAttack(zombie), 3)
+            && zombie.hasEffect(MobEffects.MOVEMENT_SPEED), host + " armor trait persisted after unequip");
+    }
+
     private static void shoot(ServerLevel level, String label, ItemStack weapon, boolean chargedCrossbow) {
-        require(DreamEquipment.containsGalgameSoul(weapon), label + " valid ranged material");
+        shoot(level, label, weapon, chargedCrossbow, false);
+    }
+
+    private static void shoot(ServerLevel level, String label, ItemStack weapon, boolean chargedCrossbow, boolean demon) {
+        require(demon ? DreamEquipment.containsDemonSoul(weapon) : DreamEquipment.containsGalgameSoul(weapon),
+            label + " valid ranged material");
         var user = GalgameProbe.player(level);
         user.setItemSlot(EquipmentSlot.MAINHAND, weapon);
         user.setItemSlot(EquipmentSlot.OFFHAND,
@@ -224,30 +305,44 @@ final class GalgameGearChecks {
         }
         var arrows = level.getEntitiesOfClass(AbstractArrow.class, origin, arrow -> arrow.getOwner() == user);
         require(arrows.size() == 1, label + " post-launch arrow count: " + arrows.size());
-        hit(level, label, user, arrows.get(0));
+        hit(level, label, user, arrows.get(0), demon);
     }
 
     private static void hit(ServerLevel level, String label, ServerPlayer user, AbstractArrow arrow) {
+        hit(level, label, user, arrow, false);
+    }
+
+    private static void hit(ServerLevel level, String label, ServerPlayer user, AbstractArrow arrow, boolean demon) {
         var effect = GuabaPotions.GALGAME.get();
         require(!user.hasEffect(effect), label + " applied Galgame before hit");
         user.stopUsingItem();
         user.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.STICK));
-        var victim = target(level);
+        var victim = target(level, demon);
+        if (demon) NiumoChecks.buff(victim);
         victim.setPos(GalgameProbe.CENTER.getX() + .5, GalgameProbe.CENTER.getY(), GalgameProbe.CENTER.getZ() + .5);
         require(level.addFreshEntity(victim), label + " target fixture");
         arrow.setPos(victim.getX() - 1.1, victim.getY() + .6, victim.getZ());
         arrow.setDeltaMovement(new Vec3(1.6, 0, 0));
         arrow.tick();
         require(victim.getHealth() < victim.getMaxHealth(), label + " projectile did not hit");
-        require(user.hasEffect(effect) && user.getEffect(effect).getAmplifier() == 0 && !victim.hasEffect(effect),
-            label + " hit did not buff shooter after weapon swap");
+        if (demon) {
+            require(!victim.hasEffect(MobEffects.MOVEMENT_SPEED) && !user.hasEffect(effect),
+                label + " did not apply Demon Soul after weapon swap");
+        } else {
+            require(user.hasEffect(effect) && user.getEffect(effect).getAmplifier() == 0 && !victim.hasEffect(effect),
+                label + " hit did not buff shooter after weapon swap");
+        }
         arrow.discard();
         victim.discard();
         level.removePlayerImmediately(user, net.minecraft.world.entity.Entity.RemovalReason.DISCARDED);
     }
 
     private static LivingEntity target(ServerLevel level) {
-        var target = EntityType.COW.create(level);
+        return target(level, false);
+    }
+
+    private static LivingEntity target(ServerLevel level, boolean demon) {
+        var target = demon ? EntityType.SHEEP.create(level) : EntityType.COW.create(level);
         target.getAttribute(Attributes.MAX_HEALTH).setBaseValue(80);
         target.setHealth(80);
         target.setNoAi(true);

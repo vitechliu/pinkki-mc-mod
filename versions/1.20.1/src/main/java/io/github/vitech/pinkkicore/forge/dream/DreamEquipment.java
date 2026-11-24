@@ -26,6 +26,7 @@ public final class DreamEquipment {
     static final int CLOUD = 1;
     static final int NETHER = 2;
     static final int GALGAME = 4;
+    static final int DEMON = 8;
     private static final UUID GALGAME_SPEED = UUID.fromString("79596ebc-bc0f-49ad-8c2e-5a064f039c61");
     private static final UUID GALGAME_HEALTH = UUID.fromString("0e2b8b25-5b60-46e0-8e56-db09ca307d56");
     private static final UUID LIGHTWEIGHT = UUID.fromString("d5230124-d8d8-4cee-8daa-49a6e1a09535");
@@ -106,6 +107,22 @@ public final class DreamEquipment {
         return isWeapon(stack) && containsGalgameSoul(stack);
     }
 
+    public static boolean containsDemonSoul(ItemStack stack) {
+        return (effects(stack) & DEMON) != 0;
+    }
+
+    public static boolean qualifiesAsDemonWeapon(ItemStack stack) {
+        return isWeapon(stack) && containsDemonSoul(stack);
+    }
+
+    public static boolean wearsDemonArmor(net.minecraft.world.entity.LivingEntity wearer) {
+        for (EquipmentSlot slot : ARMOR_SLOTS) {
+            ItemStack armor = wearer.getItemBySlot(slot);
+            if (contributes(armor, slot, Attributes.ARMOR) && containsDemonSoul(armor)) return true;
+        }
+        return false;
+    }
+
     private static boolean isWeapon(ItemStack stack) {
         return stack.getItem() instanceof ProjectileWeaponItem
             || contributes(stack, EquipmentSlot.MAINHAND, Attributes.ATTACK_DAMAGE);
@@ -157,6 +174,7 @@ public final class DreamEquipment {
             case "cloud_dream", "guaba_cloud_dream" -> CLOUD;
             case "nether_dream", "guaba_nether_dream" -> NETHER;
             case "galgame_soul" -> GALGAME;
+            case "demon_soul" -> DEMON;
             default -> 0;
         };
     }

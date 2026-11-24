@@ -2,6 +2,7 @@ package io.github.vitech.pinkkicore.forge.compat.galgame;
 
 import io.github.vitech.pinkkicore.core.ModInfo;
 import io.github.vitech.pinkkicore.forge.dream.DreamEquipment;
+import io.github.vitech.pinkkicore.forge.niumo.NiumoCombat;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -13,9 +14,9 @@ public final class GalgameProjectiles {
     private GalgameProjectiles() {}
 
     public static void record(Projectile projectile, LivingEntity shooter, ItemStack launcher) {
-        if (!projectile.level().isClientSide && DreamEquipment.containsGalgameSoul(launcher)) {
-            record(projectile, shooter);
-        }
+        if (projectile.level().isClientSide) return;
+        if (DreamEquipment.containsGalgameSoul(launcher)) record(projectile, shooter);
+        NiumoCombat.recordWeaponLaunch(projectile, shooter, DreamEquipment.containsDemonSoul(launcher));
     }
 
     static void record(Projectile projectile, LivingEntity shooter) {

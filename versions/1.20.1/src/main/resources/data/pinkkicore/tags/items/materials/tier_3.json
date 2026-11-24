@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "pinkkicore:galgame_soul"
+    "pinkkicore:galgame_soul",
+    "pinkkicore:demon_soul"
   ]
 }

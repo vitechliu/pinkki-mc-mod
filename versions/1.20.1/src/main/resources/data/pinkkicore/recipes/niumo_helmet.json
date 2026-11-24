@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "NNN",
+    "NIN"
+  ],
+  "key": {
+    "N": {
+      "item": "pinkkicore:pinkki_nm"
+    },
+    "I": {
+      "item": "minecraft:iron_helmet"
+    }
+  },
+  "result": {
+    "item": "pinkkicore:niumo_helmet"
+  }
+}

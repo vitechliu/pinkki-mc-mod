@@ -34,6 +34,11 @@ public final class GuabaPotions {
 
     public static final RegistryObject<MobEffect> THUNDER_GUABA = EFFECTS.register("thunder_guaba", ThunderGuabaEffect::new);
 
+    public static final RegistryObject<MobEffect> NIUMO = EFFECTS.register("niumo",
+        io.github.vitech.pinkkicore.forge.niumo.NiumoEffect::new);
+    public static final RegistryObject<Potion> NIUMO_SPLASH = POTIONS.register("niumo",
+        () -> new Potion("niumo", new MobEffectInstance(NIUMO.get(), 1)));
+
     private GuabaPotions() {}
 
     private static JsonObject loadSpec() {

@@ -39,13 +39,36 @@ public final class CuriosIntegration {
             }
         });
         registerPinkki(ModItems.FAVORITE_PERSON.get());
+        CuriosApi.registerCurio(ModItems.NIUMO_HELMET.get(), new ICurioItem() {
+            @Override public boolean canEquip(SlotContext context, ItemStack stack) {
+                return "head".equals(context.identifier()) || GalgameAccessories.SLOT.equals(context.identifier());
+            }
+        });
+        CuriosApi.registerCurio(ModItems.NIUMO_WHISKERS.get(), new ICurioItem() {
+            @Override public boolean canEquip(SlotContext context, ItemStack stack) {
+                return "necklace".equals(context.identifier());
+            }
+        });
         registerPinkki(ModItems.GALGAME_HEART.get());
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, CuriosIntegration::onApplicable);
         MinecraftForge.EVENT_BUS.addListener(CuriosIntegration::onCurioChange);
     }
     public static boolean wearingPinkki(LivingEntity entity, Item item) {
+        return wearingSlot(entity, item, GalgameAccessories.SLOT);
+    }
+
+    public static boolean wearingNiumoHelmet(LivingEntity entity) {
+        var helmet = ModItems.NIUMO_HELMET.get();
+        return wearingSlot(entity, helmet, "head") || wearingPinkki(entity, helmet);
+    }
+
+    public static boolean wearingNiumoWhiskers(LivingEntity entity) {
+        return wearingSlot(entity, ModItems.NIUMO_WHISKERS.get(), "necklace");
+    }
+
+    private static boolean wearingSlot(LivingEntity entity, Item item, String id) {
         var inventory = CuriosApi.getCuriosInventory(entity).resolve();
-        var slot = inventory.flatMap(handler -> handler.getStacksHandler(GalgameAccessories.SLOT));
+        var slot = inventory.flatMap(handler -> handler.getStacksHandler(id));
         if (slot.isEmpty()) {
             return false;
         }
@@ -77,6 +100,10 @@ public final class CuriosIntegration {
         return CuriosApi.getCuriosInventory(entity).map(inv -> inv.findFirstCurio(ModItems.GUABA_HOOD.get()).isPresent()).orElse(false);
     }
     private static void onApplicable(MobEffectEvent.Applicable event) {
+        if (event.getEffectInstance().getEffect() instanceof io.github.vitech.pinkkicore.forge.niumo.NiumoEffect
+            && wearingNiumoHelmet(event.getEntity())) {
+            event.setResult(Event.Result.DENY);
+        }
         if (event.getEffectInstance().getEffect() instanceof GuabaEffectFamily && wearingHood(event.getEntity())) {
             event.setResult(Event.Result.DENY);
         }

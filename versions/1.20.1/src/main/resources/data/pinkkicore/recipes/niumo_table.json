@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GNG",
+    "NEN",
+    "GNG"
+  ],
+  "key": {
+    "G": {
+      "item": "pinkkicore:guaba"
+    },
+    "N": {
+      "item": "pinkkicore:pinkki_nm"
+    },
+    "E": {
+      "item": "minecraft:enchanting_table"
+    }
+  },
+  "result": {
+    "item": "pinkkicore:niumo_table"
+  }
+}

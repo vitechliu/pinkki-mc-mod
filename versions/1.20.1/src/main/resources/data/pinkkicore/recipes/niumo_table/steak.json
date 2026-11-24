@@ -1,0 +1,11 @@
+{
+  "type": "pinkkicore:niumo_table",
+  "ingredient": {
+    "tag": "pinkkicore:cooked_meats"
+  },
+  "input_count": 1,
+  "result": {
+    "item": "minecraft:cooked_beef",
+    "count": 1
+  }
+}

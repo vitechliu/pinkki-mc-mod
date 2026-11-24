@@ -15,7 +15,7 @@ ITEM_IMAGES.update({f'/images/{name}.png': f'pinkkicore:{name}' for name in
 
 ITEM_IMAGES.update({
     f'/images/{name}.png': f'pinkkicore:{name}'
-    for name in ('guaba_bed', 'cloud_dream', 'guaba_cloud_dream', 'nether_dream', 'guaba_nether_dream', 'zhang_fav', 'galgame_arcade')
+    for name in ('guaba_bed', 'cloud_dream', 'guaba_cloud_dream', 'nether_dream', 'guaba_nether_dream', 'zhang_fav', 'galgame_arcade', 'pinkki_nm', 'niumo_table', 'demon_soul')
 })
 ITEM_IMAGES.update({
     f'/images/{prefix}guaba_dragon_egg.png': f'pinkkicore:{prefix}guaba_dragon_egg'
@@ -26,7 +26,7 @@ ITEM_IMAGES.update({
 def read_pages(root, minecraft_version, primary):
     root = root.resolve()
     pages = {}
-    for page in (*LEGACY_PAGES, 'guide', 'galgame') if primary else LEGACY_PAGES:
+    for page in (*LEGACY_PAGES, 'guide', 'galgame', 'niumo') if primary else LEGACY_PAGES:
         source = (root / 'wiki' / f'{page}.md').read_text()
         source = re.sub(r'<!-- guide-version: ([\d.]+) -->\n(.*?)<!-- /guide-version -->\n?',
                         lambda match: match[2] if minecraft_version == match[1] else '', source, flags=re.S)
@@ -160,6 +160,8 @@ def player_chapters(pages):
     add('guaba-bed', '瓜巴床', part('items', 'guaba-bed'), recipe('guaba-bed'))
     add('zhang-fav', '张哥之爱', part('galgame', 'zhang-fav'))
     add('galgame-soul', '旮旯之魂', part('galgame', 'galgame-soul'))
+    add('pinkki-nm', '牛魔材料', part('niumo', 'pinkki-nm'))
+    add('demon-soul', '魔人之魂', part('niumo', 'demon-soul'))
 
     chapter('work-blocks', '工作方块')
     add('guaba-workbench', '瓜巴工作台', part('guaba-workbench', children=False),
@@ -170,6 +172,7 @@ def player_chapters(pages):
         recipe('guaba-charging-station'), recipe('guaba-charging'))
     add('sword-in-stone', '石中剑', part('galgame', 'sword-in-stone'))
     add('galgame-arcade', '旮旯游戏机', part('galgame', 'galgame-arcade'))
+    add('niumo-table', '牛魔台', part('niumo', 'niumo-table'))
     add('irons-charging', '铁魔法充能', part('recipes', 'irons-charging'), toc=False, required_mods=('irons_spellbooks',))
 
     chapter('weapons', '基础武器')
@@ -181,6 +184,8 @@ def player_chapters(pages):
 
     add('favorite-person', '最爱之人', part('galgame', 'favorite-person'))
     add('galgame-heart', '旮旯之心', part('galgame', 'galgame-heart'))
+    add('niumo-helmet', '牛魔头盔', part('niumo', 'niumo-helmet'))
+    add('niumo-whiskers', '牛魔绸鬓', part('niumo', 'niumo-whiskers'))
 
     chapter('guaba-potions', '药水效果')
     add('guaba', '瓜巴药水', part('guaba-potions', children=False), part('guaba-potions', '酿造', heading=True),
@@ -188,9 +193,12 @@ def player_chapters(pages):
     add('thunder-guaba', '雷霆瓜巴药水', part('guaba-potions', 'thunder-guaba'))
 
     add('galgame', '旮旯', part('galgame', 'galgame'))
+    add('niumo', '牛魔效果', part('niumo', 'niumo'))
 
     chapter('creatures', '生物')
     add('zhang', '张小弟与张哥', part('galgame', 'zhang'))
+    add('bullman', '牛人', part('niumo', 'bullman'))
+    add('lao-cai', '又菜又爱玩', part('niumo', 'lao-cai'))
     add('guaba-dragon', '朱罗纪瓜巴龙', part('bosses', 'guaba-dragon'),
         part('items', 'guaba-dragon-spawn-egg'), part('bosses', 'pet-guaba-dragons', heading=True),
         part('items', 'guaba-dragon-eggs', heading=True), part('recipes', 'guaba-dragon-eggs'), toc='瓜巴龙与变种')

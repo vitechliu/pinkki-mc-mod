@@ -1,0 +1,18 @@
+{
+  "type": "pinkkicore:niumo_table",
+  "ingredient": {
+    "type": "forge:partial_nbt",
+    "item": "minecraft:potion",
+    "nbt": {
+      "Potion": "minecraft:water"
+    }
+  },
+  "input_count": 1,
+  "result": {
+    "item": "minecraft:splash_potion",
+    "nbt": {
+      "Potion": "pinkkicore:niumo"
+    },
+    "count": 1
+  }
+}

@@ -30,6 +30,7 @@ public final class PinkkiCore {
         io.github.vitech.pinkkicore.forge.ore.PinkOreContent.register(bus);
         WorkbenchContent.register(bus);
         io.github.vitech.pinkkicore.forge.charging.ChargingContent.register(bus);
+        io.github.vitech.pinkkicore.forge.niumo.NiumoTable.register(bus);
         GuabaPotions.register(bus);
         if (ModList.get().isLoaded("tconstruct")) {
             TinkersGalgame.register(bus);

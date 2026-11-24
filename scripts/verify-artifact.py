@@ -137,9 +137,24 @@ def main():
             assert not any(path.startswith('top/theillusivec4/curios/') for path in archive.namelist()), 'Curios must remain external'
             for slot, item in [('head', 'guaba_hood'), ('charm', 'pink_blessing')]:
                 assert json.loads(archive.read(f'data/pinkkicore/curios/slots/{slot}.json')) == {'size': 1, 'operation': 'SET'}
-                assert json.loads(archive.read(f'data/curios/tags/items/{slot}.json')) == {'replace': False, 'values': ['pinkkicore:' + item]}
+                slot_items = ['pinkkicore:' + item]
+                if slot == 'head':
+                    slot_items.append('pinkkicore:niumo_helmet')
+                assert json.loads(archive.read(f'data/curios/tags/items/{slot}.json')) == {'replace': False, 'values': slot_items}
                 assert archive.read(f'assets/pinkkicore/textures/item/{item}.png').startswith(b'\x89PNG')
                 assert json.loads(archive.read(f'assets/pinkkicore/models/item/{item}.json'))['textures']['layer0'] == 'pinkkicore:item/' + item
+            resources = ROOT / 'versions/1.20.1/src/main/resources'
+            for entity_id in ('bullman', 'lao_cai'):
+                for path in (f'geo/{entity_id}.geo.json', f'animations/{entity_id}.animation.json', f'textures/entity/{entity_id}.png'):
+                    resource = 'assets/pinkkicore/' + path
+                    assert archive.read(resource) == (resources / resource).read_bytes()
+                loot = json.loads(archive.read(f'data/pinkkicore/loot_tables/entities/{entity_id}.json'))
+                assert loot['pools'][0]['entries'][0]['name'] == 'pinkkicore:pinkki_nm'
+            for recipe_id in ('splash_potion', 'niumo', 'raw_beef', 'steak', 'enchanted_apple', 'demon_soul'):
+                path = f'data/pinkkicore/recipes/niumo_table/{recipe_id}.json'
+                assert archive.read(path) == (resources / path).read_bytes()
+            assert json.loads(archive.read('data/curios/tags/items/necklace.json'))['values'] == ['pinkkicore:niumo_whiskers']
+            assert 'pinkkicore:niumo_helmet' in json.loads(archive.read('data/curios/tags/items/pinkki.json'))['values']
             target_props = read_properties(ROOT / "versions" / mc / "gradle.properties")
             assert deps["geckolib"]["mandatory"] is True
             assert deps["geckolib"]["side"] == "BOTH"

@@ -1,0 +1,11 @@
+{
+  "type": "pinkkicore:niumo_table",
+  "ingredient": {
+    "item": "pinkkicore:guaba"
+  },
+  "input_count": 1,
+  "result": {
+    "item": "pinkkicore:pinkki_nm",
+    "count": 1
+  }
+}

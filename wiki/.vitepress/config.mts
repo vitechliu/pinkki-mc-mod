@@ -29,18 +29,21 @@ export default defineConfig({
       { text: '工作方块', items: [
         { text: '瓜巴工作台', link: '/guaba-workbench' },
         { text: '瓜巴充电桩', link: '/items#guaba-charging-station' },
-        { text: '旮旯游戏机', link: '/galgame#galgame-arcade' }
+        { text: '旮旯游戏机', link: '/galgame#galgame-arcade' },
+        { text: '牛魔台', link: '/niumo#niumo-table' }
       ] },
       { text: '基础武器', items: [
         { text: '瓜巴剑', link: '/items#guaba-sword' },
         { text: '瓜巴弓', link: '/items#guaba-bow' },
         { text: '饰品', link: '/items#guaba-hood' },
-        { text: '粉饰', link: '/galgame#favorite-person' }
+        { text: '粉饰', link: '/galgame#favorite-person' },
+        { text: '牛魔饰品', link: '/niumo#niumo-helmet' }
       ] },
       { text: '药水效果', items: [
         { text: '瓜巴药水', link: '/guaba-potions' },
         { text: '雷霆瓜巴药水', link: '/guaba-potions#thunder-guaba' },
-        { text: '旮旯', link: '/galgame#galgame' }
+        { text: '旮旯', link: '/galgame#galgame' },
+        { text: '牛魔', link: '/niumo#niumo' }
       ] },
       { text: '生物', items: [
         { text: '瓜巴龙与变种', link: '/bosses#guaba-dragon' },
@@ -49,7 +52,8 @@ export default defineConfig({
         { text: '饼蛙', link: '/bosses#bingwa' },
         { text: '闪电苦力怕', link: '/items#charged-creeper-spawn-egg' },
         { text: '阵营与野外掉落', link: '/bosses#factions' },
-        { text: '张小弟与张哥', link: '/galgame#zhang' }
+        { text: '张小弟与张哥', link: '/galgame#zhang' },
+        { text: '牛人与又菜又爱玩', link: '/niumo#bullman' }
       ] },
       { text: '合成与加工', link: '/recipes' },
       { text: '更新记录', link: '/changelog' }

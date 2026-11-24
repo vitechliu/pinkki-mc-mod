@@ -1,0 +1,11 @@
+{
+  "type": "pinkkicore:niumo_table",
+  "ingredient": {
+    "item": "pinkkicore:galgame_soul"
+  },
+  "input_count": 1,
+  "result": {
+    "item": "pinkkicore:demon_soul",
+    "count": 1
+  }
+}

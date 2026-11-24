@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SNS",
+    "S S"
+  ],
+  "key": {
+    "N": {
+      "item": "pinkkicore:pinkki_nm"
+    },
+    "S": {
+      "item": "minecraft:string"
+    }
+  },
+  "result": {
+    "item": "pinkkicore:niumo_whiskers"
+  }
+}

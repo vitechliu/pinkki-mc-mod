@@ -63,6 +63,8 @@ final class DreamMaterials {
         private static final ItemEffect NETHER = ItemEffect.get("pinkkicore_nether_dream");
         private static final ItemEffect GALGAME = ItemEffect.get("pinkkicore_galgame_soul");
 
+        private static final ItemEffect DEMON = ItemEffect.get("pinkkicore_demon_soul");
+
         static int effects(ItemStack stack) {
             if (!(stack.getItem() instanceof IModularItem item) || item.isBroken(stack)) {
                 return 0;
@@ -70,7 +72,8 @@ final class DreamMaterials {
             int cloud = item.getEffectLevel(stack, CLOUD) > 0 ? DreamEquipment.CLOUD : 0;
             int nether = item.getEffectLevel(stack, NETHER) > 0 ? DreamEquipment.NETHER : 0;
             int galgame = item.getEffectLevel(stack, GALGAME) > 0 ? DreamEquipment.GALGAME : 0;
-            return cloud | nether | galgame;
+            int demon = item.getEffectLevel(stack, DEMON) > 0 ? DreamEquipment.DEMON : 0;
+            return cloud | nether | galgame | demon;
         }
     }
 }
