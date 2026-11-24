@@ -18,7 +18,11 @@ class GuideContentTest(unittest.TestCase):
         self.assertEqual([entry['title'] for entry in entries.values()], ['序章', '材料', '工作方块', '基础武器', '药水效果', '生物'])
         self.assertIn('pinkkicore:guide_book', recipe_ids(entries['handbook']))
         self.assertIn('pinkkicore:guaba_conversion/dirt_to_mud', recipe_ids(entries['work-blocks']))
-        self.assertEqual([b['toc'] for b in entries['work-blocks']['blocks'] if 'toc' in b], ['瓜巴工作台', '瓜巴充能台', '石中剑', '旮旯游戏机'])
+        work_blocks = entries['work-blocks']['blocks']
+        self.assertEqual([b['toc'] for b in work_blocks if 'toc' in b], ['瓜巴工作台', '瓜巴充电桩', '石中剑', '旮旯游戏机'])
+        for name in ('guaba_charging_station', 'galgame_arcade'):
+            self.assertEqual([b['type'] for b in work_blocks if b.get('id') == f'pinkkicore:{name}'],
+                             ['item', 'recipe'])
         self.assertEqual([b['toc'] for b in entries['creatures']['blocks'] if 'toc' in b][:3], ['张小弟与张哥', '瓜巴龙与变种', '粉红妹'])
         self.assertEqual([b['toc'] for b in entries['weapons']['blocks'] if 'toc' in b], ['瓜巴剑', '瓜巴弓', '饰品', '最爱之人', '旮旯之心'])
         self.assertTrue(any(b['type'] == 'brewing' for b in entries['guaba-potions']['blocks']))

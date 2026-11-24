@@ -50,7 +50,7 @@ public final class GuideProbe {
                         "序章", "材料", "工作方块", "基础武器", "药水效果", "生物")), "Wiki chapter order");
                 check(book.entries().stream().anyMatch(e -> e.matches("六面") && e.id().equals("work-blocks")), "Chinese body search");
                 check(book.entries().stream().anyMatch(e -> e.matches("瓜巴手册") && e.id().equals("handbook")), "Chinese title search");
-                check(book.entries().stream().anyMatch(e -> e.matches("瓜巴充能台") && e.id().equals("work-blocks")), "subsection title search");
+                check(book.entries().stream().anyMatch(e -> e.matches("瓜巴充电桩") && e.id().equals("work-blocks")), "subsection title search");
                 var noMods = book.withInstalledMods(mod -> false);
                 check(noMods.entries().stream().noneMatch(e -> e.matches("寂静装备") || e.matches("铁魔法") || e.matches("梦系材料联动")),
                         "optional entries searchable with no host mods");

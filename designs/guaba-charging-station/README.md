@@ -5,7 +5,7 @@
 - `guaba_charging_station.bbmodel`：可编辑 Java Block 工程，内嵌 64×64 贴图，不依赖绝对路径。
 - `guaba_charging_station.json` / PNG：与游戏运行时字节一致。
 - `review.html`：内嵌同一导出几何和纹理的离线三维审阅；支持拖动、滚轮、立体/俯视/正面/侧面/背面。辅助网格仅属于审阅器。
-- `generate.py`：确定性生成几何、贴图、工程、审阅页及 Wiki 图标，需要 Pillow。
+- `generate.py`：确定性生成几何、贴图、工程、审阅页及 Wiki 图标，需要 Pillow。Wiki 图标从导出模型逐像素判断遮挡。
 - `validate.py`：标准库验证尺寸/UV/工程与导出/审阅/运行资产一致。
 - `icons.py`：从本地原版 1.20.1 资源绘制配方材料图标及独立带电刷怪蛋图标，需要 Pillow。原版参考纹理权利属于 Mojang/Microsoft，不因仓库 MIT 改变。
 
@@ -15,4 +15,8 @@ python3 designs/guaba-charging-station/icons.py
 python3 designs/guaba-charging-station/validate.py
 ```
 
-本地浏览器已实际检查模型与贴图、多方向按钮、拖动和缩放，截图 `.local/guaba-charging-review/iso.png`。Blockbench 网页导入首次因授权边界被自动审批拒绝；用户随后明确授权，已在官方网页编辑器实际导入并核对 30 个部件、64×64 内嵌贴图、底座变换参数（0,0,0 / 16×2×16）及六面 UV 显示。截图 `.local/guaba-charging-review/blockbench.png`、`blockbench-uv.png`。本次未修改模型几何或贴图。未启动 Minecraft 图形客户端。游戏粒子由原版 ELECTRIC_SPARK 的客户端 animateTick 实现，静态模型不包含假动画或真实闪电实体，不产生火焰/伤害。
+底座的正面装饰分布在三个深度，台面导线与槽体和针座错开。校验会拦截同向共面且面积重叠的面。
+
+初版审阅在浏览器中检查了模型与贴图、多方向按钮、拖动和缩放，并在 Blockbench 网页编辑器核对了 30 个部件、64×64 内嵌贴图及六面 UV。初版截图在 `.local/guaba-charging-review/`，底座与导线的后续修正见[设备图标与瓜巴手册](../../docs/changes/2026-11-24-device-icons.md)。
+
+游戏粒子由原版 ELECTRIC_SPARK 的客户端 animateTick 实现。静态模型只包含方块几何和贴图。

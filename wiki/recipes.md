@@ -68,8 +68,8 @@ const items = {
   'irons_spellbooks:lightning_rune': { name: '雷霆符文', image: 'https://raw.githubusercontent.com/iron431/irons-spells-n-spellbooks/b928995887aa362467fa999a9c9fb86419f00f2d/src/main/resources/assets/irons_spellbooks/textures/item/lightning_rune.png' },
   'irons_spellbooks:lightning_bottle': { name: '雷电瓶', image: 'https://raw.githubusercontent.com/iron431/irons-spells-n-spellbooks/b928995887aa362467fa999a9c9fb86419f00f2d/src/main/resources/assets/irons_spellbooks/textures/item/lightning_bottle.png', sprite: true },
 
-  'minecraft:lightning_rod': { name: '避雷针', image: '/images/minecraft/lightning_rod.svg' },
-  'minecraft:enchanting_table': { name: '附魔台', image: '/images/minecraft/enchanting_table.svg' },
+  'minecraft:lightning_rod': { name: '避雷针', image: '/images/minecraft/lightning_rod.png' },
+  'minecraft:enchanting_table': { name: '附魔台', image: '/images/minecraft/enchanting_table.png' },
   'minecraft:creeper_spawn_egg': { name: '苦力怕刷怪蛋', image: '/images/minecraft/creeper_spawn_egg.png' },
   'pinkkicore:charged_creeper_spawn_egg': { name: '闪电苦力怕刷怪蛋', image: '/images/charged_creeper_spawn_egg.png' },
   'pinkkicore:thunder_guaba': { name: '雷霆瓜巴', image: '/images/thunder_guaba.png' },

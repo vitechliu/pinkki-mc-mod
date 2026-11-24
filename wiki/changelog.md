@@ -1,5 +1,9 @@
 # 更新记录
 
+## 2026-11-24 · 设备图标与手册
+
+- 百科和瓜巴手册统一使用「瓜巴充电桩」。修复[瓜巴充电桩](./items.md#guaba-charging-station)和[旮旯游戏机](./galgame.md#galgame-arcade)的图标及合成图展示。
+
 ## 2026-11-22 · 张家与旮旯
 
 - 1.20.1 新增[石中剑和张家](./galgame.md#sword-in-stone)，召唤后可获得张哥之爱。

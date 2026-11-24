@@ -36,6 +36,8 @@ npm run wiki:preview
 
 `wiki/recipes.md` 直接导入 1.20.1 游戏配方 JSON；修改材料或产物时同步图标映射即可，不另写一份材料数量。瓜巴图标复用 mod 资源，原版西瓜片取自 Minecraft 1.20.1 客户端资源，泥土、泥巴图标由该版本原版方块贴图作等距投影生成（非游戏截图）。这些 Minecraft 素材属于 Mojang，不纳入项目 MIT 许可。新增配方仍需核对图标、布局、数量及链接。
 
+[瓜巴充电桩](../designs/guaba-charging-station/README.md)和[旮旯游戏机](../designs/zhang-galgame/README.md)的图标由各自的设计脚本读取模型面和贴图 UV，逐像素判断遮挡。避雷针和附魔台的图标由充电桩目录的 `icons.py` 使用本地原版 1.20.1 资源生成。
+
 游戏内手册正文由本目录的玩家页面构建生成，维护方式见 [独立引导手册](guidebook.md)。修改入册正文需要重新构建并部署 1.20.1 JAR；纯网页导航或未入册页面调整无需构建 mod。断链和未支持的组件会阻止生成，不能只维护网页而忽略离线手册适配。
 
 瓜巴药水使用 `GuabaBrewing.vue` 读取 `versions/1.20.1/src/main/resources/data/pinkkicore/guaba_potions.json`，与 Java 酿造注册共用定义；数值表同样读取定义。药水瓶、药液遮罩、酿造台、红石粉、荧石粉图标取自原版 1.20.1 客户端资源，药液由 CSS 着色；Minecraft 素材不纳入 MIT 许可。该定义是 JAR 启动时读取的配置，不提供数据包热重载。同步玩家条目、图标和更新记录后构建 Wiki。

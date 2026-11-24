@@ -6,7 +6,7 @@
 
 - [离线三维审阅](review.html)可切换两种体型、两个方块、四个视角及角色动作。
 - `zhang.bbmodel` 是可编辑 GeckoLib 工程。另两个 `.bbmodel` 是 Java 方块工程。三个工程均内嵌纹理。
-- 游戏几何、动画、贴图和两张 Wiki 方块图标由同一脚本生成。
+- 游戏几何、动画、贴图和两张 Wiki 方块图标由同一脚本生成。旮旯游戏机的物品图标与 Wiki 采用更贴近正面的角度，保留屏幕和键盘细节。
 
 ```sh
 python3 designs/zhang-galgame/generate.py

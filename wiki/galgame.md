@@ -43,6 +43,8 @@ const items = Object.fromEntries([
 
 ## 旮旯游戏机 {#galgame-arcade}
 
+![旮旯游戏机](/images/galgame_arcade.png)
+
 <CraftingRecipe :recipe="arcade" :items="items" />
 
 右键获得 10 分钟[旮旯](#galgame)。没有效果时获得 I，已有基础 I 时升至 II，再次使用可续时。

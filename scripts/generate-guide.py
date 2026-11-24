@@ -15,7 +15,7 @@ ITEM_IMAGES.update({f'/images/{name}.png': f'pinkkicore:{name}' for name in
 
 ITEM_IMAGES.update({
     f'/images/{name}.png': f'pinkkicore:{name}'
-    for name in ('guaba_bed', 'cloud_dream', 'guaba_cloud_dream', 'nether_dream', 'guaba_nether_dream', 'zhang_fav')
+    for name in ('guaba_bed', 'cloud_dream', 'guaba_cloud_dream', 'nether_dream', 'guaba_nether_dream', 'zhang_fav', 'galgame_arcade')
 })
 ITEM_IMAGES.update({
     f'/images/{prefix}guaba_dragon_egg.png': f'pinkkicore:{prefix}guaba_dragon_egg'
@@ -167,7 +167,7 @@ def player_chapters(pages):
         part('guaba-workbench', '获取与放置', heading=True), part('guaba-workbench', '红石控制', heading=True),
         part('guaba-workbench', '六面输入输出', heading=True))
     add('guaba-charging-station', '瓜巴充电桩', part('items', 'guaba-charging-station'),
-        recipe('guaba-charging-station'), recipe('guaba-charging'), toc='瓜巴充能台')
+        recipe('guaba-charging-station'), recipe('guaba-charging'))
     add('sword-in-stone', '石中剑', part('galgame', 'sword-in-stone'))
     add('galgame-arcade', '旮旯游戏机', part('galgame', 'galgame-arcade'))
     add('irons-charging', '铁魔法充能', part('recipes', 'irons-charging'), toc=False, required_mods=('irons_spellbooks',))

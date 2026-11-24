@@ -3,12 +3,16 @@
 import base64
 import io
 import json
+import sys
 import uuid
 from pathlib import Path
 
 from PIL import Image, ImageColor, ImageDraw
 
 HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE.parent))
+from render_block_icon import render_icon
+
 ROOT = HERE.parents[1]
 ASSETS = ROOT / 'versions/1.20.1/src/main/resources/assets/pinkkicore'
 WIKI = ROOT / 'wiki/public/images'
@@ -141,12 +145,12 @@ def tile_uv(index):
     return [pixel / 8 for pixel in tile(index)]
 
 
-def block(name, pieces, atlas):
+def block(name, pieces, atlas, *, gui_rotation=(27, 225, 0)):
     elements = []
     for label, start, end, tiles in pieces:
         faces = {face: dict(uv=tile_uv(tiles.get(face, tiles['all'])), texture='#atlas') for face in FACES}
         elements.append(dict(name=label, **{'from': start, 'to': end}, faces=faces))
-    display = dict(gui=dict(rotation=[27, 225, 0], translation=[0, 0, 0], scale=[.78]*3),
+    display = dict(gui=dict(rotation=list(gui_rotation), translation=[0, 0, 0], scale=[.78]*3),
                    ground=dict(scale=[.4]*3, translation=[0, 2, 0]),
                    fixed=dict(scale=[.7]*3))
     path = f'pinkkicore:block/{name}'
@@ -166,36 +170,9 @@ def block(name, pieces, atlas):
         name=name, model_identifier=name, resolution=dict(width=ATLAS, height=ATLAS), display=display,
         elements=editor_elements, outliner=[e['uuid'] for e in editor_elements],
         textures=[texture_entry(name, atlas)]))
-    draw_block_icon(name, pieces, atlas)
+    pitch, rotation_y, _ = gui_rotation
+    render_icon(model, lambda _: atlas, yaw=rotation_y - 180, pitch=pitch).save(WIKI / f'{name}.png')
     return dict(model=model, texture=uri(atlas), height=max(piece[2][1] for piece in pieces))
-
-
-def draw_block_icon(name, pieces, atlas):
-    im = Image.new('RGBA', (160, 160))
-    faces = []
-
-    def project(x, y, z):
-        return (80 + (x - z) * 4.6, 126 - y * 6 + (x + z - 16) * 1.85)
-
-    for _, (x, y, z), (X, Y, Z), tiles in pieces:
-        for face, points, light in (
-            ('north', [(x, Y, z), (X, Y, z), (X, y, z), (x, y, z)], .91),
-            ('west', [(x, Y, Z), (x, Y, z), (x, y, z), (x, y, Z)], .75),
-            ('up', [(x, Y, Z), (X, Y, Z), (X, Y, z), (x, Y, z)], 1),
-        ):
-            depth = sum(u + w - .8 * v for u, v, w in points) / 4
-            faces.append((depth, points, tiles.get(face, tiles['all']), light))
-    pixels = ImageDraw.Draw(im)
-    for _, (a, b, _, d), material, light in sorted(faces, key=lambda entry: -entry[0]):
-        x, y, _, _ = tile(material)
-        for v in range(32):
-            for u in range(32):
-                corners = []
-                for i, j in [(u,v), (u+1,v), (u+1,v+1), (u,v+1)]:
-                    corners.append(project(*(a[k]+(b[k]-a[k])*i/32+(d[k]-a[k])*j/32 for k in range(3))))
-                rgb = atlas.getpixel((x + u, y + v))
-                pixels.polygon(corners, fill=tuple(round(c * light) for c in rgb[:3]) + (rgb[3],))
-    im.save(WIKI / f'{name}.png')
 
 
 def sword():
@@ -256,7 +233,7 @@ def arcade():
           for row, z in enumerate([2.15,3.25,4.35,5.45])],
         ('鼠标', [11.7,1.45,3.2], [13.8,2.5,5.6], {'all':1}),
         ('滚轮', [12.5,2.48,3.8], [13,2.65,4.42], {'all':2}),
-    ], atlas)
+    ], atlas, gui_rotation=(28, 208, 0))
 
 
 HEART = [
