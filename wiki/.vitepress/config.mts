@@ -28,7 +28,7 @@ export default defineConfig({
       ] },
       { text: '工作方块', items: [
         { text: '瓜巴工作台', link: '/guaba-workbench' },
-        { text: '瓜巴充能台', link: '/items#guaba-charging-station' },
+        { text: '瓜巴充电桩', link: '/items#guaba-charging-station' },
         { text: '旮旯游戏机', link: '/galgame#galgame-arcade' }
       ] },
       { text: '基础武器', items: [
