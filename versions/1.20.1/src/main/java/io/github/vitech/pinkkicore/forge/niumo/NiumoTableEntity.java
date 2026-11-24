@@ -8,6 +8,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -17,6 +19,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -49,8 +52,8 @@ public final class NiumoTableEntity extends BlockEntity implements MenuProvider 
     }
 
     public boolean handleButton(int button) {
-        if (level == null || level.isClientSide || isRemoved()) return false;
-        if (button == NiumoTableMenu.CRAFT) return craft();
+        if (!(level instanceof ServerLevel serverLevel) || isRemoved()) return false;
+        if (button == NiumoTableMenu.CRAFT) return craft(serverLevel);
         int index = button - NiumoTableMenu.FIRST_SIDE;
         if (index < 0 || index >= Direction.values().length) return false;
         Direction side = Direction.values()[index];
@@ -59,7 +62,7 @@ public final class NiumoTableEntity extends BlockEntity implements MenuProvider 
         return true;
     }
 
-    private boolean craft() {
+    private boolean craft(ServerLevel level) {
         ItemStack input = inventory.getStackInSlot(INPUT);
         ItemStack output = inventory.getStackInSlot(OUTPUT);
         var container = new SimpleContainer(input);
@@ -76,7 +79,7 @@ public final class NiumoTableEntity extends BlockEntity implements MenuProvider 
         }
         inventory.extractItem(INPUT, recipe.inputCount(), false);
         inventory.setStackInSlot(OUTPUT, produced);
-        // The successful craft is the only entry point for a future workstation sound.
+        NiumoSounds.play(level, Vec3.atCenterOf(worldPosition), SoundSource.BLOCKS);
         return true;
     }
 

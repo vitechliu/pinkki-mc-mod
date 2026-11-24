@@ -6,6 +6,7 @@ import io.github.vitech.pinkkicore.forge.entity.NiumoMob;
 import io.github.vitech.pinkkicore.forge.entity.NiumoSpawns;
 import io.github.vitech.pinkkicore.forge.item.ModItems;
 import io.github.vitech.pinkkicore.forge.niumo.NiumoEffect;
+import io.github.vitech.pinkkicore.forge.niumo.NiumoSounds;
 import io.github.vitech.pinkkicore.forge.niumo.NiumoTable;
 import io.github.vitech.pinkkicore.forge.niumo.NiumoTableEntity;
 import io.github.vitech.pinkkicore.forge.niumo.NiumoTableMenu;
@@ -16,6 +17,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.tags.StructureTags;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.PlayLevelSoundEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Unit;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -50,11 +56,57 @@ final class NiumoChecks {
     private NiumoChecks() {}
 
     static void run(ServerLevel level) {
+        sounds(level);
         table(level);
         splashAndCow(level);
         creatures(level);
         if (ModList.get().isLoaded("curios")) Curios.run(level);
         System.out.println("GALGAME_PROBE Niumo recipes, transfer, effect, conversion, combat and loot");
+    }
+
+    private static void sounds(ServerLevel level) {
+        var probe = new SoundProbe();
+        level.setBlockAndUpdate(CENTER, NiumoTable.BLOCK.get().defaultBlockState());
+        var table = (NiumoTableEntity) level.getBlockEntity(CENTER);
+        var player = GalgameProbe.player(level);
+        var menu = (NiumoTableMenu) table.createMenu(1, player.getInventory(), player);
+        MinecraftForge.EVENT_BUS.register(probe);
+        try {
+            require(!menu.clickMenuButton(player, 0) && probe.blocks == 0, "empty table produced sound");
+            table.inventory.setStackInSlot(0, new ItemStack(ModItems.GUABA.get()));
+            require(menu.clickMenuButton(player, 0) && probe.blocks == 1, "successful table should make one sound");
+            table.inventory.setStackInSlot(1, ItemStack.EMPTY);
+            require(level.addFreshEntity(player), "potion thrower fixture");
+            player.setItemInHand(InteractionHand.MAIN_HAND,
+                PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), GuabaPotions.NIUMO_SPLASH.get()));
+            Items.SPLASH_POTION.use(level, player, InteractionHand.MAIN_HAND);
+            require(probe.players == 1, "Niumo throws should make one sound at launch");
+            player.setItemInHand(InteractionHand.MAIN_HAND, PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), Potions.WATER));
+            Items.SPLASH_POTION.use(level, player, InteractionHand.MAIN_HAND);
+            player.setItemInHand(InteractionHand.MAIN_HAND,
+                PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), GuabaPotions.NIUMO_SPLASH.get()));
+            Items.LINGERING_POTION.use(level, player, InteractionHand.MAIN_HAND);
+            require(probe.players == 1, "another potion played the Niumo sound");
+            System.out.println("GALGAME_PROBE Niumo sound on table success and potion release");
+        } finally {
+            level.getEntitiesOfClass(ThrownPotion.class, player.getBoundingBox().inflate(5),
+                potion -> potion.getOwner() == player).forEach(Entity::discard);
+            if (level.getPlayerByUUID(player.getUUID()) != null) level.removePlayerImmediately(player, Entity.RemovalReason.DISCARDED);
+            level.removeBlock(CENTER, false);
+            MinecraftForge.EVENT_BUS.unregister(probe);
+        }
+    }
+
+    public static final class SoundProbe {
+        private int blocks;
+        private int players;
+
+        @SubscribeEvent
+        public void sound(PlayLevelSoundEvent.AtPosition event) {
+            if (event.getSound() == null || !NiumoSounds.RANDOM_ID.equals(event.getSound().value().getLocation())) return;
+            if (event.getSource() == SoundSource.BLOCKS) blocks++;
+            if (event.getSource() == SoundSource.PLAYERS) players++;
+        }
     }
 
     private static void table(ServerLevel level) {

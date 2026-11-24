@@ -11,6 +11,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -31,6 +33,15 @@ public final class BingwaProbe {
     private ServerLevel level;
     private BingwaEntity frog;
     private Cow cow;
+    private Cat wildCat;
+    private Cat tameCat;
+    private boolean sprintStarted;
+    private boolean sittingTargetSeen;
+    private double previousFrogX;
+    private double previousCatX;
+    private double frogPeak;
+    private double catPeak;
+    private double closestSprintDistance = Double.POSITIVE_INFINITY;
     private int ticks;
     private boolean done;
     private boolean retaliationSeen;
@@ -46,8 +57,8 @@ public final class BingwaProbe {
         try {
             level = event.getServer().overworld();
             level.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).set(false, event.getServer());
-            level.setChunkForced(0, 0, true);
-            for (int x = -4; x <= 15; x++) for (int z = -4; z <= 15; z++) {
+            for (int x = 0; x <= 2; x++) level.setChunkForced(x, 0, true);
+            for (int x = -4; x <= 45; x++) for (int z = -4; z <= 15; z++) {
                 level.setBlockAndUpdate(new BlockPos(x, 99, z), Blocks.STONE.defaultBlockState());
                 for (int y = 100; y <= 104; y++) level.setBlockAndUpdate(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState());
             }
@@ -135,10 +146,84 @@ public final class BingwaProbe {
                 require(blockedVictim.getHealth() == blockedVictim.getMaxHealth(), "tongue hit through wall");
                 require(blockedAttacker.canBreatheUnderwater(), "amphibian cannot breathe underwater");
                 System.out.println("BINGWA retaliation + delayed tongue + range/line-of-sight rejection + underwater breathing PASS");
+                blockedVictim.discard();
+                blockedAttacker.discard();
+                level.setBlockAndUpdate(new BlockPos(11, 100, 12), Blocks.AIR.defaultBlockState());
+                level.setBlockAndUpdate(new BlockPos(11, 101, 12), Blocks.AIR.defaultBlockState());
+                startCatHunt();
+            }
+            if (ticks > 110) tickCatHunt();
+        } catch (Throwable error) { fail(error); }
+    }
+
+    private void startCatHunt() {
+        frog.discard();
+        frog = ModEntities.BINGWA.get().create(level);
+        frog.setPos(2.5, 100, 8.5);
+        frog.setYRot(-90);
+        frog.setPersistenceRequired();
+        level.addFreshEntity(frog);
+
+        wildCat = EntityType.CAT.create(level);
+        wildCat.setPos(10.5, 100, 8.5);
+        wildCat.setYRot(-90);
+        wildCat.setPersistenceRequired();
+        wildCat.getAttribute(Attributes.FOLLOW_RANGE).setBaseValue(48);
+        wildCat.getNavigation().setMaxVisitedNodesMultiplier(3);
+        // Hold an unobstructed escape route at the vanilla sprint setting, using the real cat AI and move control.
+        wildCat.goalSelector.removeAllGoals(goal -> true);
+        level.addFreshEntity(wildCat);
+    }
+
+    private void tickCatHunt() {
+        if (!sprintStarted && frog.getTarget() == wildCat && wildCat.onGround()) {
+            var escapePath = wildCat.getNavigation().createPath(42.5, 100, 8.5, 1);
+            require(escapePath != null && escapePath.canReach() && wildCat.getNavigation().moveTo(escapePath, 1.33),
+                "cat sprint path not found: start=" + wildCat.position()
+                    + " end=" + (escapePath == null ? "no path" : escapePath.getEndNode()));
+            previousFrogX = frog.getX();
+            previousCatX = wildCat.getX();
+            sprintStarted = true;
+        }
+        if (tameCat == null && sprintStarted) {
+            if (wildCat.isSprinting() && wildCat.getHealth() == wildCat.getMaxHealth()) {
+                if (frog.onGround()) frogPeak = Math.max(frogPeak, frog.getX() - previousFrogX);
+                catPeak = Math.max(catPeak, wildCat.getX() - previousCatX);
+                closestSprintDistance = Math.min(closestSprintDistance, frog.distanceTo(wildCat));
+            }
+            previousFrogX = frog.getX();
+            previousCatX = wildCat.getX();
+            if (wildCat.getHealth() < wildCat.getMaxHealth()) {
+                require(catPeak > 0.4 && frogPeak >= catPeak * 1.25,
+                    "frog did not outrun a full sprint: frog=" + frogPeak + " cat=" + catPeak);
+                require(closestSprintDistance <= 4, "frog did not close the gap on a sprinting cat: " + closestSprintDistance);
+                System.out.printf("BINGWA wild cat tongue hit, peak blocks/tick frog=%.3f sprinting cat=%.3f, closest while sprinting=%.3f blocks, sprinting at hit=%s%n",
+                    frogPeak, catPeak, closestSprintDistance, wildCat.isSprinting());
+                tameCat = EntityType.CAT.create(level);
+                tameCat.setPos(frog.getX(), 100, frog.getZ() + 2);
+                tameCat.setOwnerUUID(UUID.fromString("868c947e-1c3b-49af-9fe3-d1b4b745319a"));
+                tameCat.setTame(true);
+                tameCat.setNoAi(true);
+                tameCat.setOrderedToSit(true);
+                tameCat.setInSittingPose(true);
+                level.addFreshEntity(tameCat);
+                wildCat.discard();
+            }
+        }
+        if (tameCat != null) {
+            sittingTargetSeen |= frog.getTarget() == tameCat && tameCat.isTame() && tameCat.isInSittingPose();
+            var damage = tameCat.getLastDamageSource();
+            if (tameCat.getHealth() < tameCat.getMaxHealth() && damage != null && damage.getEntity() == frog) {
+                require(sittingTargetSeen, "sitting pet cat was not acquired as the next target");
+                System.out.println("BINGWA retargeted and hit a sitting tamed cat PASS");
                 System.out.println("BINGWA_PROBE PASS");
                 done = true;
             }
-        } catch (Throwable error) { fail(error); }
+        }
+        require(ticks < 310, "cat pursuit timed out: sprintStarted=" + sprintStarted
+            + " target=" + frog.getTarget() + " frog=" + frog.position() + " frogPeak=" + frogPeak + " catPeak=" + catPeak
+            + " wildCat=" + wildCat.position() + " wildHealth=" + wildCat.getHealth()
+            + " tameHealth=" + (tameCat == null ? "not spawned" : tameCat.getHealth()));
     }
     private void fail(Throwable error) {
         done = true;

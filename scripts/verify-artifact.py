@@ -3,6 +3,7 @@
 import hashlib
 import json
 from pathlib import Path
+import re
 import shutil
 import struct
 import sys
@@ -153,6 +154,17 @@ def main():
             for recipe_id in ('splash_potion', 'niumo', 'raw_beef', 'steak', 'enchanted_apple', 'demon_soul'):
                 path = f'data/pinkkicore/recipes/niumo_table/{recipe_id}.json'
                 assert archive.read(path) == (resources / path).read_bytes()
+            sound_manifest = 'assets/pinkkicore/sounds.json'
+            assert archive.read(sound_manifest) == (resources / sound_manifest).read_bytes()
+            sound_names = json.loads(archive.read(sound_manifest))['niumo_random']['sounds']
+            source_names = sorted(path.stem for path in (ROOT / 'designs/niumo/sounds').glob('*.wav'))
+            assert sound_names == [f'pinkkicore:niumo/{stem}' for stem in source_names], 'Generate the sound bank before building'
+            for sound_name in sound_names:
+                assert re.fullmatch(r'pinkkicore:niumo/niumo_[0-9]{3,}', sound_name)
+                ogg_path = 'assets/pinkkicore/sounds/' + sound_name.split(':', 1)[1] + '.ogg'
+                clip = archive.read(ogg_path)
+                assert clip.startswith(b'OggS') and b'\x01vorbis' in clip[:64] and clip == (resources / ogg_path).read_bytes()
+            assert not any(entry.endswith('.wav') for entry in archive.namelist()), 'WAV sources do not ship'
             assert json.loads(archive.read('data/curios/tags/items/necklace.json'))['values'] == ['pinkkicore:niumo_whiskers']
             assert 'pinkkicore:niumo_helmet' in json.loads(archive.read('data/curios/tags/items/pinkki.json'))['values']
             target_props = read_properties(ROOT / "versions" / mc / "gradle.properties")

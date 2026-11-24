@@ -18,11 +18,14 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.AmphibiousPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -32,9 +35,12 @@ import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-/** Neutral to players; retaliation is local, while MobFactions attaches the Yingrong rivalry on server join. */
+/** Hunts cats and retaliates when hurt. MobFactions attaches the Yingrong rivalry on server join. */
 public class BingwaEntity extends PathfinderMob implements GeoEntity {
     private static final double TONGUE_REACH_SQR = 6.25;
+    private static final double MELEE_SPEED = 1.15;
+    // The land move controller halves the speed, so this gives 0.715 versus a sprinting cat's 0.52.
+    private static final double CAT_CHASE_SPEED = 6.5;
     private static final RawAnimation IDLE = loop("idle"), WALK = loop("walk"),
         SWIM = loop("swim"), FLOAT = loop("float"), JUMP = loop("jump");
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
@@ -47,7 +53,12 @@ public class BingwaEntity extends PathfinderMob implements GeoEntity {
         super(type, level);
         setCustomName(type.getDescription());
         setCustomNameVisible(true);
-        moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.1F, 0.5F, false);
+        moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.1F, 0.5F, false) {
+            @Override protected float rotlerp(float current, float wanted, float maxTurn) {
+                // At chase speed the ordinary land turn rate can carry the frog past its next waypoint.
+                return super.rotlerp(current, wanted, getTarget() instanceof Cat && !isInWater() ? 90 : maxTurn);
+            }
+        };
         setPathfindingMalus(BlockPathTypes.WATER, 0);
         setPathfindingMalus(BlockPathTypes.WATER_BORDER, 0);
         setMaxUpStep(1.0F);
@@ -71,13 +82,35 @@ public class BingwaEntity extends PathfinderMob implements GeoEntity {
     }
 
     @Override protected PathNavigation createNavigation(Level level) {
-        return new AmphibiousPathNavigation(this, level);
+        return new AmphibiousPathNavigation(this, level) {
+            @Override public Path createPath(Entity target, int reachRange) {
+                return super.createPath(target, target instanceof Cat ? 0 : reachRange);
+            }
+        };
     }
 
     @Override protected void registerGoals() {
-        goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.15, true) {
+        goalSelector.addGoal(1, new MeleeAttackGoal(this, MELEE_SPEED, true) {
+            @Override public boolean canUse() {
+                // Keep the vanilla path retry delay for an active target, without spending it while idle.
+                return getTarget() != null && super.canUse();
+            }
+
             @Override protected double getAttackReachSqr(LivingEntity target) {
                 return TONGUE_REACH_SQR;
+            }
+
+            @Override public void tick() {
+                super.tick();
+                if (getTarget() instanceof Cat cat) {
+                    // Refresh the route before a sprinting cat leaves the last destination behind.
+                    if (tickCount % 2 == 0 && !cat.blockPosition().equals(navigation.getTargetPos())) {
+                        navigation.moveTo(cat, CAT_CHASE_SPEED);
+                    }
+                    navigation.setSpeedModifier(CAT_CHASE_SPEED);
+                } else {
+                    navigation.setSpeedModifier(MELEE_SPEED);
+                }
             }
         });
         goalSelector.addGoal(3, new RandomSwimmingGoal(this, 1, 40));
@@ -85,6 +118,7 @@ public class BingwaEntity extends PathfinderMob implements GeoEntity {
         goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 6));
         goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         targetSelector.addGoal(1, new HurtByTargetGoal(this));
+        targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Cat.class, true));
     }
 
     @Override public boolean canBreatheUnderwater() { return true; }
